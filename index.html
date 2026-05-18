@@ -248,7 +248,7 @@
         }
 
         // メイン描画関数
-        function render() {
+function render() {
             const root = document.getElementById('app-root');
             const rank = getRank(state.completedCount);
 
@@ -274,6 +274,12 @@
                                     </button>
                                 `).join('')}
                             </div>
+                            <div class="mt-8 p-4 bg-slate-900/50 rounded-lg border border-slate-800">
+                                <p class="text-[10px] text-slate-500 leading-relaxed text-center">
+                                    【更新のお知らせ】<br>
+                                    データが反映されない場合は、ブラウザのキャッシュをクリアするか、画面を下に引っ張って更新してください。
+                                </p>
+                            </div>
                         </div>
                         ` : ''}
 
@@ -289,6 +295,10 @@
                                     <div class="bg-blue-500 h-full" style="width: ${(state.completedCount/150)*100}%"></div>
                                 </div>
                                 <p class="text-[10px] text-slate-400 mt-2">${state.completedCount} / 150 Cases Clear</p>
+                                
+                                <p class="text-[9px] text-slate-600 mt-4 leading-tight border-t border-slate-700 pt-2">
+                                    ※最新データが表示されない場合はブラウザキャッシュをクリアして下さい。
+                                </p>
                             </div>
                             <nav class="space-y-1">
                                 ${GENRES.map(g => `
