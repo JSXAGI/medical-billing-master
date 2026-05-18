@@ -1,5 +1,7 @@
 # 🏥 CrossCare Hub v3.5 - Professional Master
 
+https://jsxagi.github.io/medical-billing-master/
+
 **「医療事務の算定は、もっと楽しく学べるはずだ。」**
 
 そんな想いから生まれた、超実践型・医療事務ラーニングシミュレーターです。
