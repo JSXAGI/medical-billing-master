@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrossCare Hub v3.2 - Professional Master</title>
+    <title>CrossCare Hub v3.5 - Professional Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
-	<link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
@@ -24,275 +24,407 @@
     <script>
         /**
          * ==========================================
-         * 1. 症例データベース (完全統一・最新1行デザイン)
+         * 1. 症例データベース (ここに「省略データ.txt」を貼り付けてください)
          * ==========================================
          */
         const SCENARIOS = [
-            // --- 外来算定 (GAI) 30/30 ---
-            { id: "GAI-001", genre: "外来算定", name: "佐藤 栄一 様", desc: "酸素算定と適応病名", icon: "👤", color: "blue", scenario: "酸素吸入の報告あり。適応病名の有無をチェックしてください。", initial: [{n: "初診料", p: 288}], steps: [{ label: "病名チェック", type: "check", hint: "酸素(J024)に必要な病名を依頼します。" }, { label: "算定", type: "add", item: "酸素(J024)", pts: 65, hint: "65点追加。" }, { type: "finish" }] },
-            { id: "GAI-002", genre: "外来算定", name: "鈴木 芳子 様", desc: "処方漏れ確認", icon: "💊", color: "blue", scenario: "医師のオーダー漏れを指摘してください。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "不備指摘", type: "check", hint: "カルテの不備を医師に伝えます。" }, { label: "算定", type: "add", item: "処方箋料", pts: 86, hint: "86点。" }, { type: "finish" }] },
-            { id: "GAI-003", genre: "外来算定", name: "高橋 健太 様", desc: "初再診の境界線", icon: "🩹", color: "blue", scenario: "風邪通院中にケガで来院。区分を判断してください。", initial: [], steps: [{ label: "判断", type: "choice", choices: [{l:"再診", p:125, ok:true}, {l:"初診", p:288, ok:false}], hint: "継続中なら再診です。" }, { type: "finish" }] },
-            { id: "GAI-004", genre: "外来算定", name: "小林 幸子 様", desc: "紹介状（情報提供）", icon: "✉️", color: "blue", scenario: "他院への紹介状作成時の算定です。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "算定", type: "add", item: "情報提供料(I)", pts: 250, hint: "250点。" }, { type: "finish" }] },
-            { id: "GAI-005", genre: "外来算定", name: "高橋 茂 様", desc: "夜間・早朝等加算", icon: "🌅", color: "blue", scenario: "平日の夕方18:30に受付をされました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "夜間・早朝等加算", pts: 50, hint: "平日18時以降は50点です。" }, { type: "finish" }] },
-            { id: "GAI-006", genre: "外来算定", name: "伊藤 律子 様", desc: "明細書発行体制加算", icon: "🖨️", color: "blue", scenario: "明細書を無料発行している体制を評価します。", initial: [{n: "再診料", p: 73}], steps: [{ label: "算定", type: "add", item: "明細書発行体制加算", pts: 1, hint: "1点。全患者さんに算定します。" }, { type: "finish" }] },
-            { id: "GAI-007", genre: "外来算定", name: "佐々木 順子 様", desc: "電話再診", icon: "📞", color: "blue", scenario: "電話で検査結果を伝えました。対面ではありません。", initial: [], steps: [{ label: "判断", type: "choice", choices: [{l:"電話再診(73点)", p:73, ok:true}, {l:"再診+管理(125点)", p:125, ok:false}], hint: "電話では外来管理加算は不可。" }, { type: "finish" }] },
-            { id: "GAI-008", genre: "外来算定", name: "木村 拓也 様", desc: "初診料の基本", icon: "🏢", color: "blue", scenario: "健診結果を持参して初受診されました。", initial: [], steps: [{ label: "基本料", type: "add", item: "初診料", pts: 288, hint: "初めての受診は初診288点です。" }, { type: "finish" }] },
-            { id: "GAI-009", genre: "外来算定", name: "中村 美智子 様", desc: "時間外対応加算", icon: "☎️", color: "blue", scenario: "当院は標榜時間外も電話対応する体制です。", initial: [{n: "再診料", p: 73}], steps: [{ label: "体制加算", type: "add", item: "時間外対応加算1", pts: 5, hint: "再診時に5点を算定します。" }, { type: "finish" }] },
-            { id: "GAI-010", genre: "外来算定", name: "小川 正夫 様", desc: "端数処理の理解", icon: "🔢", color: "blue", scenario: "合計点数に端数が出ました。医療事務の基本ルールは？", initial: [{n: "検査料合計", p: 145}], steps: [{ label: "確認", type: "check", hint: "五捨五超入の仕組みを理解しましょう。" }, { type: "finish" }] },
-            { id: "GAI-011", genre: "外来算定", name: "林 真由美 様", desc: "乳幼児加算（再診）", icon: "🧸", color: "blue", scenario: "4歳の子供が風邪で再診に来られました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "乳幼児加算(再診)", pts: 38, hint: "6歳未満の再診には38点が加算。" }, { type: "finish" }] },
-            { id: "GAI-012", genre: "外来算定", name: "森田 健 様", desc: "外来管理加算（基本）", icon: "🗣️", color: "blue", scenario: "診察で詳しい説明。処置や検査なし。", initial: [{n: "再診料", p: 73}], steps: [{ label: "算定", type: "add", item: "外来管理加算", pts: 52, hint: "丁寧な診察を評価する52点。" }, { type: "finish" }] },
-            { id: "GAI-013", genre: "外来算定", name: "渡辺 裕子 様", desc: "休日加算", icon: "🎌", color: "blue", scenario: "日曜日の当番医として受診されました。", initial: [], steps: [{ label: "選択", type: "choice", choices: [{l:"初診料+休日加算", p:538, ok:true}, {l:"初診料のみ", p:288, ok:false}], hint: "日曜日は休日加算250点が付きます。" }, { type: "finish" }] },
-            { id: "GAI-014", genre: "外来算定", name: "田中 節子 様", desc: "情報提供料(II)", icon: "📜", color: "blue", scenario: "セカンドオピニオン用の資料を提供しました。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "算定", type: "add", item: "診療情報提供料(II)", pts: 500, hint: "セカンドオピニオン用は500点。" }, { type: "finish" }] },
-            { id: "GAI-015", genre: "外来算定", name: "斉藤 隆 様", desc: "特定疾患管理料", icon: "🩺", color: "blue", scenario: "高血圧症、初診から1ヶ月が経過。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "特定疾患管理料", pts: 225, hint: "初診から1ヶ月後から算定可能。" }, { type: "finish" }] },
-            { id: "GAI-016", genre: "外来算定", name: "山崎 くるみ 様", desc: "小児科夜間特例", icon: "🧸", color: "blue", scenario: "3歳の子供。夜20時に小児科受診。", initial: [{n: "初診料（乳）", p: 363}], steps: [{ label: "特例", type: "add", item: "救急搬送体制欠如加算", pts: 200, hint: "小児科標榜医の夜間特例。" }, { type: "finish" }] },
-            { id: "GAI-017", genre: "外来算定", name: "岡田 健一 様", desc: "ウイルス疾患指導", icon: "🧪", color: "blue", scenario: "帯状疱疹の生活指導を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "指導料", type: "add", item: "ウイルス疾患指導料", pts: 240, hint: "特定のウイルス疾患指導を評価。" }, { type: "finish" }] },
-            { id: "GAI-018", genre: "外来算定", name: "佐野 誠 様", desc: "紹介状あり初診", icon: "📥", color: "blue", scenario: "他院の紹介状を持参して受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "確認", type: "check", hint: "紹介状ありなら選定療養費は不要。" }, { type: "finish" }] },
-            { id: "GAI-019", genre: "外来算定", name: "松本 潤一 様", desc: "処置と外来管理", icon: "👂", color: "blue", scenario: "耳垢栓塞除去を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "判断", type: "choice", choices: [{l:"処置(加算なし)", p:0, ok:true}, {l:"処置+加算", p:52, ok:false}], hint: "処置をしたら外来管理加算は不可。" }, { type: "finish" }] },
-            { id: "GAI-020", genre: "外来算定", name: "阿部 寛 様", desc: "複数科受診", icon: "🏥", color: "blue", scenario: "内科の後に整形外科を受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "2科目", type: "add", item: "複数科受診時再診料", pts: 37, hint: "2科目は37点を算定します。" }, { type: "finish" }] },
-            { id: "GAI-021", genre: "外来算定", name: "石原 さとみ 殿", desc: "乳幼児時間外特例", icon: "🍼", color: "blue", scenario: "18時過ぎ。6歳未満の受診。", initial: [{n: "初診料（乳）", p: 363}], steps: [{ label: "特例", type: "add", item: "乳幼児時間外特例", pts: 230, hint: "夜間の特例加算です。" }, { type: "finish" }] },
-            { id: "GAI-022", genre: "外来算定", name: "大泉 洋 様", desc: "禁煙外来", icon: "🚭", color: "blue", scenario: "ニコチン依存症の初回指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "ニコチン依存症管理料1", pts: 230, hint: "禁煙指導を評価する230点。" }, { type: "finish" }] },
-            { id: "GAI-023", genre: "外来算定", name: "広瀬 すず 様", desc: "明細書再発行", icon: "📄", color: "blue", scenario: "明細書の紛失による再発行。", initial: [], steps: [{ label: "確認", type: "check", hint: "再発行は保険外自費扱いです。" }, { type: "finish" }] },
-            { id: "GAI-024", genre: "外来算定", name: "役所 広司 様", desc: "がん治療計画", icon: "🎗️", color: "blue", scenario: "地域での治療計画を策定。", initial: [{n: "再診料", p: 73}], steps: [{ label: "策定料", type: "add", item: "がん連携計画策定料", pts: 750, hint: "高度な連携を評価する750点。" }, { type: "finish" }] },
-            { id: "GAI-025", genre: "外来算定", name: "長澤 まさみ 様", desc: "緊急往診", icon: "🚗", color: "blue", scenario: "急変により自宅へ駆けつけ診察。", initial: [], steps: [{ label: "基本料", type: "add", item: "往診料", pts: 720, hint: "緊急の往診は720点。" }, { type: "finish" }] },
-            { id: "GAI-026", genre: "外来算定", name: "菅田 将暉 様", desc: "高齢者再診料", icon: "👴", color: "blue", scenario: "75歳以上。いつもの診察。", initial: [], steps: [{ label: "選択", type: "choice", choices: [{l:"再診料(73点)", p:73, ok:true}, {l:"管理料(52点)", p:52, ok:false}], hint: "基本は再診料73点です。" }, { type: "finish" }] },
-            { id: "GAI-027", genre: "外来算定", name: "有村 架純 様", desc: "持参薬確認", icon: "💊", color: "blue", scenario: "他院の処方内容を確認報告。", initial: [{n: "再診料", p: 73}], steps: [{ label: "確認", type: "check", hint: "外来での確認に点数はありません。" }, { type: "finish" }] },
-            { id: "GAI-028", genre: "外来算定", name: "ムロツヨシ 様", desc: "マイナ保険証", icon: "💳", color: "blue", scenario: "マイナ保険証を利用しました。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "基盤整備体制加算", pts: 2, hint: "オンライン資格確認で2点。" }, { type: "finish" }] },
-            { id: "GAI-029", genre: "外来算定", name: "橋本 環奈 様", desc: "長期処方管理", icon: "📋", color: "blue", scenario: "28日超の長期処方を行いました。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "長期", type: "add", item: "特定疾患処方管理加算2", pts: 66, hint: "長期処方の加算は66点。" }, { type: "finish" }] },
-            { id: "GAI-030", genre: "外来算定", name: "外来算定マスター", icon: "🏆", color: "blue", scenario: "全加算合算の最終チェックです。", initial: [{n: "初診一式", p: 363}], steps: [{ label: "最終確認", type: "check", hint: "外来算定30件完遂おめでとう！" }, { type: "finish" }] },
+             // --- 第1弾：【外来算定】トリビア付き30名（GAI-001〜GAI-030） ---            
+			{ id: "GAI-001", genre: "外来算定", name: "佐藤 栄一 様", desc: "酸素算定と適応病名", icon: "👤", color: "blue", scenario: "酸素吸入の報告あり。適応病名の有無をチェックしてください。", initial: [{n: "初診料", p: 288}], steps: [{ label: "病名チェック", type: "check", hint: "酸素(J024)に必要な病名を依頼します。" }, { label: "算定", type: "add", item: "酸素(J024)", pts: 65, hint: "65点追加。" }, { type: "finish" }], trivia: "酸素は「薬」ではなく「材料」扱い。実は使う量や装置によって、計算式がパズルのように複雑な項目なんです。" },
+            { id: "GAI-002", genre: "外来算定", name: "鈴木 芳子 様", desc: "処方漏れ確認", icon: "💊", color: "blue", scenario: "医師のオーダー漏れを指摘してください。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "不備指摘", type: "check", hint: "カルテの不備を医師に伝えます。" }, { label: "算定", type: "add", item: "処方箋料", pts: 86, hint: "86点。" }, { type: "finish" }], trivia: "処方箋料は「お薬の指示書代」。医師がカルテに書き忘れると、病院は1円も請求できない「事務の確認」が光る場所です。" },
+            { id: "GAI-003", genre: "外来算定", name: "高橋 健太 様", desc: "初再診の境界線", icon: "🩹", color: "blue", scenario: "風邪通院中にケガで来院。初診になるか再診になるか？", initial: [], steps: [{ label: "判断", type: "choice", choices: [{l: "初診料を算定", p: 288, ok: false}, {l: "再診料を算定", p: 73, ok: true}], hint: "別の病気で通院中の場合、初診料は取れません。" }, { type: "finish" }], trivia: "別の病気でも「通院中」なら再診。でも、本人が勝手に中断して期間が空くと初診に戻る「1ヶ月ルール」が存在します。" },
+            { id: "GAI-004", genre: "外来算定", name: "田中 美子 様", desc: "電話再診の判断", icon: "📞", color: "blue", scenario: "検査結果を電話で確認したいという要望。", initial: [], steps: [{ label: "判断", type: "add", item: "電話再診料", pts: 73, hint: "電話での指示も再診料がつきます。" }, { type: "finish" }], trivia: "電話でアドバイスをもらうだけでも、実は立派な「診察」。コロナ禍以降、この算定は劇的に一般的になりました。" },
+            { id: "GAI-005", genre: "外来算定", name: "伊藤 博 様", desc: "複数科受診のルール", icon: "🏥", color: "blue", scenario: "内科と整形外科を同日に受診。", initial: [{n: "1科目再診", p: 73}], steps: [{ label: "2科目目", type: "add", item: "2科目目再診料", pts: 37, hint: "2つ目の科は半額になります。" }, { type: "finish" }], trivia: "2つ目の科は「37点」。現場では「サナ」と略されます。患者さんからは「安くなるんだ！」と喜ばれる豆知識です。" },
+            { id: "GAI-006", genre: "外来算定", name: "渡辺 裕子 様", desc: "紹介状なしの初診", icon: "📄", color: "blue", scenario: "大病院に紹介状を持たずに来院。", initial: [{n: "初診料", p: 288}], steps: [{ label: "特別加算", type: "check", hint: "選定療養費の説明が必要です。" }, { type: "finish" }], trivia: "紹介状がないと、診察料とは別に「7,000円」以上取られることも！「まずは近くのクリニックへ」という国のメッセージです。" },
+            { id: "GAI-007", genre: "外来算定", name: "山本 太郎 様", desc: "乳幼児加算の確認", icon: "👶", color: "blue", scenario: "3歳の子供の風邪診察。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "乳幼児加算(初診)", pts: 75, hint: "6歳未満には加算があります。" }, { type: "finish" }], trivia: "乳幼児は診察に手間がかかるため、点数が高めです。でも自治体の助成で窓口負担が0円のことが多く、あまり気づかれません。" },
+            { id: "GAI-008", genre: "外来算定", name: "中村 昭二 様", desc: "明細書発行体制", icon: "🖨️", color: "blue", scenario: "明細書を希望。算定できる項目は？", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "明細書発行体制加算", pts: 1, hint: "1点だけ加算できます。" }, { type: "finish" }], trivia: "たった「1点(10円)」ですが、レシートのように詳しい明細を出すための事務コストとして認められている点数なんです。" },
+            { id: "GAI-009", genre: "外来算定", name: "小林 直子 様", desc: "コンタクトレンズ検査", icon: "👁️", color: "blue", scenario: "CL処方希望。通常診察と違う点数は？", initial: [], steps: [{ label: "専用算定", type: "add", item: "コンタクトレンズ検査料1", pts: 200, hint: "眼科特有のセット点数です。" }, { type: "finish" }], trivia: "コンタクトの検査は「一律の点数」と決まっていて、他の検査をたくさんしても点数が上がらない「定額制」に近い仕組みです。" },
+            { id: "GAI-010", genre: "外来算定", name: "加藤 浩二 様", desc: "特定疾患療養管理料", icon: "💓", color: "blue", scenario: "高血圧で継続治療中。管理料の算定は？", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "特定疾患療養管理料(病院)", pts: 147, hint: "147点を追加。" }, { type: "finish" }], trivia: "慢性的な病気には「丁寧な説明代」としてこの点数がつきます。2024年の改定で対象の病名が変わり、今現場は大混乱中です！" },
+            { id: "GAI-011", genre: "外来算定", name: "阿部 寛 様", desc: "外来管理加算の条件", icon: "👂", color: "blue", scenario: "処置はないが、詳しい説明を行った。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "外来管理加算", pts: 52, hint: "処置がない場合に52点。" }, { type: "finish" }], trivia: "「5分以上、手技を伴わない診察」に付く52点。処置を一つでもすると消えてしまう、切ない点数でもあります。" },
+            { id: "GAI-012", genre: "外来算定", name: "佐藤 健 様", desc: "地域包括診療料", icon: "🏠", color: "blue", scenario: "かかりつけ医として全人的な管理を実施。", initial: [], steps: [{ label: "定額算定", type: "add", item: "地域包括診療料1", pts: 560, hint: "まるっと560点。" }, { type: "finish" }], trivia: "「何をやっても定額」という、かかりつけ医専用の魔法の点数。患者さんは毎回の支払いが安定するメリットがあります。" },
+            { id: "GAI-013", genre: "外来算定", name: "長澤 まさみ 様", desc: "時間外対応加算", icon: "🕔", color: "blue", scenario: "夜間でも連絡が取れる体制を維持。", initial: [{n: "再診料", p: 73}], steps: [{ label: "体制加算", type: "add", item: "時間外対応加算1", pts: 5, hint: "体制を評価して5点。" }, { type: "finish" }], trivia: "診察が時間外だったわけではなく、「いつでも連絡が取れる体制を整えている」ことへの、24時間営業のご褒美点数です。" },
+            { id: "GAI-014", genre: "外来算定", name: "岡田 准一 様", desc: "紹介状の発行", icon: "✉️", color: "blue", scenario: "他院への紹介状を希望された。", initial: [{n: "再診料", p: 73}], steps: [{ label: "書類代", type: "add", item: "診療情報提供料(I)", pts: 250, hint: "紹介状は250点。" }, { type: "finish" }], trivia: "紹介状は、医師同士の大切なバトン。患者さんが持参すると、次の病院での初診料が少し安くなるお得な手紙でもあります。" },
+            { id: "GAI-015", genre: "外来算定", name: "橋本 環奈 様", desc: "セカンドオピニオン", icon: "🗣️", color: "blue", scenario: "他院の診断について相談したい。", initial: [], steps: [{ label: "自費確認", type: "check", hint: "保険適用外(全額自費)になります。" }, { type: "finish" }], trivia: "セカンドオピニオンは「治療」ではなく「相談」なので保険が利きません。30分で数万円という病院もあり、高級な相談料なんです。" },
+            { id: "GAI-016", genre: "外来算定", name: "大泉 洋 様", desc: "特定疾患処方管理加算", icon: "📄", color: "blue", scenario: "長期処方(28日以上)を行った。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "長期加算", type: "add", item: "特定疾患処方管理加算(長期)", pts: 66, hint: "28日以上なら66点。" }, { type: "finish" }], trivia: "長くお薬を出すと、手間がかかるため加点されます。でも、無駄な薬を出しすぎないか事務員が目を光らせるポイントです。" },
+            { id: "GAI-017", genre: "外来算定", name: "石原 さとみ 様", desc: "電子処方箋の導入", icon: "💻", color: "blue", scenario: "電子処方箋を発行した。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "医療情報体制基盤整備体制加算", pts: 1, hint: "IT化の加算です。" }, { type: "finish" }], trivia: "紙の処方箋がなくなる日も近い！？IT化を進めている病院には、国から「1点」の応援ボーナスが入ります。" },
+            { id: "GAI-018", genre: "外来算定", name: "菅田 将暉 様", desc: "再診料の加算漏れ", icon: "🕰️", color: "blue", scenario: "18時を過ぎての受付。", initial: [{n: "再診料", p: 73}], steps: [{ label: "夜間加算", type: "add", item: "夜間早朝等加算", pts: 50, hint: "18時以降は50点追加。" }, { type: "finish" }], trivia: "仕事帰りの受診に付く50点。受付時間が1分でも18時を過ぎると発生するので、時計との戦いになることも！" },
+            { id: "GAI-019", genre: "外来算定", name: "北川 景子 様", desc: "生活習慣病管理料I", icon: "🥗", color: "blue", scenario: "糖尿病の検査込みの包括管理。", initial: [], steps: [{ label: "包括算定", type: "add", item: "生活習慣病管理料(I)", pts: 760, hint: "検査込なら760点。" }, { type: "finish" }], trivia: "検査代も全部込みの「おまとめパック」。たくさん検査した月は、病院にとっては少しドキドキする（赤字リスク）算定です。" },
+            { id: "GAI-020", genre: "外来算定", name: "役所 広司 様", desc: "ニコチン依存症管理", icon: "🚭", color: "blue", scenario: "禁煙外来の初診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "管理料", type: "add", item: "ニコチン依存症管理料", pts: 230, hint: "禁煙指導で230点。" }, { type: "finish" }], trivia: "タバコを辞めるのも「治療」。一定の基準を満たせば、お薬代も含めて保険で禁煙できる、健康への投資プログラムです。" },
+            { id: "GAI-021", genre: "外来算定", name: "綾瀬 はるか 様", desc: "院内処方の算定", icon: "💊", color: "blue", scenario: "病院でお薬を直接渡した。", initial: [{n: "再診料", p: 73}], steps: [{ label: "調剤", type: "add", item: "処方料", pts: 42, hint: "院内なら処方料(42点)。" }, { type: "finish" }], trivia: "外の薬局に行くのが「処方箋料(86点)」、中でもらうのが「処方料(42点)」。実は中でもらう方が、手数料は安いんです。" },
+            { id: "GAI-022", genre: "外来算定", name: "福山 雅治 様", desc: "療養担当規則の遵守", icon: "📏", color: "blue", scenario: "患者から過剰な検査を要求された。", initial: [{n: "初診料", p: 288}], steps: [{ label: "拒否/判断", type: "check", hint: "医学的に不要な検査は算定不可。" }, { type: "finish" }], trivia: "「お金払うから検査して！」と言われても、医学的に不要なら保険はNG。ルールを守るのが事務員の「正義」です。" },
+            { id: "GAI-023", genre: "外来算定", name: "吉高 由里子 様", desc: "薬剤情報提供料", icon: "📖", color: "blue", scenario: "薬の説明書を渡した。", initial: [{n: "処方料", p: 42}], steps: [{ label: "情報提供", type: "add", item: "薬剤情報提供料", pts: 10, hint: "説明書代で10点。" }, { type: "finish" }], trivia: "あのカラーの薬の説明書、実は1枚100円相当(10点)の価値があります。捨てずにファイリングするのがおすすめです！" },
+            { id: "GAI-024", genre: "外来算定", name: "堺 雅人 様", desc: "ウイルス疾患指導", icon: "🌡️", color: "blue", scenario: "インフルエンザの生活指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "指導料", type: "add", item: "ウイルス疾患指導料", pts: 240, hint: "特定のウイルス疾患への指導。" }, { type: "finish" }], trivia: "ただの風邪ではなく、特定のウイルスには特別な指導料が。でも、月に1回しか取れないという厳しい回数制限があります。" },
+            { id: "GAI-025", genre: "外来算定", name: "広瀬 すず 様", desc: "オンライン診療初診", icon: "📱", color: "blue", scenario: "スマホによる遠隔診察。", initial: [], steps: [{ label: "初診", type: "add", item: "情報通信機器を用いた初診", pts: 251, hint: "オンライン初診は251点。" }, { type: "finish" }], trivia: "対面の初診(288点)より少し安い251点。通院の手間と時間を「点数」で天秤にかける、現代の算定スタイルです。" },
+            { id: "GAI-026", genre: "外来算定", name: "木村 拓哉 様", desc: "がん性疼痛管理", icon: "🏥", color: "blue", scenario: "痛み止めの細かい調整指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "がん性疼痛緩和指導管理料", pts: 200, hint: "緩和ケアの指導です。" }, { type: "finish" }], trivia: "「痛みを我慢しない」ことも立派な治療。専門的なチームで痛みをケアすると、手厚い管理料が認められています。" },
+            { id: "GAI-027", genre: "外来算定", name: "長野 博 様", desc: "食生活の栄養指導", icon: "🍲", color: "blue", scenario: "管理栄養士による食事指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "栄養指導", type: "add", item: "外来栄養食事指導料", pts: 200, hint: "30分以上の指導で200点。" }, { type: "finish" }], trivia: "医師ではなく「管理栄養士」が主役の珍しい点数。美味しいもの好きの長野さんにも、バランスの取れた算定を！" },
+            { id: "GAI-028", genre: "外来算定", name: "新垣 結衣 様", desc: "婦人科特定疾患管理", icon: "🚺", color: "blue", scenario: "子宮内膜症の継続的な管理。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "婦人科特定疾患治療管理料", pts: 250, hint: "ホルモン剤の管理などで250点。" }, { type: "finish" }], trivia: "女性特有のデリケートな疾患への、長期的な寄り添いを評価する点数。これも2024年の改定で対象が広がりました。" },
+            { id: "GAI-029", genre: "外来算定", name: "松本人志 様", desc: "疑い病名の整理", icon: "❓", color: "blue", scenario: "検査はしたが異常なしだった病名。", initial: [], steps: [{ label: "整理", type: "check", hint: "「〜の疑い」としてレセプトに残します。" }, { type: "finish" }], trivia: "「異常なし」でも検査は無駄じゃない！「疑い」という名前で残すことで、検査代がしっかり認められるのが医療事務のコツです。" },
+            { id: "GAI-030", genre: "外来算定", name: "黒柳 徹子 様", desc: "高齢者等長期療養", icon: "👵", color: "blue", scenario: "長期の療養について丁寧な聞き取り。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "地域包括診療加算", pts: 25, hint: "かかりつけ機能を評価。" }, { type: "finish" }], trivia: "たくさんお話を聞いて、お薬の整理もして……。お話好きな方への「丁寧な対応」を応援する、あたたかい加算なんです。" },
+			
+// --- 第2弾：【画像・検査】トリビア付き30名（GA-001〜GA-030） --- 			
+            { id: "GA-001", genre: "画像・検査", name: "福山 雅治 様", desc: "胸部XPの左右", icon: "🩻", color: "purple", scenario: "胸部レントゲンを2方向（正面・側面）撮影。", initial: [], steps: [{ label: "撮影", type: "add", item: "胸部エックス線撮影(2方向)", pts: 210, hint: "撮影料と診断料の合計。" }, { type: "finish" }], trivia: "レントゲン写真は、実は「影」を見ているもの。骨は白く、空気（肺）は黒く写ります。左右を間違えないよう、事務員は常に目を光らせています。" },
+            { id: "GA-002", genre: "画像・検査", name: "天海 祐希 様", desc: "心電図の算定", icon: "📈", color: "purple", scenario: "動悸のため心電図検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "心電図検査", pts: 130, hint: "130点を算定。" }, { type: "finish" }], trivia: "心臓が動くときの微弱な電気をキャッチする検査。もし検査中に動いてしまうと波形が乱れ、算定し直しになることもあります。" },
+            { id: "GA-003", genre: "画像・検査", name: "タモリ 様", desc: "胃カメラの判断", icon: "📸", color: "purple", scenario: "胃の内視鏡検査を実施（鎮静剤使用）。", initial: [{n: "胃内視鏡検査", p: 1140}], steps: [{ label: "薬剤", type: "add", item: "鎮静剤薬剤料", pts: 15, hint: "使った薬剤分を合算。" }, { type: "finish" }], trivia: "胃カメラの点数は「1140点（11,400円相当）」。医療事務では、カメラが「喉」を通ったか「鼻」を通ったかで、使うコードが変わるんです。" },
+            { id: "GA-004", genre: "画像・検査", name: "笑福亭鶴瓶 様", desc: "血液検査のまるめ", icon: "🧪", color: "purple", scenario: "一度に15項目の血液検査を実施。", initial: [], steps: [{ label: "包括算定", type: "add", item: "検体検査実施料(10項目以上)", pts: 112, hint: "項目が多いと包括されます。" }, { type: "finish" }], trivia: "血液検査は、やればやるほど高くなるわけではなく、一定数を超えると「一律の点数（まるめ）」になります。国の医療費節約ルールです。" },
+            { id: "GA-005", genre: "画像・検査", name: "黒柳 徹子 様", desc: "腹部エコー検査", icon: "🦇", color: "purple", scenario: "お腹の調子が悪いので超音波検査。", initial: [], steps: [{ label: "エコー", type: "add", item: "腹部超音波検査", pts: 530, hint: "530点を算定。" }, { type: "finish" }], trivia: "超音波（エコー）は、コウモリと同じ仕組み！体に害がないので、妊婦さんや何度も検査が必要な方にとても優しい検査なんです。" },
+            { id: "GA-006", genre: "画像・検査", name: "イチロー 様", desc: "MRI撮影(頭部)", icon: "🌀", color: "purple", scenario: "頭痛のためMRI（1.5テスラ以上）を実施。", initial: [], steps: [{ label: "撮影", type: "add", item: "ＭＲＩ撮影(1.5T以上)", pts: 1330, hint: "1330点の高額点数。" }, { type: "finish" }], trivia: "MRIは巨大な磁石。点数が1330点と高いのは、あの巨大な機械の維持費や電気代がとんでもなく高いからなんです。" },
+            { id: "GA-007", genre: "画像・検査", name: "北川 景子 様", desc: "マンモグラフィ", icon: "🎀", color: "purple", scenario: "乳がん検診（保険診療分）。", initial: [], steps: [{ label: "撮影", type: "add", item: "乳房エックス線撮影(両側)", pts: 400, hint: "400点を算定。" }, { type: "finish" }], trivia: "マンモグラフィの点数は、片側か両側かで変わります。事務員は「どっちを撮ったか」のオーダーミスを必ずチェックします。" },
+            { id: "GA-008", genre: "画像・検査", name: "ムロツヨシ 様", desc: "CT撮影(造影剤あり)", icon: "🏥", color: "purple", scenario: "造影剤を使用して腹部CTを撮影。", initial: [{n: "CT撮影料", p: 1020}], steps: [{ label: "加算", type: "add", item: "造影剤使用加算", pts: 500, hint: "造影剤使用で500点追加。" }, { type: "finish" }], trivia: "造影剤を使うと、血管がくっきり！でも副作用のリスクもあるため、算定には「医師の立ち会い」という条件がある厳しい項目です。" },
+            { id: "GA-009", genre: "画像・検査", name: "新垣 結衣 様", desc: "骨密度測定", icon: "🦴", color: "purple", scenario: "骨粗鬆症の疑いで骨密度を測定。", initial: [], steps: [{ label: "検査", type: "add", item: "骨密度の測定(DEXA法)", pts: 360, hint: "精度の高いDEXA法で360点。" }, { type: "finish" }], trivia: "測定方法によって点数がバラバラ。一番正確な「DEXA法」は腰の骨や足の付け根で測ります。ガッキーの骨もこれでチェック！" },
+            { id: "GA-010", genre: "画像・検査", name: "大野 智 様", desc: "尿一般検査", icon: "🥛", color: "purple", scenario: "健康診断で尿検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "尿一般検査", pts: 26, hint: "基本の検査で26点。" }, { type: "finish" }], trivia: "尿検査は「26点（260円相当）」。安く見えますが、腎臓の健康状態を一瞬で見抜く、コスパ最強の検査と言われています。" },
+            { id: "GA-011", genre: "画像・検査", name: "木村 拓哉 様", desc: "負荷心電図", icon: "🏃", color: "purple", scenario: "階段昇降後の心電図を計測（マスター）", initial: [], steps: [{ label: "検査", type: "add", item: "負荷心電図検査(マスター法)", pts: 150, hint: "150点を算定。" }, { type: "finish" }], trivia: "運動して心臓に負荷をかけた状態を測る検査。事務員は、ただの心電図(130点)と間違えて算定しないよう注意が必要です。" },
+            { id: "GA-012", genre: "画像・検査", name: "綾瀬 はるか 様", desc: "インフルエンザ検査", icon: "🌡️", color: "purple", scenario: "発熱のため抗原迅速検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "インフルエンザウイルス抗原", pts: 139, hint: "139点を算定。" }, { type: "finish" }], trivia: "鼻に綿棒を突っ込むあの検査。実は「139点」。インフルエンザが流行る冬場、事務員はこのコードを何百回も打ち込みます。" },
+            { id: "GA-013", genre: "画像・検査", name: "菅田 将暉 様", desc: "HbA1cの測定", icon: "🩸", color: "purple", scenario: "糖尿病の経過観察で採血。", initial: [], steps: [{ label: "検査", type: "add", item: "ヘモグロビンＡ１ｃ", pts: 43, hint: "43点を算定。" }, { type: "finish" }], trivia: "過去1〜2ヶ月の砂糖（血糖）の状態がわかる「ごまかせない検査」。糖尿病管理の最も重要な指標の一つです。" },
+            { id: "GA-014", genre: "画像・検査", name: "石原 さとみ 様", desc: "細胞診検査", icon: "🔬", color: "purple", scenario: "しこりから細胞を採取して検査。", initial: [], steps: [{ label: "検査", type: "add", item: "細胞診(1部位)", pts: 190, hint: "採取料は別で190点。" }, { type: "finish" }], trivia: "がん細胞がないか顕微鏡で覗く検査。細胞を採る「採取料」と、それを調べる「診断料」が別々に発生する、二段構えの算定です。" },
+            { id: "GA-015", genre: "画像・検査", name: "大谷 翔平 様", desc: "アレルギー検査(特異的IgE)", icon: "🤧", color: "purple", scenario: "花粉症の原因を調べるため採血。", initial: [], steps: [{ label: "検査", type: "add", item: "特異的ＩｇＥ(1項目)", pts: 110, hint: "項目数分算定（上限あり）。" }, { type: "finish" }], trivia: "スギ、ヒノキ、猫……。項目を増やせば増やすほど高くなりますが、上限は「13項目」まで。それ以上は病院のサービスになります！" },
+            { id: "GA-016", genre: "画像・検査", name: "広瀬 すず 様", desc: "ホルター心電図", icon: "💓", color: "purple", scenario: "24時間の心電図を記録。", initial: [], steps: [{ label: "検査", type: "add", item: "ホルター心電図(24時間)", pts: 1500, hint: "解析料込で1500点。" }, { type: "finish" }], trivia: "24時間心臓を監視し続ける検査。点数は「1500点（15,000円相当）」と高め。機械を壊したり紛失したりすると大変なことに……！" },
+            { id: "GA-017", genre: "画像・検査", name: "阿部 寛 様", desc: "ピロリ菌除菌判定", icon: "🦠", color: "purple", scenario: "除菌後の呼気テストを実施。", initial: [], steps: [{ label: "検査", type: "add", item: "尿素呼気試験", pts: 110, hint: "診断料含め合計点数。" }, { type: "finish" }], trivia: "袋に「ふぅー」と息を吹き込むだけの検査。でも胃がんの原因になるピロリ菌がいなくなったか判定する、超重要な検査です。" },
+            { id: "GA-018", genre: "画像・検査", name: "長澤 まさみ 様", desc: "眼底カメラ", icon: "👁️", color: "purple", scenario: "眼底出血の疑いで撮影。", initial: [], steps: [{ label: "撮影", type: "add", item: "眼底写真", pts: 112, hint: "112点を算定。" }, { type: "finish" }], trivia: "目の奥をパシャリ。瞳孔を開く薬を使う場合は、その薬代や「散瞳」の加算がつくこともある、眼科事務のチェックポイントです。" },
+            { id: "GA-019", genre: "画像・検査", name: "斎藤 工 様", desc: "梅毒血清反応", icon: "🩸", color: "purple", scenario: "感染症チェックで採血。", initial: [], steps: [{ label: "検査", type: "add", item: "梅毒血清反応(STS)", pts: 13, hint: "13点（激安）。" }, { type: "finish" }], trivia: "なんと「13点（130円相当）」。血液検査の中でもトップクラスの安さですが、公衆衛生を守るための大切な検査です。" },
+            { id: "GA-020", genre: "画像・検査", name: "本田 翼 様", desc: "聴力検査", icon: "👂", color: "purple", scenario: "耳鳴りのため標準純音聴力検査。", initial: [], steps: [{ label: "検査", type: "add", item: "標準純音聴力検査", pts: 350, hint: "350点を算定。" }, { type: "finish" }], trivia: "「ピー」と聞こえたらボタンを押すアレです。左右両方の聴力を測るので、この点数。静かな部屋（防音室）で行う必要があります。" },
+            { id: "GA-021", genre: "画像・検査", name: "佐藤 健 様", desc: "腫瘍マーカー(PSA)", icon: "🧪", color: "purple", scenario: "前立腺がんの疑いで検査。", initial: [], steps: [{ label: "検査", type: "add", item: "腫瘍マーカー(1項目)", pts: 114, hint: "114点を算定。" }, { type: "finish" }], trivia: "血液で「がんの影」を探す腫瘍マーカー。がん以外でも数値が上がることがあるので、他の検査との組み合わせが大切です。" },
+            { id: "GA-022", genre: "画像・検査", name: "柴咲 コウ 様", desc: "喀痰検査", icon: "🗣️", color: "purple", scenario: "咳が止まらないため痰を提出。", initial: [], steps: [{ label: "検査", type: "add", item: "微生物学的検査(痰)", pts: 150, hint: "培養など含め算定。" }, { type: "finish" }], trivia: "痰の中に悪い菌がいないか、数日間「培養」して調べます。結果が出るまでに時間がかかるので、算定日と結果報告日がずれることも。" },
+            { id: "GA-023", genre: "画像・検査", name: "山崎 賢人 様", desc: "パルスオキシメーター", icon: "☝️", color: "purple", scenario: "指先で酸素飽和度を測定。", initial: [], steps: [{ label: "検査", type: "check", hint: "処置等の付随検査は診察料に含みます。" }, { type: "finish" }], trivia: "コロナ禍で有名になった洗濯バサミのような機械。実は「診察料」に含まれていて、これ単体で点数を取ることはできないんです。" },
+            { id: "GA-024", genre: "画像・検査", name: "米津 玄師 様", desc: "脳波検査", icon: "🧠", color: "purple", scenario: "意識消失の疑いで脳波計測。", initial: [], steps: [{ label: "検査", type: "add", item: "脳波検査(通常)", pts: 500, hint: "500点を算定。" }, { type: "finish" }], trivia: "頭にたくさんの電極をつけます。髪の毛が乱れる大変な検査ですが、脳が活動している「電気信号」を捉える唯一の手段です。" },
+            { id: "GA-025", genre: "画像・検査", name: "石田 ゆり子 様", desc: "骨シンチグラフィ", icon: "☢️", color: "purple", scenario: "放射性医薬品を注射して全身撮影。", initial: [], steps: [{ label: "撮影", type: "add", item: "骨シンチグラフィ", pts: 1600, hint: "診断料含め1600点。" }, { type: "finish" }], trivia: "わずかな放射線を出す薬を注射します。「自分から放射線が出る」状態を撮るので、非常に高額な算定（16,000円相当）になります。" },
+            { id: "GA-026", genre: "画像・検査", name: "松本人志 様", desc: "大腸カメラ(ポリープ切除なし)", icon: "📸", color: "purple", scenario: "大腸の内視鏡検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "大腸内視鏡検査", pts: 1550, hint: "1550点を算定。" }, { type: "finish" }], trivia: "胃カメラ(1140点)よりも高額な1550点。大腸は曲がりくねっていて、医師の技術と時間がより多く必要だからなんです。" },
+            { id: "GA-027", genre: "画像・検査", name: "浜辺 美波 様", desc: "血液型検査(ABO・Rh)", icon: "🅰️", color: "purple", scenario: "手術前に自分の血液型を確認。", initial: [], steps: [{ label: "検査", type: "add", item: "血液型不適合等(ABO+Rh)", pts: 48, hint: "合計48点。" }, { type: "finish" }], trivia: "血液型検査は「48点（480円相当）」。一生に一度調べれば十分な検査なので、保険で受けられるケースは限られています。" },
+            { id: "GA-028", genre: "画像・検査", name: "横浜 流星 様", desc: "肺機能検査(スパイロ)", icon: "🌬️", color: "purple", scenario: "喘息の疑いで肺活量を測定。", initial: [], steps: [{ label: "検査", type: "add", item: "肺機能検査", pts: 200, hint: "200点を算定。" }, { type: "finish" }], trivia: "「吸って！吐いて！！」と限界まで頑張る検査。全力でやらないと正確な数値が出ないので、実は体力勝負の検査でもあります。" },
+            { id: "GA-029", genre: "画像・検査", name: "今田 美桜 様", desc: "甲状腺機能検査(TSH)", icon: "🦋", color: "purple", scenario: "喉の腫れ、疲れやすさで採血。", initial: [], steps: [{ label: "検査", type: "add", item: "甲状腺刺激ホルモン", pts: 110, hint: "110点を算定。" }, { type: "finish" }], trivia: "ホルモンのバランスを見る検査。美容に関心の高い方でも、疲れや肌荒れの原因が「ホルモン」にあることがわかる大切な検査です。" },
+            { id: "GA-030", genre: "画像・検査", name: "明石家さんま 様", desc: "喉頭ファイバー", icon: "🎙️", color: "purple", scenario: "声枯れのため喉をカメラで確認。", initial: [], steps: [{ label: "検査", type: "add", item: "喉頭ファイバースコピー", pts: 600, hint: "600点を算定。" }, { type: "finish" }], trivia: "喋りすぎ……？ではなく、声帯の状態を細いスコープで見る検査。さんまさんのようなお仕事の方には命に関わる算定ですね。" },
 
-            // --- 画像・検査 (GAZ) 30/30 ---
-            { id: "GAZ-001", genre: "画像・検査", name: "田中 健一 様", desc: "胸部レントゲン", icon: "🦴", color: "purple", scenario: "胸部レントゲン2方向を撮影。", initial: [{n: "初診料", p: 288}], steps: [{ label: "撮影", type: "add", item: "胸部単純撮影", pts: 170, hint: "撮影料170点。" }, { label: "診断", type: "add", item: "写真診断", pts: 85, hint: "診断料85点。" }, { type: "finish" }] },
-            { id: "GAZ-002", genre: "画像・検査", name: "吉田 栄作 様", desc: "末梢血液一般", icon: "💉", color: "purple", scenario: "貧血を疑い採血を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "末梢血液一般", pts: 21, hint: "血液検査の基本項目です。" }, { label: "判断", type: "add", item: "検体検査判断料", pts: 125, hint: "月1回算定可能です。" }, { type: "finish" }] },
-            { id: "GAZ-003", genre: "画像・検査", name: "北川 景子 様", desc: "心電図(12誘導)", icon: "💓", color: "purple", scenario: "動悸のため心電図を撮影。", initial: [{n: "初診料", p: 288}], steps: [{ label: "検査", type: "add", item: "心電図(12誘導)", pts: 130, hint: "判読料込みで130点。" }, { type: "finish" }] },
-            { id: "GAZ-004", genre: "画像・検査", name: "堺 雅人 様", desc: "腹部エコー", icon: "🌊", color: "purple", scenario: "腹痛に対しエコー検査を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "腹部超音波検査", pts: 530, hint: "530点を算定します。" }, { type: "finish" }] },
-            { id: "GAZ-005", genre: "画像・検査", name: "松嶋 菜々子 様", desc: "HbA1cの測定", icon: "🩸", color: "purple", scenario: "糖尿病の経過観察で採血。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "HbA1c", pts: 49, hint: "糖尿病管理の重要指標です。" }, { type: "finish" }] },
-            { id: "GAZ-006", genre: "画像・検査", name: "阿部 サダヲ 様", desc: "胃カメラ(内視鏡)", icon: "📸", color: "purple", scenario: "胃の不快感で内視鏡検査。", initial: [{n: "初診料", p: 288}], steps: [{ label: "検査", type: "add", item: "胃内視鏡検査", pts: 1140, hint: "1,140点と高額な検査です。" }, { type: "finish" }] },
-            { id: "GAZ-007", genre: "画像・検査", name: "吉高 由里子 様", desc: "尿一般検査", icon: "🧪", color: "purple", scenario: "膀胱炎の疑いで尿検査。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "尿一般検査", pts: 26, hint: "試験紙法などは26点。" }, { type: "finish" }] },
-            { id: "GAZ-008", genre: "画像・検査", name: "香川 照之 様", desc: "頭部CT撮影", icon: "🧠", color: "purple", scenario: "頭痛によりCT撮影(64列以上)。", initial: [{n: "初診料", p: 288}], steps: [{ label: "撮影", type: "add", item: "頭部CT撮影", pts: 900, hint: "機器の性能により点数が変化。" }, { type: "finish" }] },
-            { id: "GAZ-009", genre: "画像・検査", name: "柴咲 コウ 様", desc: "インフルエンザ迅速", icon: "🤧", color: "purple", scenario: "発熱のため迅速検査を実施。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "検査", type: "add", item: "インフルエンザ抗原", pts: 139, hint: "迅速検査キットの使用を評価。" }, { type: "finish" }] },
-            { id: "GAZ-010", genre: "画像・検査", name: "福山 雅治 様", desc: "検体検査実施料合計", icon: "🧪", color: "purple", scenario: "複数の血液検査を同時に実施。", initial: [{n: "採血料", p: 35}], steps: [{ label: "確認", type: "check", hint: "多項目同時実施の包括ルールに注意。" }, { type: "finish" }] },
-            { id: "GAZ-011", genre: "画像・検査", name: "竹内 結子 様", desc: "超音波検査（断層）", icon: "🌊", color: "purple", scenario: "甲状腺の腫れを確認するため、頸部エコーを実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "超音波検査（断層）", pts: 350, hint: "胸腹部以外は350点を算定します。" }, { type: "finish" }] },
-            { id: "GAZ-012", genre: "画像・検査", name: "三浦 春馬 様", desc: "外来迅速検体加算", icon: "⚡", color: "purple", scenario: "当日に結果を説明するため、血液検査を迅速に行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "外来迅速検体検査加算", pts: 10, hint: "当日説明で10点加算。" }, { type: "finish" }] },
-            { id: "GAZ-013", genre: "画像・検査", name: "石田 ゆり子 様", desc: "ホルター心電図", icon: "📟", color: "purple", scenario: "24時間の心電図記録装置を装着しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "ホルター心電図", pts: 1500, hint: "非常に高額な1,500点。" }, { type: "finish" }] },
-            { id: "GAZ-014", genre: "画像・検査", name: "西島 秀俊 様", desc: "造影剤使用CT", icon: "💉", color: "purple", scenario: "造影剤を使用してCTを撮影。", initial: [{n: "CT撮影料", p: 900}], steps: [{ label: "加算", type: "add", item: "造影剤使用加算", pts: 500, hint: "造影剤使用は500点加算。" }, { type: "finish" }] },
-            { id: "GAZ-015", genre: "画像・検査", name: "綾瀬 はるか 様", desc: "骨塩定量検査", icon: "🦴", color: "purple", scenario: "骨粗鬆症の疑いで骨密度を測定（MD法）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "骨塩定量検査", pts: 140, hint: "MD法は140点。" }, { type: "finish" }] },
-            { id: "GAZ-016", genre: "画像・検査", name: "反町 隆史 様", desc: "生化学(I)包括", icon: "🧪", color: "purple", scenario: "GOT, GPTなど計8項目の血液検査を実施。", initial: [{n: "採血料", p: 35}], steps: [{ label: "包括", type: "add", item: "生化学(I) 8-9項目", pts: 99, hint: "8-9項目は99点に包括。" }, { type: "finish" }] },
-            { id: "GAZ-017", genre: "画像・検査", name: "松嶋 菜々子 様", desc: "聴力検査", icon: "👂", color: "purple", scenario: "耳鳴りのため標準純音聴力検査を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "標準純音聴力検査", pts: 350, hint: "左右両側で350点。" }, { type: "finish" }] },
-            { id: "GAZ-018", genre: "画像・検査", name: "木村 佳乃 様", desc: "MRI撮影(1.5T以上)", icon: "🧲", color: "purple", scenario: "頭部MRI撮影（テスラ1.5以上）を実施。", initial: [{n: "初診料", p: 288}], steps: [{ label: "撮影", type: "add", item: "MRI撮影料", pts: 1330, hint: "高性能機は1,330点。" }, { label: "診断", type: "add", item: "画像診断料", pts: 450, hint: "診断料450点。" }, { type: "finish" }] },
-            { id: "GAZ-019", genre: "画像・検査", name: "江口 洋介 様", desc: "肺機能検査", icon: "🫁", color: "purple", scenario: "喘息の疑いでスパイロメトリーを実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "肺機能検査", pts: 200, hint: "肺活量測定は200点。" }, { type: "finish" }] },
-            { id: "GAZ-020", genre: "画像・検査", name: "広末 涼子 様", desc: "検体検査判断料", icon: "🗓️", color: "purple", scenario: "先月に続き今月も血液検査。判断料は？", initial: [{n: "検査項目", p: 50}], steps: [{ label: "判断", type: "choice", choices: [{l:"今月も算定(125点)", p:125, ok:true}, {l:"算定不可", p:0, ok:false}], hint: "月が変われば算定可能です。" }, { type: "finish" }] },
-            { id: "GAZ-021", genre: "画像・検査", name: "オダギリジョー 様", desc: "眼底カメラ撮影", icon: "👁️", color: "purple", scenario: "糖尿病網膜症の確認で眼底を撮影。", initial: [{n: "再診料", p: 73}], steps: [{ label: "撮影", type: "add", item: "眼底カメラ撮影", pts: 112, hint: "片眼・両眼関わらず112点。" }, { type: "finish" }] },
-            { id: "GAZ-022", genre: "画像・検査", name: "深田 恭子 様", desc: "病理組織標本作成", icon: "🔬", color: "purple", scenario: "内視鏡で採取した組織の検査を外部依頼。", initial: [{n: "内視鏡検査料", p: 1140}], steps: [{ label: "病理", type: "add", item: "病理標本作成", pts: 860, hint: "1臓器につき860点。" }, { type: "finish" }] },
-            { id: "GAZ-023", genre: "画像・検査", name: "斎藤 工 様", desc: "アレルギー検査", icon: "🤧", color: "purple", scenario: "花粉症の原因特定のため13項目検査。", initial: [{n: "採血料", p: 35}], steps: [{ label: "検査", type: "add", item: "特異的IgE(13項目)", pts: 1430, hint: "13項目以上は一律1,430点。" }, { type: "finish" }] },
-            { id: "GAZ-024", genre: "画像・検査", name: "長澤 まさみ 様", desc: "単純心臓エコー", icon: "💓", color: "purple", scenario: "心機能チェックのためエコーを実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "経胸壁心エコー", pts: 880, hint: "心エコーは880点。" }, { type: "finish" }] },
-            { id: "GAZ-025", genre: "画像・検査", name: "玉木 宏 様", desc: "便潜血（2日法）", icon: "💩", color: "purple", scenario: "精密検査で2日分の便を持参。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "便潜血(免疫法)", pts: 80, hint: "2回分でも80点です。" }, { type: "finish" }] },
-            { id: "GAZ-026", genre: "画像・検査", name: "戸田 恵梨香 様", desc: "画像電子化加算", icon: "💾", color: "purple", scenario: "デジタルモニターで画像診断。", initial: [{n: "写真診断料", p: 85}], steps: [{ label: "加算", type: "add", item: "電子画像管理加算", pts: 57, hint: "デジタル管理評価は57点。" }, { type: "finish" }] },
-            { id: "GAZ-027", genre: "画像・検査", name: "ムロツヨシ 様", desc: "血液型検査", icon: "🅰️", color: "purple", scenario: "手術前にABO式とRh式を確認。", initial: [{n: "採血料", p: 35}], steps: [{ label: "検査", type: "add", item: "血液型(ABO+Rh)", pts: 51, hint: "合わせて51点。" }, { type: "finish" }] },
-            { id: "GAZ-028", genre: "画像・検査", name: "北川 景子 様", desc: "乳房エコー", icon: "🎀", color: "purple", scenario: "乳房のしこり確認でエコー実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "乳房超音波検査", pts: 350, hint: "350点を算定。" }, { type: "finish" }] },
-            { id: "GAZ-029", genre: "画像・検査", name: "菅田 将暉 様", desc: "CRP（迅速）", icon: "🔥", color: "purple", scenario: "その場で炎症反応CRPを測定。", initial: [{n: "再診料", p: 73}], steps: [{ label: "検査", type: "add", item: "CRP", pts: 16, hint: "迅速検査は16点。" }, { type: "finish" }] },
-            { id: "GAZ-030", genre: "画像・検査", name: "画像マスター", icon: "🏆", color: "purple", scenario: "画像・検査30件完遂おめでとうございます！", initial: [{n: "画像診断の誇り", p: 100}], steps: [{ label: "完了", type: "check", hint: "次は投薬・管理へ進みましょう。" }, { type: "finish" }] },
+// --- 第3弾：【投薬・管理】トリビア付き30名（TOK-001〜TOK-030） --- 	
+            { id: "TOK-001", genre: "投薬・管理", name: "木村 拓哉 様", desc: "お薬手帳の持参", icon: "📕", color: "emerald", scenario: "3ヶ月以内に再診。手帳を持参した場合の算定は？", initial: [], steps: [{ label: "指導料", type: "choice", choices: [{l: "手帳あり(45点)", p: 45, ok: true}, {l: "手帳なし(59点)", p: 59, ok: false}], hint: "持ってきた方が点数は低くなります。" }, { type: "finish" }], trivia: "手帳を持ってくると安くなるのは、薬剤師さんの確認の手間が省けるから。逆に持ってないと、確認に時間がかかるので「高く」なるんです。" },
+            { id: "TOK-002", genre: "投薬・管理", name: "綾瀬 はるか 様", desc: "特定疾患処方管理加算1", icon: "💊", color: "emerald", scenario: "生活習慣病で、28日未満の処方を行った。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "特定疾患処方管理加算1", pts: 18, hint: "18点を算定。" }, { type: "finish" }], trivia: "生活習慣病などで丁寧な指導を伴う処方にはボーナスがつきます。でも、28日以上の長期処方になると別の高い点数に変わるんです。" },
+            { id: "TOK-003", genre: "投薬・管理", name: "堺 雅人 様", desc: "特定疾患処方管理加算2", icon: "処", color: "emerald", scenario: "生活習慣病で、30日間の長期処方を行った。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "特定疾患処方管理加算2", pts: 66, hint: "28日以上は66点。" }, { type: "finish" }], trivia: "28日を境に、18点から66点へと一気に跳ね上がります！「4週間分」を出すかどうかが、医療事務のチェックの分かれ目です。" },
+            { id: "TOK-004", genre: "投薬・管理", name: "北川 景子 様", desc: "一般名処方加算1", icon: "📝", color: "emerald", scenario: "後発品（ジェネリック）を希望。処方箋の書き方は？", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "一般名処方加算1", pts: 7, hint: "全品目一般名なら7点。" }, { type: "finish" }], trivia: "商品名ではなく、成分の名前（一般名）で書くと加点されます。薬局で安いジェネリックを選びやすくするための国の工夫です。" },
+            { id: "TOK-005", genre: "投薬・管理", name: "阿部 寛 様", desc: "一般名処方加算2", icon: "💊", color: "emerald", scenario: "一部の薬だけ一般名で処方した。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "一般名処方加算2", pts: 5, hint: "一部なら5点。" }, { type: "finish" }], trivia: "全部一般名なら7点、一部なら5点。たった20円（2点）の差ですが、1ヶ月に何百人も診る病院にとっては大きな差になります。" },
+            { id: "TOK-006", genre: "投薬・管理", name: "長澤 まさみ 様", desc: "外来後発医薬品使用体制", icon: "🏥", color: "emerald", scenario: "病院全体でジェネリックを推進している体制。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "体制加算", type: "add", item: "外来後発医薬品使用体制加算1", pts: 5, hint: "体制を評価して5点。" }, { type: "finish" }], trivia: "「病院全体でジェネリックを8割以上使っています！」という看板を出すと、処方箋を出すたびにもらえるご褒美点数です。" },
+            { id: "TOK-007", genre: "投薬・管理", name: "菅田 将暉 様", desc: "乳幼児指導管理料", icon: "👶", color: "emerald", scenario: "3歳児への投薬に関する詳しい指導。", initial: [{n: "処方料", p: 42}], steps: [{ label: "管理料", type: "add", item: "乳幼児心理教育等管理料", pts: 280, hint: "心身のケアを含め280点。" }, { type: "finish" }], trivia: "小さなお子様への投薬指導は、親御さんへの説明も含めて大変な作業。その「手間」をしっかりと点数化したものです。" },
+            { id: "TOK-008", genre: "投薬・管理", name: "石原 さとみ 様", desc: "ハイリスク薬指導加算", icon: "⚠️", color: "emerald", scenario: "副作用に注意が必要な薬（抗てんかん剤等）を処方。", initial: [{n: "処方料", p: 42}], steps: [{ label: "加算", type: "add", item: "特定薬剤管理指導加算", pts: 4, hint: "特別な指導で4点。" }, { type: "finish" }], trivia: "効果が強い分、副作用も怖い「ハイリスク薬」。血液検査の結果を確認しながら説明すると加算されます。命を守るための4点です。" },
+            { id: "TOK-009", genre: "投薬・管理", name: "佐藤 健 様", desc: "生活習慣病管理料II", icon: "🍎", color: "emerald", scenario: "高血圧の治療計画。検査は外注（別算定）する場合。", initial: [], steps: [{ label: "管理料", type: "add", item: "生活習慣病管理料(II)", pts: 333, hint: "2024年新設の333点。" }, { type: "finish" }], trivia: "2024年から糖尿病・高血圧・脂質異常症はこの点数に！食事や運動の目標を立てて、患者さんと「約束」するための管理料です。" },
+            { id: "TOK-010", genre: "投薬・管理", name: "広瀬 すず 様", desc: "長期処方管理加算", icon: "🗓️", color: "emerald", scenario: "安定しているため、60日の長期処方を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理加算", type: "add", item: "外来在宅共同初診料(等)", pts: 0, hint: "2024年より長期処方の説明が義務化。" }, { type: "finish" }], trivia: "28日以上の長期処方ができるのは、病状が安定している証拠。でも「リフィル処方箋」という新しい選択肢の説明も必要になりました。" },
+            { id: "TOK-011", genre: "投薬・管理", name: "松本人志 様", desc: "多剤投与の減算ルール", icon: "💊", color: "emerald", scenario: "一度に10種類以上の内服薬を処方。", initial: [{n: "処方箋料(通常)", p: 68}], steps: [{ label: "減算適用", type: "choice", choices: [{l: "通常通り算定", p: 68, ok: false}, {l: "多剤投与で減算", p: 28, ok: true}], hint: "7種類以上は点数がガクッと下がります。" }, { type: "finish" }], trivia: "お薬を出しすぎると、逆に病院の取り分が減る！？「ポリファーマシー（多剤併用）」を防ぐための厳しいペナルティルールです。" },
+            { id: "TOK-012", genre: "投薬・管理", name: "本田 翼 様", desc: "向精神薬多剤投与", icon: "💤", color: "emerald", scenario: "睡眠薬を3種類以上同時に処方。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "制限", type: "check", hint: "精神科以外の多剤処方は厳格に制限されます。" }, { type: "finish" }], trivia: "睡眠薬や抗不安薬は、依存を防ぐために「2種類まで」が基本。3種類出すと、病院への支払いが大幅にカットされる仕組みです。" },
+            { id: "TOK-013", genre: "投薬・管理", name: "山崎 賢人 様", desc: "薬剤情報提供料", icon: "📑", color: "emerald", scenario: "処方した薬の効能を紙で渡した。", initial: [{n: "処方料", p: 42}], steps: [{ label: "情報提供", type: "add", item: "薬剤情報提供料", pts: 10, hint: "10点を算定。" }, { type: "finish" }], trivia: "薬の写真付きの説明書。あれを渡すだけで100円（10点）分になります。でも、1ヶ月に1回しか算定できない節約ルールがあります。" },
+            { id: "TOK-014", genre: "投薬・管理", name: "今田 美桜 様", desc: "外来服薬支援料", icon: "🛍️", color: "emerald", scenario: "手持ちの薬がバラバラなので、整理を支援。", initial: [], steps: [{ label: "支援料", type: "add", item: "外来服薬支援料1", pts: 185, hint: "薬の整理で185点。" }, { type: "finish" }], trivia: "「どの薬をいつ飲むか分からなくなった！」という患者さんのために、薬を仕分けたり整理したりするプロのサポート代です。" },
+            { id: "TOK-015", genre: "投薬・管理", name: "横浜 流星 様", desc: "リフィル処方箋の発行", icon: "🔄", color: "emerald", scenario: "同じ処方箋を3回繰り返し使えるようにした。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "リフィル", type: "check", hint: "リフィル可にチェック。" }, { type: "finish" }], trivia: "病院に行かずに薬局で直接お薬がもらえる「リフィル」。2022年から始まった、忙しい現代人のための画期的なシステムです。" },
+            { id: "TOK-016", genre: "投薬・管理", name: "斎藤 工 様", desc: "麻薬処方管理加算", icon: "💉", color: "emerald", scenario: "がんの痛みのために医療用麻薬を処方。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "麻薬処方管理加算", pts: 70, hint: "70点の高い加算。" }, { type: "finish" }], trivia: "麻薬の管理は超厳重！鍵付きの金庫での保管や、1本単位での帳簿記録が必要です。その管理コストとして70点（700円）認められています。" },
+            { id: "TOK-017", genre: "投薬・管理", name: "浜辺 美波 様", desc: "湿布薬の枚数制限", icon: "🩹", color: "emerald", scenario: "腰痛のため、湿布を100枚希望された。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "制限判断", type: "choice", choices: [{l: "100枚処方する", p: 0, ok: false}, {l: "70枚制限を守る", p: 0, ok: true}], hint: "湿布は1回70枚までがルール。" }, { type: "finish" }], trivia: "昔は出し放題だった湿布ですが、今は「1回70枚まで」と法律で決まっています。それ以上出すには、医師の特別な理由が必要です。" },
+            { id: "TOK-018", genre: "投薬・管理", name: "ムロツヨシ 様", desc: "うがい薬のみの処方", icon: "🥤", color: "emerald", scenario: "風邪予防にうがい薬だけがほしい。", initial: [], steps: [{ label: "算定不可", type: "check", hint: "予防目的の処方は保険適用外です。" }, { type: "finish" }], trivia: "「治療」ではなく「予防」のためのうがい薬は、実は保険が利きません。医療費を正しく使うための、意外と知られていないルールです。" },
+            { id: "TOK-019", genre: "投薬・管理", name: "小栗 旬 様", desc: "地域包括診療料(投薬込)", icon: "🏥", color: "emerald", scenario: "かかりつけ医として、お薬代も込みの定額管理。", initial: [], steps: [{ label: "包括", type: "add", item: "地域包括診療料1", pts: 560, hint: "560点を算定。" }, { type: "finish" }], trivia: "診察もお薬の管理もセットの定額制。お薬の種類が増えても患者さんの負担が急増しない、安心の「サブスク」的算定です。" },
+            { id: "TOK-020", genre: "投薬・管理", name: "指原 莉乃 様", desc: "バイオ後続品使用体制", icon: "💉", color: "emerald", scenario: "高価なバイオ薬品のジェネリックを使用。", initial: [{n: "処方料", p: 42}], steps: [{ label: "体制加算", type: "add", item: "バイオ後続品使用体制加算", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "バイオ薬品は1回数万円することも！その安価版（バイオシミラー）を使うと、患者さんの負担が劇的に減るため、国も100点のご褒美をくれます。" },
+            { id: "TOK-021", genre: "投薬・管理", name: "大泉 洋 様", desc: "糖尿病合併症管理", icon: "👁️", color: "emerald", scenario: "糖尿病からくる目の合併症を予防指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "糖尿病合併症管理料", pts: 170, hint: "170点を算定。" }, { type: "finish" }], trivia: "糖尿病は「全身の血管」の病気。目や足の先まで丁寧にチェックして、失明や壊疽を防ぐための、まさに「守り」の管理料です。" },
+            { id: "TOK-022", genre: "投薬・管理", name: "柴咲 コウ 様", desc: "二次性骨粗鬆症管理", icon: "🦴", color: "emerald", scenario: "ステロイド治療中の骨折予防管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "二次性骨粗鬆症管理料", pts: 90, hint: "90点を算定。" }, { type: "finish" }], trivia: "他の薬の副作用で骨が弱くなるのを防ぐための点数。2024年の改定で、よりきめ細かくサポートできるように新設されました。" },
+            { id: "TOK-023", genre: "投薬・管理", name: "福山 雅治 様", desc: "特定疾患処方管理(院内)", icon: "💊", color: "emerald", scenario: "院内で生活習慣病の薬を28日以上処方。", initial: [{n: "処方料", p: 42}], steps: [{ label: "加算", type: "add", item: "特定疾患処方管理加算(院内長期)", pts: 65, hint: "院内でも65点。" }, { type: "finish" }], trivia: "院外処方箋なら66点、院内処方なら65点。この「1点（10円）」の差の謎に気づけるようになったら、あなたも立派な医療事務マニアです。" },
+            { id: "TOK-024", genre: "投薬・管理", name: "天海 祐希 様", desc: "腎代替療法指導管理", icon: "💧", color: "emerald", scenario: "腎不全の治療選択肢（透析等）を説明。", initial: [], steps: [{ label: "管理料", type: "add", item: "腎代替療法指導管理料", pts: 500, hint: "500点を算定。" }, { type: "finish" }], trivia: "人工透析になる前に、他にどんな治療法があるか、患者さんが納得して選べるようにサポートする、非常に重みのある500点です。" },
+            { id: "TOK-025", genre: "投薬・管理", name: "米津 玄師 様", desc: "喘息治療管理料", icon: "🌬️", color: "emerald", scenario: "吸入薬の使い方を模型を使って指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "喘息治療管理料1", pts: 280, hint: "280点を算定。" }, { type: "finish" }], trivia: "吸入薬は使い方が難しく、正しく吸えないと効果がありません。医師が「シュッとする練習」に付き合うための、技術料なんです。" },
+            { id: "TOK-026", genre: "投薬・管理", name: "吉高 由里子 様", desc: "慢性腎臓病透析予防", icon: "🚰", color: "emerald", scenario: "透析を回避するため、チームで栄養・生活指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "慢性腎臓病透析予防指導管理料", pts: 350, hint: "350点を算定。" }, { type: "finish" }], trivia: "医師、看護師、栄養士がチームで関わります。「絶対に透析にさせない！」という情熱がこもった、チームプレーの管理料です。" },
+            { id: "TOK-027", genre: "投薬・管理", name: "ディーン・フジオカ 様", desc: "禁煙外来の継続管理", icon: "🚭", color: "emerald", scenario: "禁煙治療の2回目の診察と処方。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "ニコチン依存症管理料(2回目)", pts: 184, hint: "184点を算定。" }, { type: "finish" }], trivia: "禁煙外来は「全5回」のパッケージ。最後まで通い切ると、タバコ代よりも医療費のほうが安くなるように設定されています。" },
+            { id: "TOK-028", genre: "投薬・管理", name: "広瀬 アリス 様", desc: "肝炎インターフェロン", icon: "💉", color: "emerald", scenario: "肝炎の特殊な注射薬の管理指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "肝炎インターフェロン治療計画", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "肝炎を根本から治すための、緻密な治療計画を評価する点数。副作用のチェックなど、事務員もスケジュール管理に協力します。" },
+            { id: "TOK-029", genre: "投薬・管理", name: "タモリ 様", desc: "外来腫瘍化学療法", icon: "🏥", color: "emerald", scenario: "外来で抗がん剤点滴を実施し、副作用管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "外来腫瘍化学療法診療料", pts: 450, hint: "450点を算定。" }, { type: "finish" }], trivia: "「入院ではなく自宅で過ごしながら治療したい」という願いを支える点数。24時間相談できる体制が病院に求められる、高度な管理料です。" },
+            { id: "TOK-030", genre: "投薬・管理", name: "笑福亭鶴瓶 様", desc: "認知症地域包括診療", icon: "🧠", color: "emerald", scenario: "認知症の方のかかりつけ医として総合管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "認知症地域包括診療料1", pts: 700, hint: "700点を算定。" }, { type: "finish" }], trivia: "認知症の方は多くの薬を飲んでいることが多いため、それを一元管理する責任を負います。安心を守るための、厚みのある700点です。" },           
 
-// --- 投薬・管理 (TOK) 30/30 ---
-            { id: "TOK-001", genre: "投薬・管理", name: "加藤 浩二 様", desc: "特定疾患処方管理", icon: "📋", color: "emerald", scenario: "28日分以上の長期処方。加算の選択は？", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "加算", type: "add", item: "処方管理加算(長期)", pts: 66, hint: "28日超の長期処方は66点です。" }, { type: "finish" }] },
-            { id: "TOK-002", genre: "投薬・管理", name: "山田 花子 様", desc: "お薬手帳と薬剤情報", icon: "📕", color: "emerald", scenario: "お薬手帳を持参しなかった患者さんへの薬剤情報提供。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "判断", type: "choice", choices: [{l:"手帳なし(59点)", p:59, ok:true}, {l:"手帳あり(45点)", p:45, ok:false}], hint: "手帳がない場合の方が点数が高い設定です。" }, { type: "finish" }] },
-            { id: "TOK-003", genre: "投薬・管理", name: "高橋 ひとみ 様", desc: "外来管理加算の不可", icon: "🚫", color: "emerald", scenario: "処置（創傷処置）を行った日の診察です。", initial: [{n: "再診料", p: 73}, {n: "創傷処置", p: 52}], steps: [{ label: "確認", type: "choice", choices: [{l:"外来管理加算なし", p:0, ok:true}, {l:"加算あり", p:52, ok:false}], hint: "処置・手術・リハビリ・精神科療法がある日は算定不可。" }, { type: "finish" }] },
-            { id: "TOK-004", genre: "投薬・管理", name: "佐藤 健 様", desc: "処方箋料（一般名）", icon: "📝", color: "emerald", scenario: "後発医薬品のある薬剤を一般名で処方した。加算は？", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "一般名処方加算1", pts: 7, hint: "2品目以上を一般名処方で7点。" }, { type: "finish" }] },
-            { id: "TOK-005", genre: "投薬・管理", name: "鈴木 一朗 様", desc: "特定疾患処方管理(1)", icon: "📋", color: "emerald", scenario: "特定疾患に対し、14日分の処方を行いました。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "加算", type: "add", item: "処方管理加算1", pts: 18, hint: "28日未満の処方は18点。" }, { type: "finish" }] },
-            { id: "TOK-006", genre: "投薬・管理", name: "小林 旭 様", desc: "院内投薬（調剤料）", icon: "💊", color: "emerald", scenario: "院内でお薬を処方。内服薬の調剤料は？", initial: [{n: "再診料", p: 73}], steps: [{ label: "算定", type: "add", item: "内服薬調剤料", pts: 11, hint: "院内調剤の内服薬は11点。" }, { type: "finish" }] },
-            { id: "TOK-007", genre: "投薬・管理", name: "松本 伊代 様", desc: "薬剤情報提供料（院内）", icon: "ℹ️", color: "emerald", scenario: "院内で薬を渡す際、文書で情報提供した。", initial: [{n: "再診料一式", p: 84}], steps: [{ label: "算定", type: "add", item: "薬剤情報提供料", pts: 10, hint: "院内処方時は月1回10点。" }, { type: "finish" }] },
-            { id: "TOK-008", genre: "投薬・管理", name: "中居 正広 様", desc: "悪性腫瘍特異物質管理", icon: "🎗️", color: "emerald", scenario: "腫瘍マーカー検査の結果に基づき指導。判断料との関係は？", initial: [{n: "血液検査", p: 150}], steps: [{ label: "判断", type: "choice", choices: [{l:"管理料(200点)のみ", p:200, ok:true}, {l:"判断料+管理料", p:325, ok:false}], hint: "判断料と腫瘍管理料は併算定不可。" }, { type: "finish" }] },
-            { id: "TOK-009", genre: "投薬・管理", name: "石原 慎太郎 様", desc: "生活習慣病管理料(II)", icon: "🥗", color: "emerald", scenario: "高血圧症に対し療養計画書を作成。検査なし。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "生活習慣病管理料(II)", pts: 333, hint: "検査を含まない区分は333点。" }, { type: "finish" }] },
-            { id: "TOK-010", genre: "投薬・管理", name: "香取 慎吾 様", desc: "ニコチン依存症管理料", icon: "🚭", color: "emerald", scenario: "禁煙外来の3回目（5回1セット）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "禁煙管理料", pts: 184, hint: "2〜4回目は184点。" }, { type: "finish" }] },
-            { id: "TOK-011", genre: "投薬・管理", name: "草彅 剛 様", desc: "地域包括診療料", icon: "🏠", color: "emerald", scenario: "複数の慢性疾患（高血圧・脂質異常）を包括管理。", initial: [], steps: [{ label: "基本料", type: "add", item: "地域包括診療料", pts: 1503, hint: "診察料等を含む包括点数です。" }, { type: "finish" }] },
-            { id: "TOK-012", genre: "投薬・管理", name: "稲垣 吾郎 様", desc: "喘息治療管理料", icon: "🫁", color: "emerald", scenario: "ピークフローメーターを用いた指導を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "喘息治療管理料1", pts: 280, hint: "月1回、280点を算定。" }, { type: "finish" }] },
-            { id: "TOK-013", genre: "投薬・管理", name: "北川 景子 様", desc: "てんかん指導管理料", icon: "🧠", color: "emerald", scenario: "てんかん専門医による月1回の指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "指導料", type: "add", item: "てんかん指導管理料", pts: 250, hint: "250点を算定。" }, { type: "finish" }] },
-            { id: "TOK-014", genre: "投薬・管理", name: "松たか子 様", desc: "難病外来指導管理料", icon: "📜", color: "emerald", scenario: "指定難病の患者に対し計画的指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "難病外来指導管理料", pts: 270, hint: "270点を算定。" }, { type: "finish" }] },
-            { id: "TOK-015", genre: "投薬・管理", name: "木村 拓哉 様", desc: "多剤投与の減算", icon: "💊", color: "emerald", scenario: "内服薬を7種類以上処方した。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "減算", type: "choice", choices: [{l:"減算あり(40点)", p:-28, ok:true}, {l:"通常(68点)", p:0, ok:false}], hint: "7種類以上は処方箋料が40点（28点減算）に。" }, { type: "finish" }] },
-            { id: "TOK-016", genre: "投薬・管理", name: "工藤 静香 様", desc: "外来後発医薬品加算", icon: "📦", color: "emerald", scenario: "病院全体で後発品割合が高い体制。", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "加算", type: "add", item: "外来後発品使用体制加算", pts: 5, hint: "体制により1〜5点を加算。" }, { type: "finish" }] },
-            { id: "TOK-017", genre: "投薬・管理", name: "二宮 和也 様", desc: "糖尿病合併症管理", icon: "👣", color: "emerald", scenario: "糖尿病患者へのフットケア（足潰瘍予防）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "糖尿病合併症管理料", pts: 170, hint: "170点を算定。" }, { type: "finish" }] },
-            { id: "TOK-018", genre: "投薬・管理", name: "相葉 雅紀 様", desc: "外来栄養食事指導", icon: "🍱", color: "emerald", scenario: "管理栄養士による対面指導（15分以上）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "指導料", type: "add", item: "外来栄養食事指導料", pts: 200, hint: "初回・2回目以降で点数は異なりますが基本200点。" }, { type: "finish" }] },
-            { id: "TOK-019", genre: "投薬・管理", name: "大野 智 様", desc: "がん性疼痛緩和指導", icon: "💊", color: "emerald", scenario: "医療用麻薬を処方している患者への指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "指導料", type: "add", item: "がん性疼痛緩和指導管理料", pts: 200, hint: "200点を算定。" }, { type: "finish" }] },
-            { id: "TOK-020", genre: "投薬・管理", name: "松本 潤 様", desc: "自己注射指導管理", icon: "💉", color: "emerald", scenario: "インスリン自己注射の指導。月2回目以降。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "自己注射指導管理料", pts: 650, hint: "回数によりますが基本区分を算定。" }, { type: "finish" }] },
-            { id: "TOK-021", genre: "投薬・管理", name: "櫻井 翔 様", desc: "連携パス（がん）", icon: "🤝", color: "emerald", scenario: "地域連携パスに基づき治療を継続。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "がん治療連携管理料", pts: 300, hint: "連携パス利用で300点。" }, { type: "finish" }] },
-            { id: "TOK-022", genre: "投薬・管理", name: "多部 未華子 様", desc: "処方箋料（向精神薬）", icon: "💊", color: "emerald", scenario: "向精神薬を多剤処方した場合。", initial: [], steps: [{ label: "制限", type: "choice", choices: [{l:"減算(28点)", p:28, ok:true}, {l:"通常(68点)", p:68, ok:false}], hint: "向精神薬の多剤処方は制限があります。" }, { type: "finish" }] },
-            { id: "TOK-023", genre: "投薬・管理", name: "永野 芽郁 様", desc: "小児特定疾患指導", icon: "🧸", color: "emerald", scenario: "小児（15歳未満）の慢性疾患指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "指導料", type: "add", item: "小児特定疾患カウンセリング", pts: 200, hint: "月2回まで。200点。" }, { type: "finish" }] },
-            { id: "TOK-024", genre: "投薬・管理", name: "広瀬 アリス 様", desc: "認知症専門診断", icon: "🧠", color: "emerald", scenario: "認知症疑いに対し専門的な鑑別診断。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "認知症専門診断管理料", pts: 700, hint: "初回診断は700点。" }, { type: "finish" }] },
-            { id: "TOK-025", genre: "投薬・管理", name: "ムロツヨシ 様", desc: "院内処方の調剤料（外用）", icon: "🧴", color: "emerald", scenario: "院内で軟膏を調剤しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "算定", type: "add", item: "外用薬調剤料", pts: 6, hint: "外用薬は6点です。" }, { type: "finish" }] },
-            { id: "TOK-026", genre: "投薬・管理", name: "佐藤 浩市 様", desc: "二次性骨折予防", icon: "🦴", color: "emerald", scenario: "骨折後の再発予防指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "二次性骨折予防継続管理", pts: 500, hint: "骨粗鬆症治療を評価する500点。" }, { type: "finish" }] },
-            { id: "TOK-027", genre: "投薬・管理", name: "吉岡 里帆 様", desc: "婦人科特定疾患", icon: "🌸", color: "emerald", scenario: "子宮内膜症に対し、計画的な管理。", initial: [{n: "再診料", p: 73}], steps: [{ label: "管理料", type: "add", item: "婦人科特定疾患管理料", pts: 250, hint: "250点を算定。" }, { type: "finish" }] },
-            { id: "TOK-028", genre: "投薬・管理", name: "柄本 佑 様", desc: "処方箋料の有効期限", icon: "🗓️", color: "emerald", scenario: "期限切れによる再発行依頼。保険算定は？", initial: [], steps: [{ label: "確認", type: "choice", choices: [{l:"自費（算定不可）", p:0, ok:true}, {l:"再算定(68点)", p:68, ok:false}], hint: "自己都合の再発行は保険適用外です。" }, { type: "finish" }] },
-            { id: "TOK-029", genre: "投薬・管理", name: "安藤 サクラ 様", desc: "特定薬剤管理指導", icon: "💊", color: "emerald", scenario: "特に注意が必要な薬剤（抗がん剤等）の指導。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "特定薬剤管理指導加算", pts: 4, hint: "院内処方時に4点加算。" }, { type: "finish" }] },
-            { id: "TOK-030", genre: "投薬・管理", name: "投薬・管理マスター", icon: "🏆", color: "emerald", scenario: "複雑な併算定ルールを全てクリアしました！", initial: [{n: "管理の誇り", p: 100}], steps: [{ label: "最終確認", type: "check", hint: "投薬・管理30件完遂！次は時間外・特例へ！" }, { type: "finish" }] },
+// --- 第4弾：【時間外・特例】トリビア付き30名（TIM-001〜TIM-030） --- 
+            { id: "TIM-001", genre: "時間外・特例", name: "渡辺 謙 様", desc: "深夜救急受診", icon: "🌙", color: "red", scenario: "深夜2時に腹痛で緊急来院。再診での対応。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "深夜加算(再診)", pts: 420, hint: "深夜は420点の大きな加算です。" }, { type: "finish" }], trivia: "深夜22時から朝6時までは「深夜」扱い。再診料73点に対して加算が420点（4200円分）も付くのは、夜の医療体制を守るための特別なルールなんです。" },
+            { id: "TIM-002", genre: "時間外・特例", name: "役所 広司 様", desc: "時間外初診", icon: "🕔", color: "red", scenario: "平日の19時に初診で来院（診療時間外）。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "時間外加算(初診)", pts: 85, hint: "時間外は85点加算。" }, { type: "finish" }], trivia: "病院が定めた診療時間外に来ると付く点数。でも、もし病院が「19時まで受付」と掲げているなら、19時ちょうどは時間外になりません。時計の1分が大事な世界です。" },
+            { id: "TIM-003", genre: "時間外・特例", name: "阿部 寛 様", desc: "休日初診", icon: "🗓️", color: "red", scenario: "日曜日の朝に急病で来院。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "休日加算(初診)", pts: 250, hint: "休日は250点加算。" }, { type: "finish" }], trivia: "日曜日、祝日、そして年末年始。世間がお休みの時に診察を受けると250点（2500円）アップ。医療スタッフへの「休日手当」のような意味合いもあります。" },
+            { id: "TIM-004", genre: "時間外・特例", name: "小栗 旬 様", desc: "小児救急夜間加算", icon: "👦", color: "red", scenario: "6歳未満の子供が夜間に救急受診。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "小児夜間救急再診加算", pts: 200, hint: "子供の夜間救急は200点加算。" }, { type: "finish" }], trivia: "小児の救急は「夜間・休日」の特別枠があります。親御さんは不安でいっぱい。事務員は不安を和らげつつ、正確にこの厚い点数を算定します。" },
+            { id: "TIM-005", genre: "時間外・特例", name: "大谷 翔平 様", desc: "救急搬送の受け入れ", icon: "🚑", color: "red", scenario: "救急車で搬送され、そのまま入院の判断。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "救急医療管理加算1", pts: 1050, hint: "重症者の受け入れで1050点。" }, { type: "finish" }], trivia: "救急車で運ばれるような重症患者さんを受け入れると「1050点（10,500円相当）」の加算！病院の設備と人手を総動員する対価なんです。" },
+            { id: "TIM-006", genre: "時間外・特例", name: "木村 拓哉 様", desc: "時間外の再診", icon: "🌃", color: "red", scenario: "土曜日の午後に再診で来院（診療時間外）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "時間外加算(再診)", pts: 65, hint: "再診の時間外は65点。" }, { type: "finish" }], trivia: "土曜日の午後は多くの病院が「時間外」。平日の夜よりも、土曜の午後に「ついうっかり」受診して加算がつくケースが多いんです。" },
+            { id: "TIM-007", genre: "時間外・特例", name: "堺 雅人 様", desc: "深夜初診の加算", icon: "🌕", color: "red", scenario: "深夜3時に初めての病院へ緊急受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "深夜加算(初診)", pts: 480, hint: "初診の深夜は480点加算。" }, { type: "finish" }], trivia: "全項目の中でもトップクラスの加算「480点」。深夜に病院を開け、医師とスタッフが待機していることへの最大の評価です。" },
+            { id: "TIM-008", genre: "時間外・特例", name: "菅田 将暉 様", desc: "特例都県加算", icon: "🏢", color: "red", scenario: "東京都の特別区での時間外受診。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "夜間・早朝等加算", pts: 50, hint: "受付時間によって50点。" }, { type: "finish" }], trivia: "18時以降（土曜は12時以降）に受付をすると付く50点。診察が始まってからではなく、「受付」をした時間で決まるのが事務のポイントです。" },
+            { id: "TIM-009", genre: "時間外・特例", name: "福山 雅治 様", desc: "救急搬送診療料", icon: "🚑", color: "red", scenario: "診療所から大病院へ救急車で同乗搬送。", initial: [], steps: [{ label: "搬送", type: "add", item: "救急搬送診療料", pts: 1300, hint: "同乗して管理すれば1300点。" }, { type: "finish" }], trivia: "医師が救急車に同乗して、搬送中に治療を行うと付く「1300点」。まさに命を繋ぐための「移動診察室」代ですね。" },
+            { id: "TIM-010", genre: "時間外・特例", name: "北川 景子 様", desc: "産科特定疾患等管理", icon: "🤰", color: "red", scenario: "妊娠中の急激な体調不良による緊急管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "産科特定疾患等管理料", pts: 500, hint: "緊急の管理で500点。" }, { type: "finish" }], trivia: "お腹の赤ちゃんとママ、二人の命を守るための緊急対応。産科特有のこの点数は、非常に高い専門性が評価されています。" },
+            { id: "TIM-011", genre: "時間外・特例", name: "天海 祐希 様", desc: "地域医療体制確保加算", icon: "🏥", color: "red", scenario: "救急を24時間受け入れる体制の病院を受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "体制加算", type: "add", item: "地域医療体制確保加算", pts: 12, hint: "体制を評価して12点。" }, { type: "finish" }], trivia: "「いつでも救急を受け入れます」という看板を出している大病院に付く点数。たった12点ですが、地域の安心を支える重い12点です。" },
+            { id: "TIM-012", genre: "時間外・特例", name: "ムロツヨシ 様", desc: "休日救急搬送", icon: "🚑", color: "red", scenario: "祝日に救急車で来院。処置を実施。", initial: [{n: "初診料", p: 288}, {n: "休日加算", p: 250}], steps: [{ label: "処置加算", type: "add", item: "処置休日加算", pts: 40, hint: "処置料にも休日加算(4割増)を。" }, { type: "finish" }], trivia: "休日は診察料だけでなく、「処置」や「手術」の代金も1.4倍（4割増）になります！休日返上で働く医師たちの技術料がアップします。" },
+            { id: "TIM-013", genre: "時間外・特例", name: "佐藤 健 様", desc: "準夜帯の受診", icon: "🌆", color: "red", scenario: "20時に救急外来を受診。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "時間外加算(再診)", pts: 65, hint: "22時前なら時間外加算。" }, { type: "finish" }], trivia: "22時までは「時間外」、22時を過ぎると「深夜」に昇格。同じ「夜の受診」でも、21時59分と22時01分では点数が大きく変わるんです。" },
+            { id: "TIM-014", genre: "時間外・特例", name: "綾瀬 はるか 様", desc: "紹介状なしの救急", icon: "🏥", color: "red", scenario: "大病院の救急外来を、紹介状なしで受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "選定療養", type: "check", hint: "救急でも緊急性がなければ自費が発生。" }, { type: "finish" }], trivia: "「救急外来なら紹介状がいらない」は誤解！緊急性がないと判断されると、夜間でも7,000円以上の「選定療養費」を請求されることがあります。" },
+            { id: "TIM-015", genre: "時間外・特例", name: "松本人志 様", desc: "往診の算定", icon: "🚗", color: "red", scenario: "動けないため、医師が急遽自宅へ訪問。", initial: [], steps: [{ label: "往診", type: "add", item: "往診料", pts: 720, hint: "緊急の訪問で720点。" }, { type: "finish" }], trivia: "「往診」と「訪問診療」は別物！予定になく、急に医師が駆けつけるのが「往診（720点）」。まさにドクターが家に来る特別料金です。" },
+            { id: "TIM-016", genre: "時間外・特例", name: "石原 さとみ 様", desc: "夜間往診の加算", icon: "🌙", color: "red", scenario: "夜間20時に往診を依頼。", initial: [{n: "往診料", p: 720}], steps: [{ label: "加算", type: "add", item: "夜間往診加算", pts: 600, hint: "夜間は600点加算。" }, { type: "finish" }], trivia: "往診料720点に、夜間加算600点が合体！さらに深夜ならもっと上がります。夜中に医師を呼ぶのは、それだけ大きな対価が必要なんです。" },
+            { id: "TIM-017", genre: "時間外・特例", name: "広瀬 すず 様", desc: "小児往診の特例", icon: "🧒", color: "red", scenario: "3歳の子供が夜間に高熱、往診を依頼。", initial: [{n: "往診料", p: 720}, {n: "夜間加算", p: 600}], steps: [{ label: "小児加算", type: "add", item: "小児往診加算", pts: 200, hint: "子供ならさらに200点加算。" }, { type: "finish" }], trivia: "子供の急変は予測不能。往診に「小児加算」がつくのは、子供特有の診察の難しさと、親御さんへの指導の重要性が評価されているからです。" },
+            { id: "TIM-018", genre: "時間外・特例", name: "大泉 洋 様", desc: "救急受診後の帰宅", icon: "🏠", color: "red", scenario: "救急外来で受診したが、入院せず帰宅。", initial: [{n: "再診料", p: 73}, {n: "時間外加算", p: 65}], steps: [{ label: "確認", type: "check", hint: "処置や検査がなければこれだけ。" }, { type: "finish" }], trivia: "「救急車で来たから高い」のではなく、実は「何をしたか」で決まります。検査も処置もせず様子見だけなら、意外と安く済むことも。" },
+            { id: "TIM-019", genre: "時間外・特例", name: "長澤 まさみ 様", desc: "入院初日の救急管理", icon: "🛌", color: "red", scenario: "救急搬送され、即入院、集中治療を実施。", initial: [{n: "入院基本料", p: 1500}], steps: [{ label: "管理加算", type: "add", item: "救急医療管理加算2", pts: 420, hint: "準重症者で420点。" }, { type: "finish" }], trivia: "命に関わるほどではないが、緊急の対応が必要な場合は「420点」。重症度の判定（スコアリング）は事務員の重要任務です。" },
+            { id: "TIM-020", genre: "時間外・特例", name: "指原 莉乃 様", desc: "オンライン診療の深夜", icon: "📱", color: "red", scenario: "深夜にオンラインで緊急診察。", initial: [{n: "情報通信機器を用いた診察", p: 251}], steps: [{ label: "加算", type: "check", hint: "オンラインには時間外加算は付きません。" }, { type: "finish" }], trivia: "実は、オンライン診療には「深夜加算」や「休日加算」は付きません！対面で医師が待機しているわけではないから、という考え方なんです。" },
+            { id: "TIM-021", genre: "時間外・特例", name: "山崎 賢人 様", desc: "災害時の特例対応", icon: "⛺", color: "red", scenario: "災害時、保険証なしでの受診。", initial: [], steps: [{ label: "特例算定", type: "check", hint: "氏名・生年月日で保険診療可能。" }, { type: "finish" }], trivia: "大地震などの災害時は、保険証がなくても「氏名・住所・生年月日」が分かれば保険が使えます。国が決めた、命を最優先する特例ルールです。" },
+            { id: "TIM-022", genre: "時間外・特例", name: "今田 美桜 様", desc: "時間外の手術加算", icon: "✂️", color: "red", scenario: "夜間23時に緊急手術を実施。", initial: [{n: "手術料(通常)", p: 5000}], steps: [{ label: "深夜加算", type: "add", item: "手術深夜加算", pts: 8000, hint: "深夜の手術は16割増！" }, { type: "finish" }], trivia: "深夜の手術は、通常料金の「16割増（2.6倍）」！ 5万円の手術なら13万円に。深夜にスタッフを集めて命を救う、凄まじいコストの評価です。" },
+            { id: "TIM-023", genre: "時間外・特例", name: "横浜 流星 様", desc: "休日往診の距離加算", icon: "🚲", color: "red", scenario: "休日に4km離れた場所へ往診。", initial: [{n: "往診料", p: 720}, {n: "休日加算", p: 800}], steps: [{ label: "距離加算", type: "check", hint: "以前はあったが、現在は廃止されました。" }, { type: "finish" }], trivia: "実は昔、往診には「距離加算」という移動距離に応じた点数がありました。今は廃止されています。ガソリン代も大変なのに……お医者さん泣かせですね。" },
+            { id: "TIM-024", genre: "時間外・特例", name: "斎藤 工 様", desc: "酸素吸入の深夜加算", icon: "😷", color: "red", scenario: "深夜の救急外来で酸素吸入処置。", initial: [{n: "酸素吸入", p: 65}], steps: [{ label: "加算", type: "add", item: "処置深夜加算", pts: 40, hint: "処置料も16割増になります。" }, { type: "finish" }], trivia: "処置料にも深夜加算が付きます。酸素代そのものではなく、「酸素を吸わせる処置の手間」に対して、夜間ボーナスが付く仕組みです。" },
+            { id: "TIM-025", genre: "時間外・特例", name: "浜辺 美波 様", desc: "年末年始の救急", icon: "🎍", color: "red", scenario: "1月1日に急な腹痛で受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "休日加算(初診)", pts: 250, hint: "元旦も休日扱いです。" }, { type: "finish" }], trivia: "12月29日〜1月3日は、暦が平日でも「休日」扱い！お正月返上で働く病院への応援歌が、この250点（2500円）なんです。" },
+            { id: "TIM-026", genre: "時間外・特例", name: "米津 玄師 様", desc: "精神科救急搬送", icon: "🧠", color: "red", scenario: "精神的な興奮状態で救急搬送受け入れ。", initial: [], steps: [{ label: "加算", type: "add", item: "精神科救急搬送患者地域連携受入加算", pts: 1000, hint: "精神科特有の救急加算。" }, { type: "finish" }], trivia: "体のケガだけでなく、心の救急もあります。興奮状態の患者さんを安全に受け入れるための体制は、非常に高い評価（10,000円分）がされています。" },
+            { id: "TIM-027", genre: "時間外・特例", name: "吉高 由里子 様", desc: "時間外の点滴加算", icon: "💧", color: "red", scenario: "19時に点滴を開始。", initial: [{n: "点滴注射", p: 97}], steps: [{ label: "加算", type: "add", item: "処置時間外加算", pts: 38, hint: "処置料も4割増に。" }, { type: "finish" }], trivia: "点滴そのものは安くても、時間外に行うと4割増！「夜に点滴をする」という看護師さんの労働への対価がしっかり含まれています。" },
+            { id: "TIM-028", genre: "時間外・特例", name: "ディーン・フジオカ 様", desc: "往診の緊急加算", icon: "🏃", color: "red", scenario: "診療中に、他の患者の急変で急いで往診。", initial: [{n: "往診料", p: 720}], steps: [{ label: "緊急加算", type: "add", item: "往診緊急加算", pts: 325, hint: "急いで駆けつけたら325点。" }, { type: "finish" }], trivia: "「今すぐ来てください！」という要請に、今の診察を切り上げて駆けつけた場合に付く325点。まさにドクターの機動力への評価です。" },
+            { id: "TIM-029", genre: "時間外・特例", name: "広瀬 アリス 様", desc: "夜間早朝の複数科", icon: "🏥", color: "red", scenario: "19時に内科と耳鼻科を同時受診。", initial: [{n: "再診料(2科)", p: 110}], steps: [{ label: "加算", type: "add", item: "夜間早朝等加算(2科分)", pts: 100, hint: "2科それぞれに50点つきます。" }, { type: "finish" }], trivia: "夜間早朝等加算は、診察料の数だけ付きます。2科受診なら100点、3科なら150点！夜遅くの複数科受診は、意外と高くつくんです。" },
+            { id: "TIM-030", genre: "時間外・特例", name: "笑福亭鶴瓶 様", desc: "休日救急の指導料", icon: "🗣️", color: "red", scenario: "休日に緊急受診し、今後の生活指導。", initial: [{n: "初診料", p: 288}, {n: "休日加算", p: 250}], steps: [{ label: "指導料", type: "check", hint: "指導料には休日加算は付きません。" }, { type: "finish" }], trivia: "実は！「診察料」や「処置料」には休日加算がつきますが、特定疾患療養管理料などの「指導料」には加算がつかないんです。これぞ医療事務の落とし穴！" },
 
-// --- 時間外・特例 (TKR) 30/30 ---
-            { id: "TKR-001", genre: "時間外・特例", name: "渡辺 健二 様", desc: "深夜加算", icon: "🌙", color: "rose", scenario: "夜23時に急患で来院されました。", initial: [{n: "初診料", p: 288}], steps: [{ label: "区分", type: "choice", choices: [{l:"時間外(85点)", p:85, ok:false}, {l:"深夜(480点)", p:480, ok:true}], hint: "22時〜翌6時は深夜加算480点です。" }, { type: "finish" }] },
-            { id: "TKR-002", genre: "時間外・特例", name: "佐々木 結衣 殿", desc: "乳幼児時間外特例", icon: "🍼", color: "rose", scenario: "6歳未満、小児科標榜医の夜間外来（18時〜）。", initial: [{n: "初診料(乳)", p: 363}], steps: [{ label: "特例", type: "add", item: "時間外特例加算", pts: 230, hint: "小児科特例は230点（初診）です。" }, { type: "finish" }] },
-            { id: "TKR-003", genre: "時間外・特例", name: "中村 剛 様", desc: "選定療養費", icon: "🏢", color: "rose", scenario: "紹介状なしで200床以上の病院を受診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "確認", type: "check", hint: "保険外併用療養費（自費）の徴収が必要です。" }, { type: "finish" }] },
-            { id: "TKR-004", genre: "時間外・特例", name: "田中 裕子 様", desc: "休日加算（再診）", icon: "🎌", color: "rose", scenario: "祝日の当番医。再診で受診されました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "休日加算（再診）", pts: 190, hint: "休日の再診加算は190点。" }, { type: "finish" }] },
-            { id: "TKR-005", genre: "時間外・特例", name: "斎藤 佑樹 様", desc: "時間外加算（再診）", icon: "⏰", color: "rose", scenario: "平日の19時に再診予約なしで来院。", initial: [{n: "再診料", p: 73}], steps: [{ label: "加算", type: "add", item: "時間外加算（再診）", pts: 65, hint: "再診の時間外加算は65点。" }, { type: "finish" }] },
-            { id: "TKR-006", genre: "時間外・特例", name: "本田 圭佑 様", desc: "深夜往診加算", icon: "🚗", color: "rose", scenario: "深夜1時に自宅へ往診を行いました。", initial: [{n: "往診料", p: 720}], steps: [{ label: "加算", type: "add", item: "深夜往診加算", pts: 2300, hint: "深夜の往診加算は2,300点と非常に高額。" }, { type: "finish" }] },
-            { id: "TKR-007", genre: "時間外・特例", name: "福原 愛 殿", desc: "乳幼児深夜加算", icon: "🧸", color: "rose", scenario: "3歳児。深夜2時に受診。", initial: [{n: "初診料(乳)", p: 363}], steps: [{ label: "深夜", type: "add", item: "乳幼児深夜加算", pts: 690, hint: "6歳未満の深夜は690点加算。" }, { type: "finish" }] },
-            { id: "TKR-008", genre: "時間外・特例", name: "大谷 翔平 様", desc: "救急搬送体制加算", icon: "🚑", color: "rose", scenario: "救急車で搬送され、初診料を算定。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "救急搬送付加", pts: 200, hint: "救急搬送時は200点（初回）を考慮。" }, { type: "finish" }] },
-            { id: "TKR-009", genre: "時間外・特例", name: "羽生 結弦 様", desc: "オンライン資格確認", icon: "💳", color: "rose", scenario: "マイナ保険証を利用（情報取得に同意）。", initial: [{n: "初診料", p: 288}], steps: [{ label: "算定", type: "add", item: "医療情報・システム基盤整備1", pts: 2, hint: "マイナ利用時は2点（2024改定）。" }, { type: "finish" }] },
-            { id: "TKR-010", genre: "時間外・特例", name: "浅田 真央 様", desc: "紙の保険証利用", icon: "📄", color: "rose", scenario: "従来の健康保険証のみ提示。", initial: [{n: "初診料", p: 288}], steps: [{ label: "算定", type: "add", item: "医療情報・システム基盤整備2", pts: 4, hint: "紙の保険証は4点（マイナより高い）。" }, { type: "finish" }] },
-            { id: "TKR-011", genre: "時間外・特例", name: "錦織 圭 様", desc: "特例的な再診料", icon: "📞", color: "rose", scenario: "電話再診時の夜間・早朝等加算は？", initial: [{n: "再診料(電話)", p: 73}], steps: [{ label: "判断", type: "choice", choices: [{l:"算定不可", p:0, ok:true}, {l:"算定可", p:50, ok:false}], hint: "電話再診では時間外・休日等の加算は不可。" }, { type: "finish" }] },
-            { id: "TKR-012", genre: "時間外・特例", name: "内村 航平 様", desc: "診療時間内の特例", icon: "🏥", color: "rose", scenario: "標榜時間は18時までだが17時に休日当番医受診。", initial: [], steps: [{ label: "算定", type: "add", item: "休日加算", pts: 250, hint: "当番医の休日は、時間内でも休日加算。" }, { type: "finish" }] },
-            { id: "TKR-013", genre: "時間外・特例", name: "吉田 沙保里 様", desc: "地域医療体制確保", icon: "🛡️", color: "rose", scenario: "救急医療体制を確保している病院での外来。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "地域医療体制確保加算", pts: 12, hint: "対象病院では12点を加算。" }, { type: "finish" }] },
-            { id: "TKR-014", genre: "時間外・特例", name: "高梨 沙羅 様", desc: "明細書発行特例", icon: "🖨️", color: "rose", scenario: "災害時等で明細書が出せない場合。", initial: [{n: "再診料", p: 73}], steps: [{ label: "確認", type: "check", hint: "やむを得ない理由は算定不可もあり。" }, { type: "finish" }] },
-            { id: "TKR-015", genre: "時間外・特例", name: "石川 佳純 様", desc: "医療DX推進体制", icon: "💻", color: "rose", scenario: "DX推進体制が整備された医療機関。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "医療DX推進体制加算", pts: 8, hint: "DX加算として8点を算定。" }, { type: "finish" }] },
-            { id: "TKR-016", genre: "時間外・特例", name: "香川 真司 様", desc: "時間外特例（看護師対応）", icon: "👩‍⚕️", color: "rose", scenario: "夜間に看護師が電話対応。翌日受診。", initial: [], steps: [{ label: "判断", type: "check", hint: "相談のみでは診察料は発生しません。" }, { type: "finish" }] },
-            { id: "TKR-017", genre: "時間外・特例", name: "長谷部 誠 様", desc: "労災保険の特例", icon: "👷", color: "rose", scenario: "仕事中のケガで夜間救急を受診。", initial: [], steps: [{ label: "確認", type: "check", hint: "健康保険ではなく労災適応の確認が必要。" }, { type: "finish" }] },
-            { id: "TKR-018", genre: "時間外・特例", name: "長友 佑都 様", desc: "自費検査の特例", icon: "🧪", color: "rose", scenario: "無症状だが自費で夜間PCRを希望。", initial: [], steps: [{ label: "判断", type: "check", hint: "全額自費扱い（保険請求不可）です。" }, { type: "finish" }] },
-            { id: "TKR-019", genre: "時間外・特例", name: "武藤 嘉紀 様", desc: "紹介状なし（再診）", icon: "🏢", color: "rose", scenario: "大病院に逆紹介されたが、再度紹介なしで受診。", initial: [{n: "再診料", p: 73}], steps: [{ label: "確認", type: "check", hint: "再診時選定療養費の対象となります。" }, { type: "finish" }] },
-            { id: "TKR-020", genre: "時間外・特例", name: "久保 建英 様", desc: "小児科外来診療料", icon: "🧸", color: "rose", scenario: "6歳未満。包括点数を採用している医院。", initial: [], steps: [{ label: "基本料", type: "add", item: "小児科外来診療料", pts: 602, hint: "検査等を含む包括的な基本料。" }, { type: "finish" }] },
-            { id: "TKR-021", genre: "時間外・特例", name: "堂安 律 様", desc: "時間外の処方箋", icon: "💊", color: "rose", scenario: "深夜に処方箋を発行。薬局での加算は？", initial: [{n: "処方箋料", p: 68}], steps: [{ label: "確認", type: "check", hint: "薬局側で夜間・休日加算が算定されます。" }, { type: "finish" }] },
-            { id: "TKR-022", genre: "時間外・特例", name: "三笘 薫 様", desc: "遠隔地往診", icon: "🏞️", color: "rose", scenario: "診療所から16kmを超える場所への往診。", initial: [{n: "往診料", p: 720}], steps: [{ label: "加算", type: "check", hint: "距離に応じた加算または自費交通費。" }, { type: "finish" }] },
-            { id: "TKR-023", genre: "時間外・特例", name: "伊東 純也 様", desc: "往診待機加算", icon: "⏳", color: "rose", scenario: "患者の希望で1時間待機した後の診察。", initial: [], steps: [{ label: "判断", type: "check", hint: "待機時間の算定は原則ありません。" }, { type: "finish" }] },
-            { id: "TKR-024", genre: "時間外・特例", name: "南野 拓実 様", desc: "複数人往診", icon: "👨‍👩‍👧", color: "rose", scenario: "同じ家で2人を同時に往診した。", initial: [{n: "1人目(往診料)", p: 720}], steps: [{ label: "2人目", type: "add", item: "再診料(往診料なし)", pts: 73, hint: "2人目以降は往診料は算定できません。" }, { type: "finish" }] },
-            { id: "TKR-025", genre: "時間外・特例", name: "遠藤 航 様", desc: "休日診察中の緊急", icon: "🆘", color: "rose", scenario: "休日診察中に、さらに別の緊急患者を対応。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "休日加算", pts: 250, hint: "緊急度に関わらず休日加算は250点。" }, { type: "finish" }] },
-            { id: "TKR-026", genre: "時間外・特例", name: "鎌田 大地 様", desc: "年末年始の算定", icon: "🎍", color: "rose", scenario: "1月2日に急患で受診された。", initial: [{n: "初診料", p: 288}], steps: [{ label: "区分", type: "add", item: "休日加算", pts: 250, hint: "12/29〜1/3は休日扱いとなります。" }, { type: "finish" }] },
-            { id: "TKR-027", genre: "時間外・特例", name: "板倉 滉 様", desc: "GW（連休）の算定", icon: "🎏", color: "rose", scenario: "5月4日の祝日に受診された。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "休日加算", pts: 250, hint: "祝日は休日加算の対象です。" }, { type: "finish" }] },
-            { id: "TKR-028", genre: "時間外・特例", name: "田中 碧 様", desc: "夜間・早朝の予約診", icon: "🗓️", color: "rose", scenario: "19時の予約診療。加算は付く？", initial: [{n: "再診料", p: 73}], steps: [{ label: "判断", type: "choice", choices: [{l:"加算あり(50点)", p:50, ok:true}, {l:"加算なし", p:0, ok:false}], hint: "予約であっても18時以降は夜間・早朝等加算が可能。" }, { type: "finish" }] },
-            { id: "TKR-029", genre: "時間外・特例", name: "上田 綺世 様", desc: "外来感染対策向上", icon: "😷", color: "rose", scenario: "感染対策を講じている施設での初診。", initial: [{n: "初診料", p: 288}], steps: [{ label: "加算", type: "add", item: "外来感染対策向上加算", pts: 6, hint: "月1回、6点を算定。" }, { type: "finish" }] },
-            { id: "TKR-030", genre: "時間外・特例", name: "時間外マスター", icon: "🏆", color: "rose", scenario: "おめでとうございます！複雑な時間区分を制覇しました。", initial: [{n: "特例の誇り", p: 100}], steps: [{ label: "完了", type: "check", hint: "最後は【手術・処置】を埋めましょう！" }, { type: "finish" }] },
-
-// --- 手術・処置 (SHO) 30/30 ---
-            { id: "SHO-001", genre: "手術・処置", name: "伊藤 翼 くん", desc: "小児の創傷処理", icon: "🧵", color: "amber", scenario: "膝を切ったため5cm未満の縫合手術を行いました。", initial: [{n: "初診料(乳)", p: 363}], steps: [{ label: "手術", type: "add", item: "創傷処理", pts: 470, hint: "5cm未満の筋肉に達しないものは470点。" }, { label: "麻酔", type: "add", item: "局所麻酔", pts: 10, hint: "10点。手術料には薬剤料以外含まれる場合が多いです。" }, { type: "finish" }] },
-            { id: "SHO-002", genre: "手術・処置", name: "山田 太郎 様", desc: "創傷処置（一般）", icon: "🩹", color: "amber", scenario: "擦り傷の消毒とガーゼ交換を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "創傷処置(100c㎡未満)", pts: 52, hint: "面積によって点数が変わります（100c㎡未満は52点）。" }, { type: "finish" }] },
-            { id: "SHO-003", genre: "手術・処置", name: "佐藤 浩二 様", desc: "皮膚欠損用創傷被覆材", icon: "敷", color: "amber", scenario: "深い傷に高度な被覆材（デュオアクティブ等）を使用。", initial: [{n: "創傷処置", p: 52}], steps: [{ label: "特定材料", type: "add", item: "創傷被覆材", pts: 15, hint: "材料価格に応じた点数を加算します。" }, { type: "finish" }] },
-            { id: "SHO-004", genre: "手術・処置", name: "鈴木 花子 様", desc: "ギプス固定", icon: "🦴", color: "amber", scenario: "足首の骨折に対し、ギプス包帯で固定しました。", initial: [{n: "初診料", p: 288}], steps: [{ label: "処置", type: "add", item: "ギプス固定(下腿)", pts: 760, hint: "部位により点数が異なります。下腿は760点。" }, { type: "finish" }] },
-            { id: "SHO-005", genre: "手術・処置", name: "高橋 健 様", desc: "鼻出血焼灼止血法", icon: "👃", color: "amber", scenario: "鼻血が止まらないため、電気焼灼で止血。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手術", type: "add", item: "鼻出血止血法", pts: 310, hint: "簡単な止血なら310点を算定。" }, { type: "finish" }] },
-            { id: "SHO-006", genre: "手術・処置", name: "田中 亮 様", desc: "関節穿刺", icon: "💉", color: "amber", scenario: "膝に水が溜まっているため、注射器で抜きました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "関節穿刺", pts: 80, hint: "80点を算定。薬注がある場合は別途。" }, { type: "finish" }] },
-            { id: "SHO-007", genre: "手術・処置", name: "伊藤 博 様", desc: "導尿（一時的）", icon: "🚽", color: "amber", scenario: "排尿困難のためカテーテルで一時的に導尿。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "導尿", pts: 37, hint: "一時的な導尿は37点。" }, { type: "finish" }] },
-            { id: "SHO-008", genre: "手術・処置", name: "渡辺 裕太 様", desc: "イボ冷凍凝固法", icon: "❄️", color: "amber", scenario: "液体窒素を使ってイボを冷凍凝固しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "皮膚科光線療法", pts: 110, hint: "3箇所までは110点（2024改定ルール確認）。" }, { type: "finish" }] },
-            { id: "SHO-009", genre: "手術・処置", name: "小林 誠 様", desc: "切開術（皮膚）", icon: "🔪", color: "amber", scenario: "皮膚の膿瘍をメスで切開して排膿しました。", initial: [{n: "初診料", p: 288}], steps: [{ label: "手術", type: "add", item: "皮膚切開術(長径10cm未満)", pts: 510, hint: "510点を算定します。" }, { type: "finish" }] },
-            { id: "SHO-010", genre: "手術・処置", name: "加藤 あい 様", desc: "インフルエンザ鼻腔処置", icon: "👃", color: "amber", scenario: "鼻の洗浄と薬液噴霧を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "鼻処置", pts: 14, hint: "鼻処置は14点と低めの設定です。" }, { type: "finish" }] },
-            { id: "SHO-011", genre: "手術・処置", name: "木村 拓哉 様", desc: "外耳道異物除去", icon: "👂", color: "amber", scenario: "耳に入った虫を器具で取り除きました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "外耳道異物除去", pts: 120, hint: "簡単なものは120点。" }, { type: "finish" }] },
-            { id: "SHO-012", genre: "手術・処置", name: "松嶋 菜々子 様", desc: "吸入（ネブライザー）", icon: "💨", color: "amber", scenario: "喘息の発作に対し、ネブライザー吸入を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "吸入", pts: 12, hint: "1日につき12点。" }, { type: "finish" }] },
-            { id: "SHO-013", genre: "手術・処置", name: "阿部 寛 様", desc: "消炎鎮痛等処置", icon: "⚡", color: "amber", scenario: "腰痛に対し、低周波療法を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "消炎鎮痛等処置", pts: 35, hint: "1日につき35点。マッサージ等と同区分。" }, { type: "finish" }] },
-            { id: "SHO-014", genre: "手術・処置", name: "堺 雅人 様", desc: "眼処置", icon: "👁️", color: "amber", scenario: "結膜炎で眼の洗浄と点眼を行いました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "眼処置", pts: 12, hint: "片眼・両眼関わらず12点。" }, { type: "finish" }] },
-            { id: "SHO-015", genre: "手術・処置", name: "石原 さとみ 様", desc: "抜釘術（簡単なもの）", icon: "釘", color: "amber", scenario: "指に入っていた小さなピンを抜きました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手術", type: "add", item: "骨折非観血的整復術", pts: 0, ok: false, hint: "抜釘(K002)を算定します。露出している場合は処置扱いも。" }, { label: "算定", type: "add", item: "抜釘術", pts: 950, hint: "部位により950〜算定。" }, { type: "finish" }] },
-            { id: "SHO-016", genre: "手術・処置", name: "福山 雅治 様", desc: "腰椎穿刺", icon: "💉", color: "amber", scenario: "髄液検査のため、腰に針を刺しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "腰椎穿刺", pts: 180, hint: "180点。検査料は別途。" }, { type: "finish" }] },
-            { id: "SHO-017", genre: "手術・処置", name: "長澤 まさみ 様", desc: "酸素吸入（処置）", icon: "O2", color: "amber", scenario: "救急外来で30分間酸素吸入を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "酸素吸入", pts: 65, hint: "1日につき65点（酸素代は別途）。" }, { type: "finish" }] },
-            { id: "SHO-018", genre: "手術・処置", name: "菅田 将暉 様", desc: "胃洗浄", icon: "🚿", color: "amber", scenario: "中毒の疑いで胃洗浄を行いました。", initial: [{n: "初診料", p: 288}], steps: [{ label: "処置", type: "add", item: "胃洗浄", pts: 155, hint: "155点を算定。" }, { type: "finish" }] },
-            { id: "SHO-019", genre: "手術・処置", name: "橋本 環奈 様", desc: "浣腸", icon: "🚽", color: "amber", scenario: "便秘解消のため浣腸を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "浣腸", pts: 27, hint: "27点。薬剤料は別途。" }, { type: "finish" }] },
-            { id: "SHO-020", genre: "手術・処置", name: "ムロツヨシ 様", desc: "デブリードマン", icon: "✂️", color: "amber", scenario: "汚染された創傷の死滅組織を除去。", initial: [{n: "再診料", p: 73}, {n: "創傷処理", p: 470}], steps: [{ label: "加算", type: "add", item: "デブリードマン加算", pts: 100, hint: "最初の手術時、100点加算。" }, { type: "finish" }] },
-            { id: "SHO-021", genre: "手術・処置", name: "小栗 旬 様", desc: "時間外手術加算", icon: "⏰", color: "amber", scenario: "夜20時に緊急で行った手術。", initial: [{n: "手術料", p: 1000}], steps: [{ label: "加算", type: "add", item: "時間外加算(40%)", pts: 400, hint: "休日・時間外・深夜で所定点数が加算されます。" }, { type: "finish" }] },
-            { id: "SHO-022", genre: "手術・処置", name: "広瀬 すず 様", desc: "鼓膜穿刺", icon: "👂", color: "amber", scenario: "中耳炎で鼓膜に穴を開けて膿を出しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "鼓膜穿刺", pts: 80, hint: "片耳につき80点。" }, { type: "finish" }] },
-            { id: "SHO-023", genre: "手術・処置", name: "佐藤 健 様", desc: "尿道カテーテル留置", icon: "🏥", color: "amber", scenario: "バルーンカテーテルを留置しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "尿道カテーテル留置", pts: 40, hint: "40点。特定保険医療材料（カテーテル）は別途。" }, { type: "finish" }] },
-            { id: "SHO-024", genre: "手術・処置", name: "有村 架純 様", desc: "足指のテーピング", icon: "🩹", color: "amber", scenario: "指の捻挫に対し、テープで固定。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "テープ固定", pts: 0, hint: "単なるテーピングは診察料に含まれることが多いです。" }, { type: "finish" }] },
-            { id: "SHO-025", genre: "手術・処置", name: "竹内 涼真 様", desc: "鎖骨骨折の固定", icon: "🦴", color: "amber", scenario: "鎖骨骨折に対しクラビクルバンドを装着。", initial: [{n: "初診料", p: 288}], steps: [{ label: "処置", type: "add", item: "鎖骨骨折整復固定術", pts: 550, hint: "固定術として550点。" }, { type: "finish" }] },
-            { id: "SHO-026", genre: "手術・処置", name: "浜辺 美波 様", desc: "口腔内善処置", icon: "👄", color: "amber", scenario: "口内炎への薬液塗布。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "check", hint: "処置料が発生しない軽微なものは診察料に含みます。" }, { type: "finish" }] },
-            { id: "SHO-027", genre: "手術・処置", name: "横浜 流星 様", desc: "爪抜き（抜爪）", icon: "🦶", color: "amber", scenario: "剥がれかけた爪を完全に取り除きました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手術", type: "add", item: "抜爪", pts: 100, hint: "1指につき100点。" }, { type: "finish" }] },
-            { id: "SHO-028", genre: "手術・処置", name: "今田 美桜 様", desc: "皮下血腫穿刺", icon: "💉", color: "amber", scenario: "打撲による血腫を穿刺して吸引しました。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "血腫穿刺", pts: 60, hint: "60点を算定。" }, { type: "finish" }] },
-            { id: "SHO-029", genre: "手術・処置", name: "志尊 淳 様", desc: "熱傷処置", icon: "🔥", color: "amber", scenario: "手のひらのやけど（100c㎡未満）の処置。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "熱傷処置", pts: 135, hint: "重症度によりますが、初期は135点など。" }, { type: "finish" }] },
-            { id: "SHO-030", genre: "手術・処置", name: "手術・処置マスター", icon: "🏆", color: "amber", scenario: "おめでとうございます！全ての算定の山を乗り越えました！", initial: [{n: "算定の極み", p: 100}], steps: [{ label: "グランドフィナーレ", type: "check", hint: "全150シナリオ、これにて完遂です！" }, { type: "finish" }] },
+// --- 第5弾：【手術・処置】トリビア付き30名（SHO-001〜SHO-030） ---
+            { id: "SHO-001", genre: "手術・処置", name: "木村 拓哉 様", desc: "創傷処置のサイズ", icon: "🩹", color: "amber", scenario: "手に5cmの切り傷。処置の範囲を選択してください。", initial: [{n: "再診料", p: 73}], steps: [{ label: "サイズ選択", type: "choice", choices: [{l: "100cm2未満", p: 52, ok: true}, {l: "100cm2以上", p: 90, ok: false}], hint: "5cmのキズなら最小区分です。" }, { type: "finish" }], trivia: "キズの手当（創傷処置）は面積で決まります。100平方cmは「ハガキ1枚分」くらい。それより小さいか大きいかが、算定の運命の分かれ道です！" },
+            { id: "SHO-002", genre: "手術・処置", name: "綾瀬 はるか 様", desc: "手術当日の再診料", icon: "✂️", color: "amber", scenario: "外来でイボ取り手術を実施。再診料は？", initial: [{n: "皮膚皮下腫瘍摘出術", p: 1660}], steps: [{ label: "再診料判断", type: "choice", choices: [{l: "再診料を算定", p: 73, ok: false}, {l: "再診料は算定不可", p: 0, ok: true}], hint: "手術当日は再診料が含まれます。" }, { type: "finish" }], trivia: "医療事務の鉄則！「手術をした日は再診料（外来管理加算も）は取れない」。これを知らずに算定すると、後で必ず返戻（差し戻し）を食らいます。" },
+            { id: "SHO-003", genre: "手術・処置", name: "堺 雅人 様", desc: "軟膏処置の算定", icon: "🧪", color: "amber", scenario: "広範囲の湿疹に軟膏を塗布（1000cm2以上）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "皮膚科軟膏処置", pts: 55, hint: "1000cm2以上なら55点。" }, { type: "finish" }], trivia: "ただ軟膏を塗るだけでも、面積が広ければ立派な「処置」。でも「1000平方cm（新聞紙半分くらい）」という広い面積が条件なので、意外とハードルが高いんです。" },
+            { id: "SHO-004", genre: "手術・処置", name: "北川 景子 様", desc: "点滴注射の回路", icon: "💧", color: "amber", scenario: "脱水症状のため500mlの点滴を実施。", initial: [], steps: [{ label: "注射料", type: "add", item: "点滴注射(500ml以上)", pts: 97, hint: "500ml以上は97点。" }, { type: "finish" }], trivia: "点滴の針を刺す手間、チューブ（回路）代、全部込みで97点。でも、15歳未満の子供だと、動かないように見守る「乳幼児加算」がさらにつきます。" },
+            { id: "SHO-005", genre: "手術・処置", name: "阿部 寛 様", desc: "鼻出血の止血処置", icon: "👃", color: "amber", scenario: "鼻血が止まらないため、ガーゼを詰めて止血。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "鼻出血止血法", pts: 110, hint: "110点を算定。" }, { type: "finish" }], trivia: "ティッシュを詰めるのとはワケが違う！医師が専門の器具で奥まで止血するのは「110点（1,100円相当）」の立派な手技なんです。" },
+            { id: "SHO-006", genre: "手術・処置", name: "長澤 まさみ 様", desc: "火傷（熱傷）の処置", icon: "🔥", color: "amber", scenario: "足に熱湯がかかった。初期の熱傷処置を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "サイズ選択", type: "add", item: "熱傷処置(100cm2未満)", pts: 135, hint: "火傷は通常の処置より高額。" }, { type: "finish" }], trivia: "普通のケガは52点ですが、火傷は135点！火傷は感染症のリスクが高く、処置がより慎重で大変なため、高い点数が設定されています。" },
+            { id: "SHO-007", genre: "手術・処置", name: "菅田 将暉 様", desc: "腰椎穿刺の算定", icon: "💉", color: "amber", scenario: "髄液を調べるため、腰に針を刺して採取。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手技", type: "add", item: "腰椎穿刺", pts: 220, hint: "220点を算定。" }, { type: "finish" }], trivia: "脊髄（せぼねの神経）の近くに針を通す、神経を使う処置。失敗が許されない難しい手技として、220点が認められています。" },
+            { id: "SHO-008", genre: "手術・処置", name: "石原 さとみ 様", desc: "ギプス固定(シーネ)", icon: "🦵", color: "amber", scenario: "足首の捻挫でギプス包帯固定（下腿）。", initial: [{n: "初診料", p: 288}], steps: [{ label: "固定", type: "add", item: "ギプス包帯(下腿)", pts: 780, hint: "780点を算定。" }, { type: "finish" }], trivia: "ギプスは「巻くとき」が一番高い！でも、翌日以降の巻き直しや調整は「ギプス修理」という別の点数（ぐっと安くなる）に変わります。" },
+            { id: "SHO-009", genre: "手術・処置", name: "佐藤 健 様", desc: "耳漏の清掃", icon: "👂", color: "amber", scenario: "外耳道が耳だれで汚れているため清掃。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "外耳道クリーニング", pts: 25, hint: "片耳なら25点。" }, { type: "finish" }], trivia: "耳掃除……ではなく「クリーニング」。耳鼻科ではよくある処置ですが、左右両方やっても点数が倍にはならない「片側・両側」のルールが重要です。" },
+            { id: "SHO-010", genre: "手術・処置", name: "広瀬 すず 様", desc: "抜歯手術（普通）", icon: "🦷", color: "amber", scenario: "虫歯が悪化した歯を1本抜いた。", initial: [], steps: [{ label: "手術", type: "add", item: "抜歯手術(普通歯)", pts: 165, hint: "165点を算定。" }, { type: "finish" }], trivia: "抜歯は「手術」のカテゴリー！歯の種類（親知らず等）によって点数が倍以上に跳ね上がるので、歯科事務の腕の見せ所です。" },
+            { id: "SHO-011", genre: "手術・処置", name: "松本人志 様", desc: "関節腔内注射", icon: "💉", color: "amber", scenario: "膝の痛みに対し、ヒアルロン酸を注入。", initial: [{n: "再診料", p: 73}], steps: [{ label: "注射", type: "add", item: "関節腔内注射", pts: 80, hint: "80点を算定。" }, { type: "finish" }], trivia: "普通の筋肉注射は20点ですが、関節の中へは80点。より深い場所に正確に打つ技術料が含まれています。まさに「神の一撃」ですね。" },
+            { id: "SHO-012", genre: "手術・処置", name: "本田 翼 様", desc: "コンタクト異物除去", icon: "👁️", color: "amber", scenario: "目の中にゴミが入ったため、医師が除去。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "眼表面異物除去術", pts: 135, hint: "角膜・結膜で点数が異なります。" }, { type: "finish" }], trivia: "目に刺さったゴミをピンセットで取る緊張感。場所が「黒目（角膜）」か「白目（結膜）」かで点数が変わる、非常に細かいルールがあります。" },
+            { id: "SHO-013", genre: "手術・処置", name: "山崎 賢人 様", desc: "吸入の算定", icon: "🌬️", color: "amber", scenario: "喉の腫れにネブライザーを実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "ネブライザー", pts: 12, hint: "12点を算定。" }, { type: "finish" }], trivia: "「12点（120円）」という安さ！でも、風邪薬の粉（薬剤料）は別で取れるので、事務員は薬剤代の合算を絶対に忘れてはいけません。" },
+            { id: "SHO-014", genre: "手術・処置", name: "今田 美桜 様", desc: "単純な皮膚切開", icon: "🔪", color: "amber", scenario: "膿が溜まった腫れを少し切って排出。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手術", type: "add", item: "皮膚切開術(小)", pts: 470, hint: "470点を算定。" }, { type: "finish" }], trivia: "膿（うみ）を出すための「切開」。手術の中では小さい部類ですが、麻酔をしたり後片付けをしたりと、事務も医師も大忙しになる項目です。" },
+            { id: "SHO-015", genre: "手術・処置", name: "横浜 流星 様", desc: "気管内挿管", icon: "🚑", color: "amber", scenario: "呼吸困難のため、気道に管を挿入。", initial: [], steps: [{ label: "手技", type: "add", item: "気管内挿管", pts: 600, hint: "600点を算定。" }, { type: "finish" }], trivia: "呼吸を助けるための命綱。非常に高い技術が必要なため、600点（6000円分）が認められています。まさに救急の最前線の算定です。" },
+            { id: "SHO-016", genre: "手術・処置", name: "斎藤 工 様", desc: "導尿の算定", icon: "🚰", color: "amber", scenario: "尿が出ないため、管を通して排出。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "導尿(一時的)", pts: 37, hint: "37点を算定。" }, { type: "finish" }], trivia: "「37点（370円）」。処置代よりも、実は使った管（カテーテル）の材料費のほうが高いこともある、意外なバランスの算定項目です。" },
+            { id: "SHO-017", genre: "手術・処置", name: "浜辺 美波 様", desc: "イボの冷凍凝固法", icon: "❄️", color: "amber", scenario: "液体窒素でイボを焼く処置（3箇所）。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "皮膚冷凍凝固法", pts: 210, hint: "個数に関わらず一連で210点。" }, { type: "finish" }], trivia: "「3個やったから630点！」……とはなりません！イボは何個処置しても「一連（セット）」で210点。たくさんある人ほど、実は患者さんはお得なんです。" },
+            { id: "SHO-018", genre: "手術・処置", name: "ムロツヨシ 様", desc: "鶏眼・胼胝処置", icon: "🦶", color: "amber", scenario: "足の「魚の目」を削った。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "鶏眼・胼胝処置", pts: 170, hint: "170点を算定。" }, { type: "finish" }], trivia: "魚の目削りは「170点」。でも、これも「1ヶ月に1回しか取れない」という制限があります。何度も通う患者さんの場合は、事務員のカレンダーチェックが必須！" },
+            { id: "SHO-019", genre: "手術・処置", name: "小栗 旬 様", desc: "鎖骨骨折の整復", icon: "🦴", color: "amber", scenario: "鎖骨が折れた。手で位置を戻して固定。", initial: [{n: "初診料", p: 288}], steps: [{ label: "手術", type: "add", item: "鎖骨骨折非観血的整復術", pts: 1300, hint: "切らない手術で1300点。" }, { type: "finish" }], trivia: "「切らない手術」もあるんです。手でボキッと位置を戻すのは「非観血的（ひかんけつてき）」と呼ばれ、立派な高額算定の対象です。" },
+            { id: "SHO-020", genre: "手術・処置", name: "指原 莉乃 様", desc: "抜糸（手術後の糸抜き）", icon: "✂️", color: "amber", scenario: "手術の傷跡が治ったので糸を抜いた。", initial: [{n: "再診料", p: 73}], steps: [{ label: "判断", type: "check", hint: "抜糸は「創傷処置」に含まれます。" }, { type: "finish" }], trivia: "意外！「抜糸代」という独立した項目はありません。キズの手当て（創傷処置）の中に含まれているので、いつもの処置代として算定します。" },
+            { id: "SHO-021", genre: "手術・処置", name: "大泉 洋 様", desc: "浣腸の算定", icon: "🚽", color: "amber", scenario: "ひどい便秘のため、院内で浣腸を実施。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "浣腸", pts: 60, hint: "60点を算定。" }, { type: "finish" }], trivia: "「60点（600円）」。薬剤（グリセリン浣腸など）をたっぷり使う場合は、その薬剤料もプラス。恥ずかしがらずに、事務員は正確に記録します！" },
+            { id: "SHO-022", genre: "手術・処置", name: "柴咲 コウ 様", desc: "胃洗浄の算定", icon: "🥤", color: "amber", scenario: "誤飲のため、胃の中を洗浄。", initial: [], steps: [{ label: "処置", type: "add", item: "胃洗浄", pts: 300, hint: "300点を算定。" }, { type: "finish" }], trivia: "緊急事態の胃洗浄。300点（3,000円分）ですが、夜間に救急で行う場合は、これにさらに「時間外加算」が乗り、より高い評価になります。" },
+            { id: "SHO-023", genre: "手術・処置", name: "福山 雅治 様", desc: "超音波ネブライザー", icon: "🌬️", color: "amber", scenario: "喘息の発作に対し、超音波式で吸入。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "超音波ネブライザー", pts: 24, hint: "通常の倍、24点。" }, { type: "finish" }], trivia: "霧がより細かい超音波式は、通常のネブライザー（12点）の倍、24点！機械の種類をカルテで見極めるのが、算定のプロへの近道です。" },
+            { id: "SHO-024", genre: "手術・処置", name: "天海 祐希 様", desc: "胸腔穿刺", icon: "🫁", color: "amber", scenario: "肺に溜まった水を抜く処置。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手技", type: "add", item: "胸腔穿刺", pts: 300, hint: "300点を算定。" }, { type: "finish" }], trivia: "肺の周りの水を抜くのは、呼吸を楽にするための大切な処置。300点ですが、抜いた水の検査を一緒にする場合は、検査代もセットで忘れずに！" },
+            { id: "SHO-025", genre: "手術・処置", name: "米津 玄師 様", desc: "咽頭異物摘出術", icon: "🐟", color: "amber", scenario: "喉に魚の骨が刺さったのを取った。", initial: [{n: "再診料", p: 73}], steps: [{ label: "手術", type: "add", item: "咽頭異物摘出術", pts: 320, hint: "320点を算定。" }, { type: "finish" }], trivia: "魚の骨を取るのも、医学的には「摘出術（手術）」！簡単なようで、デリケートな喉を傷つけない高度な技。3200円相当の価値があるんです。" },
+            { id: "SHO-026", genre: "手術・処置", name: "吉高 由里子 様", desc: "薬物除去(胃内)", icon: "💊", color: "amber", scenario: "過剰摂取した薬物を内視鏡で回収。", initial: [], steps: [{ label: "手術", type: "add", item: "胃内異物除去術", pts: 2160, hint: "2160点の高額算定。" }, { type: "finish" }], trivia: "内視鏡を使って異物を取るのは2,000点超えの大きな手術！使う道具（バスケットカテーテル等）が数万円することもある、緊迫の現場です。" },
+            { id: "SHO-027", genre: "手術・処置", name: "ディーン・フジオカ 様", desc: "流注穿刺", icon: "💉", color: "amber", scenario: "関節の炎症による膿を抜き、洗浄。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "流注穿刺", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "関節の中に針を刺し、中の液体を抜いて洗う処置。普通の注射（80点）よりも工程が多いため、キリ良く100点（1000円）が設定されています。" },
+            { id: "SHO-028", genre: "手術・処置", name: "広瀬 アリス 様", desc: "鼓膜穿刺", icon: "👂", color: "amber", scenario: "中耳炎で鼓膜の内側に溜まった膿を抜く。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "鼓膜穿刺", pts: 120, hint: "片耳120点。" }, { type: "finish" }], trivia: "鼓膜に針を通す、聞くだけで痛そうな処置。でもこれで一気に耳の痛みが取れることも！耳鼻科事務にとっては、子供が泣くのをなだめるのも仕事のうち？" },
+            { id: "SHO-029", genre: "手術・処置", name: "タモリ 様", desc: "人工呼吸の算定", icon: "🫁", color: "amber", scenario: "自発呼吸が弱いため、人工呼吸器を装着。", initial: [], steps: [{ label: "処置", type: "add", item: "人工呼吸", pts: 248, hint: "1日につき248点。" }, { type: "finish" }], trivia: "人工呼吸器は「1日248点」。もし30分しかやっていなくても、24時間やっていても、同じ点数。医療現場の「時間」と「点数」の不思議な関係です。" },
+            { id: "SHO-030", genre: "手術・処置", name: "笑福亭鶴瓶 様", desc: "体外衝撃波結石破砕術", icon: "⚡", color: "amber", scenario: "腎結石を衝撃波で粉砕。", initial: [], steps: [{ label: "手術", type: "add", item: "体外衝撃波結石破砕術", pts: 18600, hint: "18600点の超特大点数！" }, { type: "finish" }], trivia: "おめでとうございます！最後は驚愕の18,600点（18万6000円相当）！メスを使わず石を砕く最新技術は、医療事務で扱う点数の中でも最大級の輝きです！" },     		        
         ];
 
-        const GENRES = ["外来算定", "画像・検査", "投薬・管理", "時間外・特例", "手術・処置"];
+        /**
+         * ==========================================
+         * 2. アプリケーション・ロジック (教育エンタメ版)
+         * ==========================================
+         */
+/**
+         * ==========================================
+         * 2. アプリケーション・ロジック (トリビア完全実装版)
+         * ==========================================
+         */
+        let state = {
+            view: 'menu',
+            activeGenre: 'ALL',
+            selectedCase: null,
+            currentItems: [],
+            totalPts: 0,
+            step: 0,
+            completedCount: 0,
+            isMobileMenuOpen: false
+        };
 
-        // --- 2. エンジン部 ---
-        let state = { view: 'portal', activeGenre: '外来算定', activeCase: null, step: 0, items: [], score: 0, isMobileMenuOpen: false };
+        // 進捗の読み込み
+        if(localStorage.getItem('crossCare_completed')) {
+            state.completedCount = parseInt(localStorage.getItem('crossCare_completed'));
+        }
+
+        // ジャンルに基づいた豆知識を生成する関数
+        function getTrivia(sc) {
+            if (sc.trivia) return sc.trivia; // 個別に設定があればそれを優先
+            
+            const genreTips = {
+                "外来算定": "「初診料」は全国どの病院でも基本同じですが、紹介状なしで大病院に行くと、追加で数千円の特別料金（選定療養費）がかかるのが今のルールです。",
+                "画像・検査": "血液検査やレントゲンは、一度にたくさんやると「まるめ」と言って、点数が安く抑えられる仕組みがあります。医療費の膨張を防ぐ国の工夫なんです。",
+                "投薬・管理": "お薬手帳を持っていくと安くなるのは、薬剤師さんが「過去の薬との飲み合わせ」を調べる手間が省けるから。逆に持ってないと、確認に時間がかかるので高くなります。",
+                "時間外・特例": "夜22時を過ぎると「深夜加算」がつきます。これはコンビニの深夜割増と同じようなもので、夜間に医療体制を維持するための大切なコストなんです。",
+                "手術・処置": "手術代には、実は「糸代」や「ガーゼ代」が含まれていることが多いです。でも、特殊な高性能メスや人工関節などは「特定保険医療材料」として別料金になります。"
+            };
+            return genreTips[sc.genre] || "医療事務の世界では、1点は10円として計算されます。私たちが窓口で払うのは、そのうちの1〜3割だけなんです。";
+        }
+
+        function getRank(count) {
+            if (count >= 150) return { name: "医療事務総帥", color: "text-purple-600", icon: "👑" };
+            if (count >= 100) return { name: "レセプトの魔術師", color: "text-red-600", icon: "🧙" };
+            if (count >= 50) return { name: "受付のエース", color: "text-blue-600", icon: "⭐" };
+            if (count >= 10) return { name: "期待の新人", color: "text-green-600", icon: "🔰" };
+            return { name: "算定の見習い", color: "text-slate-500", icon: "🐣" };
+        }
 
         function render() {
             const root = document.getElementById('app-root');
-            if (state.view === 'portal') {
-                const filtered = SCENARIOS.filter(s => s.genre === state.activeGenre);
+            const rank = getRank(state.completedCount);
+
+            if (state.view === 'menu') {
+                const filtered = state.activeGenre === 'ALL' 
+                    ? SCENARIOS 
+                    : SCENARIOS.filter(s => s.genre === state.activeGenre);
+
                 root.innerHTML = `
-                    <div class="md:hidden w-full bg-slate-900 text-white p-4 flex justify-between items-center fixed top-0 z-50">
-                        <h1 class="font-black italic">CrossCare Hub v3.2</h1>
-                        <button onclick="toggleMobileMenu()" class="text-2xl">☰</button>
+                    <div class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 p-6 shrink-0">
+                        <div class="mb-8">
+                            <h1 class="text-xl font-black text-white tracking-tighter italic">CrossCare Hub</h1>
+                            <p class="text-[10px] text-slate-500 font-bold uppercase">Learning Edition</p>
+                        </div>
+                        <div class="mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
+                            <p class="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Player Rank</p>
+                            <div class="${rank.color} font-black text-lg flex items-center gap-2">${rank.icon} ${rank.name}</div>
+                            <div class="w-full bg-slate-700 h-1.5 mt-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-500 h-full" style="width: ${(state.completedCount/150)*100}%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-2">${state.completedCount} / 150 Cases Clear</p>
+                        </div>
+                        <nav class="space-y-1">
+                            ${['ALL', '外来算定', '画像・検査', '投薬・管理', '時間外・特例', '手術・処置'].map(g => `
+                                <button onclick="setGenre('${g}')" class="w-full text-left px-4 py-3 rounded-lg text-sm font-bold transition-all ${state.activeGenre === g ? 'sidebar-item-active' : 'hover:bg-slate-800'}">
+                                    ${g === 'ALL' ? '🌍 全ジャンル' : g}
+                                </button>
+                            `).join('')}
+                        </nav>
                     </div>
-                    <nav class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900 text-white flex flex-col transition-transform duration-300 transform ${state.isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static shadow-2xl h-full">
-                        <div class="p-8 border-b border-slate-800 hidden md:block">
-                            <h1 class="text-2xl font-black tracking-tighter italic text-blue-500">CrossCare Hub</h1>
+                    <div class="flex-grow flex flex-col h-screen overflow-hidden">
+                        <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shrink-0 shadow-lg">
+                            <div class="font-black italic">CrossCare Hub</div>
+                            <button onclick="toggleMobileMenu()" class="p-2 bg-slate-800 rounded text-xs font-bold uppercase">Menu</button>
                         </div>
-                        <div class="flex-grow py-8 md:py-4 mt-16 md:mt-0 overflow-y-auto">
-                            ${GENRES.map(g => {
-                                const currentCount = SCENARIOS.filter(s => s.genre === g).length;
-                                return `
-                                <div onclick="setGenre('${g}')" class="px-8 py-5 flex justify-between items-center cursor-pointer transition-all ${state.activeGenre === g ? 'sidebar-item-active' : 'hover:bg-slate-800 text-slate-400'}">
-                                    <span class="text-xs font-bold uppercase tracking-widest">${g}</span>
-                                    <span class="text-[9px] bg-slate-800 px-2 py-1 rounded opacity-60">${currentCount}/30</span>
-                                </div>`;
-                            }).join('')}
-                        </div>
-                    </nav>
-                    <main class="flex-grow p-6 md:p-12 mt-16 md:mt-0 overflow-y-auto bg-slate-50">
-                        <div class="max-w-6xl mx-auto">
-                            <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-8 border-b pb-4 flex items-center justify-between uppercase">
-                                <span>${state.activeGenre}</span>
-                                <span class="text-[10px] font-mono text-slate-400 border px-3 py-1 rounded-full bg-white">${filtered.length} CASES LOADED</span>
-                            </h2>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                ${filtered.map(s => `
-                                    <div onclick="initCase('${s.id}')" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col h-full">
-                                        <div class="flex justify-between items-start mb-6">
-                                            <div class="text-4xl bg-slate-50 p-4 rounded-2xl shadow-inner">${s.icon}</div>
-                                            <div class="text-[9px] font-black text-slate-300 tracking-widest uppercase">${s.id}</div>
-                                        </div>
-                                        <h3 class="font-black text-slate-800 text-lg mb-1">${s.name}</h3>
-                                        <p class="text-[10px] text-slate-400 font-bold mb-8 uppercase tracking-widest leading-relaxed">${s.desc}</p>
-                                        <div class="mt-auto pt-4 border-t border-slate-50 text-[10px] font-black text-blue-600 tracking-widest uppercase italic">Execute Training →</div>
+                        <div class="flex-grow overflow-y-auto p-4 md:p-8 bg-slate-50">
+                            <div class="max-w-4xl mx-auto">
+                                <header class="mb-8 flex justify-between items-end">
+                                    <div>
+                                        <h2 class="text-3xl font-black text-slate-900 tracking-tighter">${state.activeGenre}</h2>
+                                        <p class="text-slate-500 text-sm">有名人たちの症例から学ぶ、医療費の仕組み。</p>
                                     </div>
-                                `).join('')}
+                                    <div class="text-right hidden sm:block">
+                                        <span class="text-slate-400 text-[10px] font-bold block uppercase tracking-tighter italic">Total Progress</span>
+                                        <span class="text-2xl font-black text-slate-900">${Math.floor((state.completedCount/150)*100)}%</span>
+                                    </div>
+                                </header>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    ${filtered.map(s => `
+                                        <button onclick="initCase('${s.id}')" class="group bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all text-left flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-2xl group-hover:rotate-12 transition-transform">${s.icon}</div>
+                                            <div class="flex-grow">
+                                                <div class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1 font-mono">${s.id}</div>
+                                                <div class="font-black text-slate-800">${s.name}</div>
+                                                <div class="text-xs text-slate-500">${s.desc}</div>
+                                            </div>
+                                            <div class="text-slate-300 font-black group-hover:text-blue-500 italic text-sm">GO</div>
+                                        </button>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
-                    </main>`;
-            } else {
-                const c = state.activeCase;
-                const s = c.steps[state.step];
+                    </div>
+                `;
+            } else if (state.view === 'sim') {
+                const sc = state.selectedCase;
+                const currentStep = sc.steps[state.step];
+                const isFinished = currentStep.type === 'finish';
+                const yen = (state.totalPts * 10).toLocaleString();
+                const jiko = Math.floor(state.totalPts * 3).toLocaleString();
+
                 root.innerHTML = `
-                    <div class="w-full flex flex-col bg-slate-100 h-screen p-2 md:p-4 overflow-hidden">
-                        <header class="bg-white p-4 rounded-2xl shadow-sm border flex justify-between items-center mb-4">
-                            <button onclick="state.view='portal';render();" class="text-[9px] font-black text-slate-500 border rounded-xl px-4 py-2 hover:bg-slate-50">◀ BACK</button>
-                            <h2 class="font-black text-slate-900 tracking-widest text-[10px] md:text-xs uppercase">${c.name} [${c.id}]</h2>
-                            <div class="bg-slate-900 text-white px-6 py-2 rounded-xl font-black italic shadow-xl text-xs">SCORE ${state.score}</div>
-                        </header>
-                        <div class="flex flex-col md:flex-row gap-4 flex-grow overflow-hidden">
-                            <div class="w-full md:w-1/4 bg-white rounded-3xl p-8 border shadow-sm flex flex-col overflow-y-auto">
-                                <span class="text-[9px] font-black text-slate-300 uppercase mb-4 tracking-widest">Medical Chart</span>
-                                <p class="text-xs md:text-sm font-bold text-slate-600 border-l-4 border-slate-900 pl-4 italic leading-loose">${c.scenario}</p>
-                            </div>
-                            <div class="flex-grow flex flex-col gap-4 overflow-hidden">
-                                <div class="bg-white rounded-3xl p-8 border shadow-sm flex-grow overflow-y-auto">
-                                    <span class="text-[9px] font-black text-slate-300 uppercase mb-6 block tracking-widest">Calculation Log</span>
-                                    <div class="space-y-3 font-mono text-xs">
-                                        ${state.items.map(i => `<div class="flex justify-between border-b border-slate-50 pb-2"><span>${i.n}</span><span class="font-black underline decoration-blue-500">${i.p}</span></div>`).join('')}
+                    <div class="w-full h-screen bg-slate-900 flex flex-col md:flex-row text-white overflow-hidden">
+                        <div class="w-full md:w-1/3 p-6 md:p-10 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between shrink-0 overflow-y-auto">
+                            <div>
+                                <button onclick="state.view='menu';render();" class="text-slate-500 hover:text-white mb-8 block text-sm font-bold tracking-widest uppercase italic">← Quit Simulation</button>
+                                <div class="mb-6">
+                                    <span class="px-3 py-1 bg-blue-600 text-[10px] font-black rounded-full uppercase tracking-widest">${sc.genre}</span>
+                                    <h2 class="text-4xl font-black mt-4 tracking-tighter leading-none">${sc.name}</h2>
+                                    <p class="text-slate-400 mt-4 text-sm leading-relaxed">${sc.scenario}</p>
+                                </div>
+                                <div class="space-y-4 pt-6 border-t border-slate-800">
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-slate-500 text-xs font-bold uppercase tracking-widest italic">Total Score</span>
+                                        <span class="text-5xl font-black text-blue-400 tracking-tighter">${state.totalPts}<span class="text-sm ml-1 text-slate-500">pts</span></span>
+                                    </div>
+                                    <div class="flex justify-between text-xs font-bold pt-2">
+                                        <span class="text-slate-500 uppercase tracking-tighter">診療費10割 (国+自分)</span>
+                                        <span class="text-slate-300 font-mono">¥${yen}</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-black border-t border-slate-800 pt-2">
+                                        <span class="text-slate-500 text-xs uppercase tracking-tighter">窓口での支払い (3割)</span>
+                                        <span class="text-green-400 font-mono text-lg">¥${jiko}</span>
                                     </div>
                                 </div>
-                                <div class="bg-slate-900 p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] shadow-2xl flex justify-center items-center">
-                                    ${renderActionButtons(s)}
-                                </div>
-                            </div>
-                            <div class="hidden md:flex w-1/4 bg-slate-800 text-white rounded-3xl p-8 shadow-xl flex-col">
-                                <span class="text-[9px] font-black text-slate-500 uppercase mb-10 text-center tracking-[0.2em]">Step Monitor</span>
-                                <div class="space-y-8 flex-grow">
-                                    ${c.steps.map((step, i) => `<div class="${i === state.step ? 'text-blue-400' : (i < state.step ? 'opacity-30' : 'opacity-10')} text-[10px] font-black transition-all">STEP ${i+1}: ${step.label || 'DONE'}</div>`).join('')}
-                                </div>
-                                <div class="mt-4 p-5 bg-white/5 rounded-2xl border border-white/10 text-[10px] text-blue-200 font-bold leading-relaxed shadow-inner">💡 ${s.hint || '計算を完了させて終了します'}</div>
                             </div>
                         </div>
-                    </div>`;
+                        <div class="flex-grow flex flex-col bg-slate-950 p-6 md:p-12 overflow-y-auto">
+                            <div class="max-w-xl mx-auto w-full">
+                                <div class="mb-8">
+                                    <p class="text-blue-500 font-black text-[10px] uppercase tracking-[0.2em] mb-2">Simulation Step ${state.step + 1}</p>
+                                    <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-blue-500 transition-all duration-700" style="width:${((state.step + 1) / sc.steps.length) * 100}%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl mb-8 relative overflow-hidden">
+                                    ${isFinished ? `
+                                        <div class="text-center py-4 relative z-10">
+                                            <div class="text-5xl mb-4">📘</div>
+                                            <h3 class="text-xl font-black mb-4 leading-tight uppercase tracking-tighter">【医療事務の裏側・トリビア】</h3>
+                                            <div class="bg-slate-800/50 p-6 rounded-2xl mb-8 border-l-4 border-blue-500 text-left">
+                                                <p class="text-slate-300 text-sm leading-relaxed font-medium">
+                                                    ${getTrivia(sc)}
+                                                </p>
+                                            </div>
+                                            <button onclick="finishCase()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black shadow-xl hover:bg-blue-500 transition-all text-sm tracking-widest uppercase">Next Celebrity</button>
+                                        </div>
+                                    ` : `
+                                        <h3 class="text-lg font-bold mb-6 text-slate-100 leading-snug">${currentStep.hint || '適切なアクションを選択してください。'}</h3>
+                                        <div class="space-y-4">
+                                            ${renderAction(currentStep)}
+                                        </div>
+                                    `}
+                                </div>
+                                <div class="space-y-2 opacity-60">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Billing Items List</p>
+                                    ${state.currentItems.map(item => `
+                                        <div class="flex justify-between items-center bg-slate-900/50 p-3 rounded-xl border border-slate-800/50">
+                                            <span class="text-[11px] font-bold text-slate-400">${item.n}</span>
+                                            <span class="text-[11px] font-black text-blue-500">${item.p} PTS</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        function renderActionButtons(s) {
-            const btnClass = "bg-blue-600 text-white px-10 py-4 rounded-xl font-black shadow-lg hover:bg-blue-500 transition-all uppercase tracking-widest text-xs md:text-sm";
-            if (s.type === 'finish') return `<button onclick="state.view='portal';render();" class="bg-white text-slate-900 px-12 py-4 rounded-xl font-black shadow-xl hover:scale-105 transition-all text-xs tracking-widest">COMPLETE MISSION</button>`;
-            if (s.type === 'check') return `<button onclick="state.step++;render();" class="${btnClass}">Execute Check</button>`;
-            if (s.type === 'add') return `<button onclick="doAdd('${s.item}', ${s.pts})" class="${btnClass}">Add ${s.pts} pts</button>`;
-            if (s.type === 'choice') return `<div class="flex flex-col md:flex-row gap-4 w-full">${s.choices.map(c => `<button onclick="${c.ok ? `doAdd('${c.l}', ${c.p})` : `alert('Error: Incorrect Logic')`}" class="flex-grow py-4 rounded-xl font-black shadow-lg transition-all text-xs ${c.ok ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300'}">${c.l}</button>`).join('')}</div>`;
+        function renderAction(s) {
+            const btnClass = "w-full bg-slate-800 hover:bg-blue-600 text-white p-5 rounded-2xl font-black transition-all text-sm text-left flex justify-between items-center group shadow-lg";
+            if (s.type === 'check') return `<button onclick="state.step++;render();" class="${btnClass}"><span>内容をカルテに反映する</span><span class="opacity-30 group-hover:opacity-100 italic">NEXT</span></button>`;
+            if (s.type === 'add') return `<button onclick="doAdd('${s.item}', ${s.pts})" class="${btnClass}"><span>${s.item}を算定</span><span class="text-[10px] text-blue-400">+${s.pts} PTS</span></button>`;
+            if (s.type === 'choice') {
+                return `<div class="grid grid-cols-1 gap-4 w-full">
+                    ${s.choices.map(c => `
+                        <button onclick="${c.ok ? `doAdd('${c.l}', ${c.p})` : `handleError('${c.l}')`}" 
+                                class="w-full text-left p-5 rounded-2xl font-bold transition-all text-sm flex justify-between items-center ${c.ok ? 'bg-slate-800 hover:bg-blue-600 text-white shadow-lg' : 'bg-slate-800/30 text-slate-600 border border-slate-800 hover:bg-red-900/10'}">
+                            <span>${c.l}</span>
+                            <span class="text-[10px] opacity-40 font-mono tracking-tighter">${c.p} PTS</span>
+                        </button>
+                    `).join('')}
+                </div>`;
+            }
         }
 
-        function toggleMobileMenu() { state.isMobileMenuOpen = !state.isMobileMenuOpen; render(); }
-        function setGenre(g) { state.activeGenre = g; state.isMobileMenuOpen = false; render(); }
-        function initCase(id) {
-            const sc = SCENARIOS.find(x => x.id === id);
-            state = { view: 'sim', activeGenre: state.activeGenre, activeCase: sc, step: 0, items: [...sc.initial], score: sc.initial.reduce((a,b)=>a+b.p,0), isMobileMenuOpen: false };
+        function handleError(label) {
+            alert(`【誤請求アラート！】\n「${label}」は今回のケースでは算定できません。\n条件をもう一度読み直してみてください。`);
+        }
+
+        function doAdd(name, pts) {
+            state.currentItems.push({ n: name, p: pts });
+            state.totalPts += pts;
+            state.step++;
             render();
         }
-        function doAdd(n, p) { state.items.push({n, p}); state.score += p; state.step++; render(); }
+
+        function initCase(id) {
+            const sc = SCENARIOS.find(x => x.id === id);
+            state.selectedCase = sc;
+            state.view = 'sim';
+            state.step = 0;
+            state.currentItems = JSON.parse(JSON.stringify(sc.initial));
+            state.totalPts = state.currentItems.reduce((acc, cur) => acc + cur.p, 0);
+            render();
+        }
+
+        function finishCase() {
+            state.completedCount++;
+            localStorage.setItem('crossCare_completed', state.completedCount);
+            state.view = 'menu';
+            render();
+        }
+
+        function setGenre(g) { state.activeGenre = g; render(); }
+        function toggleMobileMenu() { state.isMobileMenuOpen = !state.isMobileMenuOpen; render(); }
 
         render();
     </script>
