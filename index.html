@@ -21,14 +21,15 @@
 
     <div id="app-root" class="flex w-full h-screen relative"></div>
 
-    <script>
+<script>
         /**
          * ==========================================
-         * 1. 症例データベース (ここに「省略データ.txt」を貼り付けてください)
+         * 1. 症例データセット (150名フル実装)
          * ==========================================
          */
+        const GENRES = ['ALL', '外来算定', '画像・検査', '投薬・管理', '時間外・特例', '手術・処置'];
         const SCENARIOS = [
-             // --- 第1弾：【外来算定】トリビア付き30名（GAI-001〜GAI-030） ---            
+ // --- 第1弾：【外来算定】トリビア付き30名（GAI-001〜GAI-030） ---            
 			{ id: "GAI-001", genre: "外来算定", name: "佐藤 栄一 様", desc: "酸素算定と適応病名", icon: "👤", color: "blue", scenario: "酸素吸入の報告あり。適応病名の有無をチェックしてください。", initial: [{n: "初診料", p: 288}], steps: [{ label: "病名チェック", type: "check", hint: "酸素(J024)に必要な病名を依頼します。" }, { label: "算定", type: "add", item: "酸素(J024)", pts: 65, hint: "65点追加。" }, { type: "finish" }], trivia: "酸素は「薬」ではなく「材料」扱い。実は使う量や装置によって、計算式がパズルのように複雑な項目なんです。" },
             { id: "GAI-002", genre: "外来算定", name: "鈴木 芳子 様", desc: "処方漏れ確認", icon: "💊", color: "blue", scenario: "医師のオーダー漏れを指摘してください。", initial: [{n: "再診料一式", p: 147}], steps: [{ label: "不備指摘", type: "check", hint: "カルテの不備を医師に伝えます。" }, { label: "算定", type: "add", item: "処方箋料", pts: 86, hint: "86点。" }, { type: "finish" }], trivia: "処方箋料は「お薬の指示書代」。医師がカルテに書き忘れると、病院は1円も請求できない「事務の確認」が光る場所です。" },
             { id: "GAI-003", genre: "外来算定", name: "高橋 健太 様", desc: "初再診の境界線", icon: "🩹", color: "blue", scenario: "風邪通院中にケガで来院。初診になるか再診になるか？", initial: [], steps: [{ label: "判断", type: "choice", choices: [{l: "初診料を算定", p: 288, ok: false}, {l: "再診料を算定", p: 73, ok: true}], hint: "別の病気で通院中の場合、初診料は取れません。" }, { type: "finish" }], trivia: "別の病気でも「通院中」なら再診。でも、本人が勝手に中断して期間が空くと初診に戻る「1ヶ月ルール」が存在します。" },
@@ -186,17 +187,12 @@
             { id: "SHO-027", genre: "手術・処置", name: "ディーン・フジオカ 様", desc: "流注穿刺", icon: "💉", color: "amber", scenario: "関節の炎症による膿を抜き、洗浄。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "流注穿刺", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "関節の中に針を刺し、中の液体を抜いて洗う処置。普通の注射（80点）よりも工程が多いため、キリ良く100点（1000円）が設定されています。" },
             { id: "SHO-028", genre: "手術・処置", name: "広瀬 アリス 様", desc: "鼓膜穿刺", icon: "👂", color: "amber", scenario: "中耳炎で鼓膜の内側に溜まった膿を抜く。", initial: [{n: "再診料", p: 73}], steps: [{ label: "処置", type: "add", item: "鼓膜穿刺", pts: 120, hint: "片耳120点。" }, { type: "finish" }], trivia: "鼓膜に針を通す、聞くだけで痛そうな処置。でもこれで一気に耳の痛みが取れることも！耳鼻科事務にとっては、子供が泣くのをなだめるのも仕事のうち？" },
             { id: "SHO-029", genre: "手術・処置", name: "タモリ 様", desc: "人工呼吸の算定", icon: "🫁", color: "amber", scenario: "自発呼吸が弱いため、人工呼吸器を装着。", initial: [], steps: [{ label: "処置", type: "add", item: "人工呼吸", pts: 248, hint: "1日につき248点。" }, { type: "finish" }], trivia: "人工呼吸器は「1日248点」。もし30分しかやっていなくても、24時間やっていても、同じ点数。医療現場の「時間」と「点数」の不思議な関係です。" },
-            { id: "SHO-030", genre: "手術・処置", name: "笑福亭鶴瓶 様", desc: "体外衝撃波結石破砕術", icon: "⚡", color: "amber", scenario: "腎結石を衝撃波で粉砕。", initial: [], steps: [{ label: "手術", type: "add", item: "体外衝撃波結石破砕術", pts: 18600, hint: "18600点の超特大点数！" }, { type: "finish" }], trivia: "おめでとうございます！最後は驚愕の18,600点（18万6000円相当）！メスを使わず石を砕く最新技術は、医療事務で扱う点数の中でも最大級の輝きです！" },     		        
+            { id: "SHO-030", genre: "手術・処置", name: "笑福亭鶴瓶 様", desc: "体外衝撃波結石破砕術", icon: "⚡", color: "amber", scenario: "腎結石を衝撃波で粉砕。", initial: [], steps: [{ label: "手術", type: "add", item: "体外衝撃波結石破砕術", pts: 18600, hint: "18600点の超特大点数！" }, { type: "finish" }], trivia: "おめでとうございます！最後は驚愕の18,600点（18万6000円相当）！メスを使わず石を砕く最新技術は、医療事務で扱う点数の中でも最大級の輝きです！" },		
         ];
 
         /**
          * ==========================================
-         * 2. アプリケーション・ロジック (教育エンタメ版)
-         * ==========================================
-         */
-/**
-         * ==========================================
-         * 2. アプリケーション・ロジック (トリビア完全実装版)
+         * 2. アプリケーション・ロジック
          * ==========================================
          */
         let state = {
@@ -210,25 +206,25 @@
             isMobileMenuOpen: false
         };
 
-        // 進捗の読み込み
+        // ローカルストレージから進捗を読み込み
         if(localStorage.getItem('crossCare_completed')) {
             state.completedCount = parseInt(localStorage.getItem('crossCare_completed'));
         }
 
-        // ジャンルに基づいた豆知識を生成する関数
+        // トリビア取得関数
         function getTrivia(sc) {
-            if (sc.trivia) return sc.trivia; // 個別に設定があればそれを優先
-            
+            if (sc.trivia) return sc.trivia;
             const genreTips = {
-                "外来算定": "「初診料」は全国どの病院でも基本同じですが、紹介状なしで大病院に行くと、追加で数千円の特別料金（選定療養費）がかかるのが今のルールです。",
-                "画像・検査": "血液検査やレントゲンは、一度にたくさんやると「まるめ」と言って、点数が安く抑えられる仕組みがあります。医療費の膨張を防ぐ国の工夫なんです。",
-                "投薬・管理": "お薬手帳を持っていくと安くなるのは、薬剤師さんが「過去の薬との飲み合わせ」を調べる手間が省けるから。逆に持ってないと、確認に時間がかかるので高くなります。",
-                "時間外・特例": "夜22時を過ぎると「深夜加算」がつきます。これはコンビニの深夜割増と同じようなもので、夜間に医療体制を維持するための大切なコストなんです。",
-                "手術・処置": "手術代には、実は「糸代」や「ガーゼ代」が含まれていることが多いです。でも、特殊な高性能メスや人工関節などは「特定保険医療材料」として別料金になります。"
+                "外来算定": "「初診料」は紹介状なしの大病院では特別料金がかかるルールになっています。",
+                "画像・検査": "検査を一度にたくさん行うと点数が抑えられる「まるめ」という仕組みがあります。",
+                "投薬・管理": "お薬手帳を持参すると安くなるのは、確認の手間が省けるためです。",
+                "時間外・特例": "夜22時以降は深夜加算がつきます。夜間の医療体制を維持するためのコストです。",
+                "手術・処置": "手術代には基本的に糸やガーゼ代が含まれています。"
             };
-            return genreTips[sc.genre] || "医療事務の世界では、1点は10円として計算されます。私たちが窓口で払うのは、そのうちの1〜3割だけなんです。";
+            return genreTips[sc.genre] || "医療事務では1点は10円換算。窓口負担はその1〜3割です。";
         }
 
+        // ランク取得関数
         function getRank(count) {
             if (count >= 150) return { name: "医療事務総帥", color: "text-purple-600", icon: "👑" };
             if (count >= 100) return { name: "レセプトの魔術師", color: "text-red-600", icon: "🧙" };
@@ -237,6 +233,21 @@
             return { name: "算定の見習い", color: "text-slate-500", icon: "🐣" };
         }
 
+        // スマホメニューの開閉
+        function toggleMobileMenu() {
+            state.isMobileMenuOpen = !state.isMobileMenuOpen;
+            render();
+        }
+
+        // ジャンル切り替え（スマホメニューを閉じる処理付き）
+        function setGenre(g) {
+            state.activeGenre = g;
+            state.isMobileMenuOpen = false;
+            state.view = 'menu';
+            render();
+        }
+
+        // メイン描画関数
         function render() {
             const root = document.getElementById('app-root');
             const rank = getRank(state.completedCount);
@@ -247,56 +258,78 @@
                     : SCENARIOS.filter(s => s.genre === state.activeGenre);
 
                 root.innerHTML = `
-                    <div class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 p-6 shrink-0">
-                        <div class="mb-8">
-                            <h1 class="text-xl font-black text-white tracking-tighter italic">CrossCare Hub</h1>
-                            <p class="text-[10px] text-slate-500 font-bold uppercase">Learning Edition</p>
-                        </div>
-                        <div class="mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
-                            <p class="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Player Rank</p>
-                            <div class="${rank.color} font-black text-lg flex items-center gap-2">${rank.icon} ${rank.name}</div>
-                            <div class="w-full bg-slate-700 h-1.5 mt-2 rounded-full overflow-hidden">
-                                <div class="bg-blue-500 h-full" style="width: ${(state.completedCount/150)*100}%"></div>
+                    <div class="flex flex-col md:flex-row w-full h-full relative overflow-hidden">
+                        
+                        ${state.isMobileMenuOpen ? `
+                        <div class="fixed inset-0 bg-slate-950/95 z-[100] md:hidden flex flex-col p-8">
+                            <div class="flex justify-between items-center mb-10">
+                                <div class="font-black italic text-xl text-blue-500 text-white">GENRE MENU</div>
+                                <button onclick="toggleMobileMenu()" class="p-2 bg-slate-800 rounded text-xs font-bold text-white uppercase">Close</button>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-2">${state.completedCount} / 150 Cases Clear</p>
+                            <div class="flex flex-col gap-3 overflow-y-auto">
+                                ${GENRES.map(g => `
+                                    <button onclick="setGenre('${g}')" 
+                                        class="w-full py-5 px-6 rounded-xl font-black text-left transition-all ${state.activeGenre === g ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-900 text-slate-400 border border-slate-800'}">
+                                        ${g === 'ALL' ? '🌍 全ジャンル' : g}
+                                    </button>
+                                `).join('')}
+                            </div>
                         </div>
-                        <nav class="space-y-1">
-                            ${['ALL', '外来算定', '画像・検査', '投薬・管理', '時間外・特例', '手術・処置'].map(g => `
-                                <button onclick="setGenre('${g}')" class="w-full text-left px-4 py-3 rounded-lg text-sm font-bold transition-all ${state.activeGenre === g ? 'sidebar-item-active' : 'hover:bg-slate-800'}">
-                                    ${g === 'ALL' ? '🌍 全ジャンル' : g}
-                                </button>
-                            `).join('')}
-                        </nav>
-                    </div>
-                    <div class="flex-grow flex flex-col h-screen overflow-hidden">
-                        <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shrink-0 shadow-lg">
-                            <div class="font-black italic">CrossCare Hub</div>
-                            <button onclick="toggleMobileMenu()" class="p-2 bg-slate-800 rounded text-xs font-bold uppercase">Menu</button>
+                        ` : ''}
+
+                        <div class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 p-6 shrink-0">
+                            <div class="mb-8">
+                                <h1 class="text-xl font-black text-white tracking-tighter italic">CrossCare Hub</h1>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase">Learning Edition</p>
+                            </div>
+                            <div class="mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
+                                <p class="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Player Rank</p>
+                                <div class="${rank.color} font-black text-lg flex items-center gap-2">${rank.icon} ${rank.name}</div>
+                                <div class="w-full bg-slate-700 h-1.5 mt-2 rounded-full overflow-hidden">
+                                    <div class="bg-blue-500 h-full" style="width: ${(state.completedCount/150)*100}%"></div>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-2">${state.completedCount} / 150 Cases Clear</p>
+                            </div>
+                            <nav class="space-y-1">
+                                ${GENRES.map(g => `
+                                    <button onclick="setGenre('${g}')" class="w-full text-left px-4 py-3 rounded-lg text-sm font-bold transition-all ${state.activeGenre === g ? 'sidebar-item-active' : 'hover:bg-slate-800'}">
+                                        ${g === 'ALL' ? '🌍 全ジャンル' : g}
+                                    </button>
+                                `).join('')}
+                            </nav>
                         </div>
-                        <div class="flex-grow overflow-y-auto p-4 md:p-8 bg-slate-50">
-                            <div class="max-w-4xl mx-auto">
-                                <header class="mb-8 flex justify-between items-end">
-                                    <div>
-                                        <h2 class="text-3xl font-black text-slate-900 tracking-tighter">${state.activeGenre}</h2>
-                                        <p class="text-slate-500 text-sm">有名人たちの症例から学ぶ、医療費の仕組み。</p>
+
+                        <div class="flex-grow flex flex-col h-screen overflow-hidden">
+                            <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shrink-0 shadow-lg">
+                                <div class="font-black italic">CrossCare Hub</div>
+                                <button onclick="toggleMobileMenu()" class="p-2 bg-slate-800 rounded text-xs font-bold uppercase">Menu</button>
+                            </div>
+
+                            <div class="flex-grow overflow-y-auto p-4 md:p-8 bg-slate-50">
+                                <div class="max-w-4xl mx-auto">
+                                    <header class="mb-8 flex justify-between items-end">
+                                        <div>
+                                            <h2 class="text-3xl font-black text-slate-900 tracking-tighter">${state.activeGenre}</h2>
+                                            <p class="text-slate-500 text-sm">有名人たちの症例から学ぶ、医療費の仕組み。</p>
+                                        </div>
+                                        <div class="text-right hidden sm:block">
+                                            <span class="text-slate-400 text-[10px] font-bold block uppercase tracking-tighter italic">Total Progress</span>
+                                            <span class="text-2xl font-black text-slate-900">${Math.floor((state.completedCount/150)*100)}%</span>
+                                        </div>
+                                    </header>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        ${filtered.map(s => `
+                                            <button onclick="initCase('${s.id}')" class="group bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all text-left flex items-center gap-4">
+                                                <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-2xl group-hover:rotate-12 transition-transform">${s.icon}</div>
+                                                <div class="flex-grow">
+                                                    <div class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1 font-mono">${s.id}</div>
+                                                    <div class="font-black text-slate-800">${s.name}</div>
+                                                    <div class="text-xs text-slate-500">${s.desc}</div>
+                                                </div>
+                                                <div class="text-slate-300 font-black group-hover:text-blue-500 italic text-sm">GO</div>
+                                            </button>
+                                        `).join('')}
                                     </div>
-                                    <div class="text-right hidden sm:block">
-                                        <span class="text-slate-400 text-[10px] font-bold block uppercase tracking-tighter italic">Total Progress</span>
-                                        <span class="text-2xl font-black text-slate-900">${Math.floor((state.completedCount/150)*100)}%</span>
-                                    </div>
-                                </header>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    ${filtered.map(s => `
-                                        <button onclick="initCase('${s.id}')" class="group bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all text-left flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-2xl group-hover:rotate-12 transition-transform">${s.icon}</div>
-                                            <div class="flex-grow">
-                                                <div class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1 font-mono">${s.id}</div>
-                                                <div class="font-black text-slate-800">${s.name}</div>
-                                                <div class="text-xs text-slate-500">${s.desc}</div>
-                                            </div>
-                                            <div class="text-slate-300 font-black group-hover:text-blue-500 italic text-sm">GO</div>
-                                        </button>
-                                    `).join('')}
                                 </div>
                             </div>
                         </div>
@@ -325,11 +358,11 @@
                                         <span class="text-5xl font-black text-blue-400 tracking-tighter">${state.totalPts}<span class="text-sm ml-1 text-slate-500">pts</span></span>
                                     </div>
                                     <div class="flex justify-between text-xs font-bold pt-2">
-                                        <span class="text-slate-500 uppercase tracking-tighter">診療費10割 (国+自分)</span>
+                                        <span class="text-slate-500 uppercase tracking-tighter">診療費10割</span>
                                         <span class="text-slate-300 font-mono">¥${yen}</span>
                                     </div>
                                     <div class="flex justify-between text-sm font-black border-t border-slate-800 pt-2">
-                                        <span class="text-slate-500 text-xs uppercase tracking-tighter">窓口での支払い (3割)</span>
+                                        <span class="text-slate-500 text-xs uppercase tracking-tighter">窓口での支払い</span>
                                         <span class="text-green-400 font-mono text-lg">¥${jiko}</span>
                                     </div>
                                 </div>
@@ -338,7 +371,7 @@
                         <div class="flex-grow flex flex-col bg-slate-950 p-6 md:p-12 overflow-y-auto">
                             <div class="max-w-xl mx-auto w-full">
                                 <div class="mb-8">
-                                    <p class="text-blue-500 font-black text-[10px] uppercase tracking-[0.2em] mb-2">Simulation Step ${state.step + 1}</p>
+                                    <p class="text-blue-500 font-black text-[10px] uppercase tracking-[0.2em] mb-2">Step ${state.step + 1} / ${sc.steps.length}</p>
                                     <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                                         <div class="h-full bg-blue-500 transition-all duration-700" style="width:${((state.step + 1) / sc.steps.length) * 100}%"></div>
                                     </div>
@@ -347,13 +380,11 @@
                                     ${isFinished ? `
                                         <div class="text-center py-4 relative z-10">
                                             <div class="text-5xl mb-4">📘</div>
-                                            <h3 class="text-xl font-black mb-4 leading-tight uppercase tracking-tighter">【医療事務の裏側・トリビア】</h3>
+                                            <h3 class="text-xl font-black mb-4 leading-tight uppercase tracking-tighter">【医療事務トリビア】</h3>
                                             <div class="bg-slate-800/50 p-6 rounded-2xl mb-8 border-l-4 border-blue-500 text-left">
-                                                <p class="text-slate-300 text-sm leading-relaxed font-medium">
-                                                    ${getTrivia(sc)}
-                                                </p>
+                                                <p class="text-slate-300 text-sm leading-relaxed font-medium">${getTrivia(sc)}</p>
                                             </div>
-                                            <button onclick="finishCase()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black shadow-xl hover:bg-blue-500 transition-all text-sm tracking-widest uppercase">Next Celebrity</button>
+                                            <button onclick="finishCase()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black shadow-xl hover:bg-blue-500 transition-all text-sm tracking-widest uppercase">Finish Case</button>
                                         </div>
                                     ` : `
                                         <h3 class="text-lg font-bold mb-6 text-slate-100 leading-snug">${currentStep.hint || '適切なアクションを選択してください。'}</h3>
@@ -380,13 +411,13 @@
 
         function renderAction(s) {
             const btnClass = "w-full bg-slate-800 hover:bg-blue-600 text-white p-5 rounded-2xl font-black transition-all text-sm text-left flex justify-between items-center group shadow-lg";
-            if (s.type === 'check') return `<button onclick="state.step++;render();" class="${btnClass}"><span>内容をカルテに反映する</span><span class="opacity-30 group-hover:opacity-100 italic">NEXT</span></button>`;
+            if (s.type === 'check') return `<button onclick="state.step++;render();" class="${btnClass}"><span>内容を反映する</span><span class="opacity-30 group-hover:opacity-100 italic">NEXT</span></button>`;
             if (s.type === 'add') return `<button onclick="doAdd('${s.item}', ${s.pts})" class="${btnClass}"><span>${s.item}を算定</span><span class="text-[10px] text-blue-400">+${s.pts} PTS</span></button>`;
             if (s.type === 'choice') {
                 return `<div class="grid grid-cols-1 gap-4 w-full">
                     ${s.choices.map(c => `
                         <button onclick="${c.ok ? `doAdd('${c.l}', ${c.p})` : `handleError('${c.l}')`}" 
-                                class="w-full text-left p-5 rounded-2xl font-bold transition-all text-sm flex justify-between items-center ${c.ok ? 'bg-slate-800 hover:bg-blue-600 text-white shadow-lg' : 'bg-slate-800/30 text-slate-600 border border-slate-800 hover:bg-red-900/10'}">
+                                class="w-full text-left p-5 rounded-2xl font-bold transition-all text-sm flex justify-between items-center ${c.ok ? 'bg-slate-800 hover:bg-blue-600 text-white shadow-lg' : 'bg-slate-800/30 text-slate-600 border border-slate-800'}">
                             <span>${c.l}</span>
                             <span class="text-[10px] opacity-40 font-mono tracking-tighter">${c.p} PTS</span>
                         </button>
@@ -396,7 +427,7 @@
         }
 
         function handleError(label) {
-            alert(`【誤請求アラート！】\n「${label}」は今回のケースでは算定できません。\n条件をもう一度読み直してみてください。`);
+            alert(`【誤請求アラート！】\n「${label}」は算定できません。条件を確認してください。`);
         }
 
         function doAdd(name, pts) {
@@ -423,9 +454,7 @@
             render();
         }
 
-        function setGenre(g) { state.activeGenre = g; render(); }
-        function toggleMobileMenu() { state.isMobileMenuOpen = !state.isMobileMenuOpen; render(); }
-
+        // 初期化実行
         render();
     </script>
 </body>
