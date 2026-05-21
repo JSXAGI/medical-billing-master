@@ -3,65 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医療事務 頻出略語ミニ図鑑</title>
+    <title>医療事務 頻出カルテ略語・シンボル完全図鑑（実務対応版）</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 sm:p-6">
+<body class="bg-slate-100 text-slate-950 min-h-screen p-3 sm:p-6 select-none">
 
-    <div class="max-w-2xl mx-auto">
-        <div class="border-b border-slate-700 pb-4 mb-6">
-            <h1 class="text-2xl font-bold text-emerald-400">📖 医療略語ミニ図鑑</h1>
-            <p class="text-sm text-slate-400 mt-1">カルテ・レセプトでよく見る基本略語集</p>
+    <div class="max-w-3xl mx-auto bg-white rounded-3xl p-5 sm:p-8 shadow-md border border-slate-200 mt-2">
+        <div class="border-b-2 border-slate-900 pb-5 mb-8">
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-black rounded-md tracking-widest uppercase">Professional Edition</span>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2 mt-2 tracking-tighter">📖 医療事務 頻出カルテ略語・シンボル完全図鑑</h1>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 font-bold">カルテ読解・レセプト点検・症例シミュレーション完全連動資料</p>
         </div>
 
-        <div class="space-y-3">
-
-            <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex items-start gap-4 hover:border-emerald-500/50 transition-colors">
-                <span class="text-lg font-bold text-emerald-300 bg-slate-900 px-3 py-1 rounded border border-slate-700">BP</span>
-                <div>
-                    <h3 class="font-bold text-slate-200">Blood Pressure（血圧）</h3>
-                    <p class="text-xs text-slate-400 mt-1">カルテのバイタルサインで最頻出。高血圧症などの傷病名チェックに連動します。</p>
-                </div>
-            </div>
-
-            <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex items-start gap-4 hover:border-emerald-500/50 transition-colors">
-                <span class="text-lg font-bold text-emerald-300 bg-slate-900 px-3 py-1 rounded border border-slate-700">DM</span>
-                <div>
-                    <h3 class="font-bold text-slate-200">Diabetes Mellitus（糖尿病）</h3>
-                    <p class="text-xs text-slate-400 mt-1">検査データ（HbA1c等）や、特定疾患管理料の算定対象病名として重要です。</p>
-                </div>
-            </div>
-
-            <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex items-start gap-4 hover:border-emerald-500/50 transition-colors">
-                <span class="text-lg font-bold text-emerald-300 bg-slate-900 px-3 py-1 rounded border border-slate-700">HT</span>
-                <div>
-                    <h3 class="font-bold text-slate-200">Hypertension（高血圧）</h3>
-                    <p class="text-xs text-slate-400 mt-1">特定疾患管理料、処方されている降圧剤のチェック時に確認する基本病名です。</p>
-                </div>
-            </div>
-
-            <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex items-start gap-4 hover:border-emerald-500/50 transition-colors">
-                <span class="text-lg font-bold text-emerald-300 bg-slate-900 px-3 py-1 rounded border border-slate-700">Rx</span>
-                <div>
-                    <h3 class="font-bold text-slate-200">Prescription（処方）</h3>
-                    <p class="text-xs text-slate-400 mt-1">カルテ上で「ここから処方内容」を示す記号としてよく使われます。処方箋料の算定へ。</p>
-                </div>
-            </div>
-
-            <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex items-start gap-4 hover:border-emerald-500/50 transition-colors">
-                <span class="text-lg font-bold text-emerald-300 bg-slate-900 px-3 py-1 rounded border border-slate-700">XP</span>
-                <div>
-                    <h3 class="font-bold text-slate-200">X-ray Photograph（レントゲン写真）</h3>
-                    <p class="text-xs text-slate-400 mt-1">写真診断、撮影料、電子画像管理加算などの算定漏れがないか確認するサインになります。</p>
-                </div>
-            </div>
-
+        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl mb-8 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+            ※カルテ（診療録）に医師が書き込む独特の英語・ドイツ語略称、および慣例的なシンボルマーク（記号）の解説です。これらを正しく読み解くことが、正確な診療報酬点数（算定項目）の抽出に直結します。
         </div>
 
-        <div class="text-center mt-8">
-            <button onclick="window.close()" class="px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors">
-                この画面を閉じる
-            </button>
+        <div class="mb-10">
+            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-900 text-white inline-block px-3 py-1 rounded">🌟 SECTION 01 : カルテ特有のシンボル記号</h2>
+            <div class="grid grid-cols-1 gap-4">
+                
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">✨</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">初診（しょしん）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">カルテの冒頭に記述されるマーク。基本診療料の「初診料（291点）」を算定する絶対的なトリガー。乳幼児や時間外の条件がないか合わせてチェック。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">再</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">再診（さいしん）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「再」または「◯に再」と書かれる。診療所や200床未満の病院なら「再診料（74点）」、大病院なら「外来診療料（76点）」の算定へ。同日複数科受診時は2科目半額ルールを意識。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">⚔️</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">手術・切開（オぺ / 切開）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「⚔️」や「Op」は手術を行ったサイン。当日に発生した「創傷処置」や「消毒」の手技料は、手術の点数の中に包括（まるめ）されて単独算定できなくなるためレセプト請求時に外す処理が必須。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">✝️</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">死亡・転帰（しぼう）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">患者が亡くなったことを示すカルテ上のマーク。レセプトの転帰欄を「死亡」に修正する。入院中の場合は看取りに関する高度な指導管理加算の有無をカルテの余白から探す。</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-900 text-white inline-block px-3 py-1 rounded">📋 SECTION 02 : 医師の指示・診療ステータス</h2>
+            <div class="grid grid-cols-1 gap-4">
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Rx</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Prescription（処方・お薬指示）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「ここから以下が処方内容である」という医師の宣言マーク。「処方料（42点）」か「処方箋料（68点）」の算定に移行。種類数が7種以上なら多剤投与減算の罠がないか薬の数を数える。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Rp</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Recipe（調剤指示・処方せよ）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">薬の名前、分量、飲むタイミング（毎食後など）の直前に書かれる。院内処方の場合は服用時期が同じものを1つにまとめる「一剤の原則」に基づき「調剤料（9点）」を再計算する。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Do</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">同上（前回の処方・注射と同様に）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「前回と全く同じ検査・処置・投薬を行う」という手抜き指示。過去カルテを遡って全く同じセット（薬剤費や手技料）を今回も算定するが、月を跨いでいる場合の判断料（月1回制限）の重複請求に警戒。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Mtd</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Mitudo（転医・他院へ紹介）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">他院へ患者を紹介したステータス。紹介状を発行したはずなので、「診療情報提供料（Ⅰ）（250点）」がカルテに書かれていなくても算定漏れがないか確認する。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">🌟</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">指導管理（しどう・管理料）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「🌟」や「C（Care）」のマークと共に丁寧な生活指導の記録がある場合、「特定疾患管理料（225点）」などの医学管理料の算定チャンス。主病名の要件を満たしているか確認。</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-900 text-white inline-block px-3 py-1 rounded">🩺 SECTION 03 : 実務頻出の病名・部位・検査略語</h2>
+            <div class="grid grid-cols-1 gap-4">
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">DM</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Diabetes Mellitus（糖尿病）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">超頻出病名。インスリン自己注射を行っている場合は「在宅自己注射指導管理料」の算定対象。また、血糖値検査や尿糖検査のセット請求漏れがないかチェック。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">HT</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Hypertension（高血圧症）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「高血圧」。内服薬の継続処方がメインとなる。かつては特定疾患管理料の対象だったが、現在の改定では「生活習慣病管理料」の対象病名へ移行したため算定ロジックの切り替えが必要。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">✨A</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Appendix（虫垂炎・アッペ）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">いわゆる「盲腸（もうちょう）」。急性腹症として緊急で夜間に皮膚切開（皮膚切開術 510点）や摘出手術を行うケースが多く、時間外緊急手術加算などの高額加算の対象になりやすい。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">🎬</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">XP / 🎬（エックス線撮影・レントゲン）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">カルテ上に「XP施行」「🎬胸部」などと書かれる。胸部単純X線撮影などの「撮影料」と、医師の所見（カルテに結果の記載があること）を確認して「写真診断料」をダブルで算定する。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">CT</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Computed Tomography（コンピュータ断層撮影）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">頭部や腹部の横断スライス撮影。「撮影料（マルチ16列以上なら900点など）」にプラスして、「コンピューター断層診断料（450点）」を算定。造影剤（薬代）の有無もカルテから見落とさないこと。</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
+                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">CBC</span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Complete Blood Count（末梢血液一般検査）</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">貧血や感染症を調べる基本の採血（末梢血液一般検査 21点）。これとセットで、月1回だけ「血液学的検査判断料（125点）」をレセプトに乗せるロジックを起動する。</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 font-bold">
+            <div>CrossCare Hub Learning Resources</div>
+            <div class="mt-2 sm:mt-0">© 2026 CrossCare Hub / Medical Billing Master Project.</div>
         </div>
     </div>
 

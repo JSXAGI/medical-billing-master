@@ -39,7 +39,7 @@
          */
         const GENRES = ['ALL', '外来算定', '画像・検査', '投薬・管理', '時間外・特例', '手術・処置'];
         const SCENARIOS = [
-            // --- 第1弾：【外来算定】トリビア付き30名（GAI-001〜GAI-030） ---            
+             // --- 第1弾：【外来算定】トリビア付き30名（GAI-001〜GAI-030） --- 
             { id: "GAI-001", genre: "外来算定", name: "佐藤 栄一 様", desc: "酸素算定と適応病名", icon: "👤", color: "blue", scenario: "酸素吸入の報告あり。適応病名の有無をチェックしてください。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "病名チェック", type: "check", hint: "酸素(J024)に必要な病名を依頼します。" }, { label: "算定", type: "add", item: "酸素(J024)", pts: 65, hint: "65点追加。" }, { type: "finish" }], trivia: "酸素は「薬」ではなく「材料」扱い。実は使う量や装置によって、計算式がパズルのように複雑な項目なんです。" },
             { id: "GAI-002", genre: "外来算定", name: "鈴木 芳子 様", desc: "処方漏れ確認", icon: "💊", color: "blue", scenario: "医師のオーダー漏れを指摘してください。", initial: [{ n: "再診料一式", p: 147 }], steps: [{ label: "不備指摘", type: "check", hint: "カルテの不備を医師に伝えます。" }, { label: "算定", type: "add", item: "処方箋料", pts: 86, hint: "86点。" }, { type: "finish" }], trivia: "処方箋料は「お薬の指示書代」。医師がカルテに書き忘れると、病院は1円も請求できない「事務の確認」が光る場所です。" },
             { id: "GAI-003", genre: "外来算定", name: "高橋 健太 様", desc: "初再診の境界線", icon: "🩹", color: "blue", scenario: "風邪通院中にケガで来院。初診になるか再診になるか？", initial: [], steps: [{ label: "判断", type: "choice", choices: [{ l: "初診料を算定", p: 288, ok: false }, { l: "再診料を算定", p: 73, ok: true }], hint: "別の病気で通院中の場合、初診料は取れません。" }, { type: "finish" }], trivia: "別の病気でも「通院中」なら再診。でも、本人が勝手に中断して期間が空くと初診に戻る「1ヶ月ルール」が存在します。" },
@@ -197,7 +197,7 @@
             { id: "SHO-027", genre: "手術・処置", name: "ディーン・フジオカ 様", desc: "流注穿刺", icon: "💉", color: "amber", scenario: "関節の炎症による膿を抜き、洗浄。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "流注穿刺", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "関節の中に針を刺し、中の液体を抜いて洗う処置。普通の注射（80点）よりも工程が多いため、キリ良く100点（1000円）が設定されています。" },
             { id: "SHO-028", genre: "手術・処置", name: "広瀬 アリス 様", desc: "鼓膜穿刺", icon: "👂", color: "amber", scenario: "中耳炎で鼓膜の内側に溜まった膿を抜く。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "鼓膜穿刺", pts: 120, hint: "片耳120点。" }, { type: "finish" }], trivia: "鼓膜に針を通す、聞くだけで痛そうな処置。でもこれで一気に耳の痛みが取れることも！耳鼻科事務にとっては、子供が泣くのをなだめるのも仕事のうち？" },
             { id: "SHO-029", genre: "手術・処置", name: "タモリ 様", desc: "人工呼吸の算定", icon: "🫁", color: "amber", scenario: "自発呼吸が弱いため、人工呼吸器を装着。", initial: [], steps: [{ label: "処置", type: "add", item: "人工呼吸", pts: 248, hint: "1日につき248点。" }, { type: "finish" }], trivia: "人工呼吸器は「1日248点」。もし30分しかやっていなくても、24時間やっていても、同じ点数。医療現場の「時間」と「点数」の不思議な関係です。" },
-            { id: "SHO-030", genre: "手術・処置", name: "笑福亭鶴瓶 様", desc: "体外衝撃波結石破砕術", icon: "⚡", color: "amber", scenario: "腎結石を衝撃波で粉砕。", initial: [], steps: [{ label: "手術", type: "add", item: "体外衝撃波結石破砕術", pts: 18600, hint: "18600点の超特大点数！" }, { type: "finish" }], trivia: "おめでとうございます！最後は驚愕の18,600点（18万6000円相当）！メスを使わず石を砕く最新技術は、医療事務で扱う点数の中でも最大級の輝きです！" },
+            { id: "SHO-030", genre: "手術・処置", name: "笑福亭鶴瓶 様", desc: "体外衝撃波結石破砕術", icon: "⚡", color: "amber", scenario: "腎結石を衝撃波で粉砕。", initial: [], steps: [{ label: "手術", type: "add", item: "体外衝撃波結石破砕術", pts: 18600, hint: "18600点の超特大点数！" }, { type: "finish" }], trivia: "おめでとうございます！最後は驚愕の18,600点（18万6000円相当）！メスを使わず石を砕く最新技術は、医療事務で扱う点数の中でも最大級の輝きです！" },            
         ];
 
         /**
@@ -206,14 +206,14 @@
          * ==========================================
          */
         let state = {
+            isMobileMenuOpen: true, // スマホ起動時に最初からメニューを開く
             view: 'menu',
             activeGenre: 'ALL',
             selectedCase: null,
             currentItems: [],
             totalPts: 0,
             step: 0,
-            completedCount: 0,
-            isMobileMenuOpen: false
+            completedCount: 0
         };
 
         // ローカルストレージから進捗を読み込み
@@ -272,44 +272,74 @@
                         
                         ${state.isMobileMenuOpen ? `
                         <div class="fixed inset-0 bg-slate-950/95 z-[100] md:hidden flex flex-col p-8">
-                            <div class="flex justify-between items-center mb-10">
+                            <div class="flex justify-between items-center mb-6">
                                 <div class="font-black italic text-xl text-blue-500 text-white">GENRE MENU</div>
                                 <button onclick="toggleMobileMenu()" class="p-2 bg-slate-800 rounded text-xs font-bold text-white uppercase">Close</button>
                             </div>
-                            <div class="flex flex-col gap-3 overflow-y-auto">
+                            
+                            <div class="flex flex-col gap-3 overflow-y-auto max-h-[60vh] pr-1">
                                 ${GENRES.map(g => `
                                     <button onclick="setGenre('${g}')" 
-                                        class="w-full py-5 px-6 rounded-xl font-black text-left transition-all ${state.activeGenre === g ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-900 text-slate-400 border border-slate-800'}">
+                                        class="w-full py-4 px-6 rounded-xl font-black text-left transition-all ${state.activeGenre === g ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-900 text-slate-400 border border-slate-800'}">
                                         ${g === 'ALL' ? '🌍 全ジャンル' : g}
                                     </button>
                                 `).join('')}
                             </div>
-                            <div class="mt-8 p-4 bg-slate-900/50 rounded-lg border border-slate-800">
-                                <p class="text-[10px] text-slate-100 leading-relaxed text-center">
+
+                            <div class="mt-4 pt-4 border-t border-slate-800 grid grid-cols-2 gap-3 shrink-0">
+                                <a href="https://jsxagi.github.io/medical-billing-master/hayami.html" 
+                                   target="_blank" 
+                                   class="flex flex-col justify-center items-center p-3 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 text-white text-center shadow-lg active:scale-95 transition-transform border border-emerald-500/30">
+                                    <span class="text-lg">📊</span>
+                                    <span class="text-xs font-black tracking-tighter mt-1">点数早見表</span>
+                                </a>
+                                <a href="https://jsxagi.github.io/medical-billing-master/zukan.html" 
+                                   target="_blank" 
+                                   class="flex flex-col justify-center items-center p-3 rounded-xl bg-gradient-to-br from-teal-600 to-emerald-800 text-white text-center shadow-lg active:scale-95 transition-transform border border-emerald-500/30">
+                                    <span class="text-lg">📖</span>
+                                    <span class="text-xs font-black tracking-tighter mt-1">略語ミニ図鑑</span>
+                                </a>
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-slate-900/50 rounded-lg border border-slate-800 shrink-0">
+                                <p class="text-[9px] text-slate-400 leading-relaxed text-center">
                                     【更新のお知らせ】<br>
-                                    時データが反映されない場合は、ブラウザのキャッシュをクリアするか、画面を下に引っ張って更新してください。
+                                    データが反映されない場合はブラウザキャッシュをクリアしてください。
                                 </p>
                             </div>
                         </div>
                         ` : ''}
 
-                        <div class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 p-6 shrink-0">
-                            <div class="mb-8">
+                        <div class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 p-6 shrink-0 overflow-y-auto">
+                            <div class="mb-6">
                                 <h1 class="text-xl font-black text-white tracking-tighter italic">CrossCare Hub</h1>
                                 <p class="text-[10px] text-slate-500 font-bold uppercase">Learning Edition</p>
                             </div>
-                            <div class="mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
+                            <div class="mb-4 p-4 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
                                 <p class="text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Player Rank</p>
                                 <div class="${rank.color} font-black text-lg flex items-center gap-2">${rank.icon} ${rank.name}</div>
                                 <div class="w-full bg-slate-700 h-1.5 mt-2 rounded-full overflow-hidden">
                                     <div class="bg-blue-500 h-full" style="width: ${(state.completedCount / 150) * 100}%"></div>
                                 </div>
                                 <p class="text-[10px] text-slate-300 mt-2">${state.completedCount} / 150 Cases Clear</p>
-                                <p class="font-bold"></P>
-                                <p class="text-[9px] text-slate-300 mt-4 leading-tight border-t border-slate-700 pt-2">
-                                    ※最新データが表示されない場合はブラウザキャッシュをクリアして下さい。
+                                <p class="text-[9px] text-slate-400 mt-3 leading-tight border-t border-slate-700 pt-2">
+                                    ※データ更新時はキャッシュクリア推奨。
                                 </p>
                             </div>
+
+                            <div class="mb-4 grid grid-cols-2 gap-2">
+                                <a href="https://jsxagi.github.io/medical-billing-master/hayami.html" 
+                                   target="_blank" 
+                                   class="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white text-center shadow font-bold text-xs transition-all border border-emerald-500/20">
+                                    <span>📊</span>早見表
+                                </a>
+                                <a href="https://jsxagi.github.io/medical-billing-master/zukan.html" 
+                                   target="_blank" 
+                                   class="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg bg-gradient-to-r from-teal-700 to-emerald-600 hover:from-teal-600 hover:to-emerald-500 text-white text-center shadow font-bold text-xs transition-all border border-emerald-500/20">
+                                    <span>📖</span>図鑑
+                                </a>
+                            </div>
+
                             <nav class="space-y-1">
                                 ${GENRES.map(g => `
                                     <button onclick="setGenre('${g}')" class="w-full text-left px-4 py-3 rounded-lg text-sm font-bold transition-all ${state.activeGenre === g ? 'sidebar-item-active' : 'hover:bg-slate-800'}">
