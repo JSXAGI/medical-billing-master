@@ -2,173 +2,425 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医療事務 頻出カルテ略語・シンボル完全図鑑（実務対応版）</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>医療事務 頻出カルテ略語・シンボル完全図鑑（スマホ究極特化・実務限界版）</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        /* ==========================================
+           外部連携一切なし（Tailwind不使用）：スマホ特化スタイル v5.5 究極版
+           ========================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
+            background-color: #f1f5f9;
+            color: #020617;
+            min-height: 100vh;
+            padding: 8px;
+            line-height: 1.4;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        @media (min-width: 640px) { body { padding: 20px; } }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* ヘッダー */
+        .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; }
+        .version-badge { display: inline-block; padding: 2px 8px; background-color: #ecfdf5; color: #059669; font-size: 11px; font-weight: 900; border-radius: 4px; text-transform: uppercase; }
+        .title { font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+        .subtitle { font-size: 11px; color: #475569; margin-top: 2px; font-weight: bold; }
+        
+        /* 検索窓 */
+        .search-box { position: relative; margin-bottom: 16px; }
+        .search-input { width: 100%; padding: 12px 12px 12px 36px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; font-weight: bold; -webkit-appearance: none; transition: border-color 0.2s, background-color 0.2s; }
+        .search-input:focus { border-color: #059669; background-color: #ffffff; outline: none; }
+        .search-icon { position: absolute; left: 12px; top: 13px; color: #64748b; font-size: 14px; }
+
+        /* セクション見出し */
+        .section-block { margin-bottom: 24px; }
+        .section-title { font-size: 13px; font-weight: 900; color: #0f172a; background-color: #e2e8f0; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; }
+        .section-title.sec-01 { border-left: 4px solid #d97706; }
+        .section-title.sec-02 { border-left: 4px solid #059669; }
+        .section-title.sec-03 { border-left: 4px solid #2563eb; }
+
+        /* カードレイアウト */
+        .zukan-list { display: flex; flex-direction: column; gap: 10px; }
+        
+        .zukan-card {
+            display: flex;
+            align-items: flex-start;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+        .zukan-card:active { background-color: #f8fafc; }
+        
+        /* 左側：アバターアイコン表示域 */
+        .avatar-zone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 52px;
+            height: 52px;
+            border-radius: 10px;
+            margin-right: 12px;
+            font-size: 16px;
+            font-weight: 900;
+            flex-shrink: 0;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .bg-symbol { background-color: #fffbeb; border: 1px solid #fde68a; color: #d97706; font-size: 20px; }
+        .bg-status { background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+        .bg-medical { background-color: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; }
+        
+        /* 右側：解説テキスト域 */
+        .info-zone { flex-grow: 1; min-width: 0; }
+        .name-row { margin-bottom: 4px; }
+        .main-abbr { font-size: 15px; font-weight: 900; color: #0f172a; display: block; }
+        .sub-jp { font-size: 11px; font-weight: bold; color: #64748b; display: block; margin-top: 1px; }
+        
+        .desc-text { font-size: 12px; color: #334155; line-height: 1.5; font-weight: 500; margin-top: 4px; }
+        
+        /* 実務の罠アラート */
+        .trap-box { margin-top: 8px; padding: 6px 10px; background-color: #fff1f2; border-radius: 6px; border-left: 3px solid #f43f5e; }
+        .trap-label { font-size: 9px; font-weight: 900; color: #e11d48; display: block; margin-bottom: 2px; }
+        .trap-text { font-size: 11px; color: #9f1239; font-weight: bold; line-height: 1.4; }
+
+        .footer { text-align: center; margin-top: 32px; font-size: 10px; color: #94a3b8; font-weight: bold; padding-bottom: 16px; }
+        .no-results { text-align: center; padding: 40px 20px; color: #64748b; font-size: 13px; font-weight: bold; display: none; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-950 min-h-screen p-3 sm:p-6 select-none">
+<body>
 
-    <div class="max-w-3xl mx-auto bg-white rounded-3xl p-5 sm:p-8 shadow-md border border-slate-200 mt-2">
-        <div class="border-b-2 border-slate-900 pb-5 mb-8">
-            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-black rounded-md tracking-widest uppercase">Professional Edition</span>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2 mt-2 tracking-tighter">📖 医療事務 頻出カルテ略語・シンボル完全図鑑</h1>
-            <p class="text-xs sm:text-sm text-slate-600 mt-1 font-bold">カルテ読解・レセプト点検・症例シミュレーション完全連動資料</p>
+    <div class="container">
+        <div class="header">
+            <span class="version-badge">Ultimate Edition v5.5</span>
+            <h1 class="title">📖 カルテ略語・シンボル完全図鑑</h1>
+            <p class="subtitle">現場最速検索・2024＆2026年診療報酬改定トラップ対応</p>
         </div>
 
-        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl mb-8 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            ※カルテ（診療録）に医師が書き込む独特の英語・ドイツ語略称、および慣例的なシンボルマーク（記号）の解説です。これらを正しく読み解くことが、正確な診療報酬点数（算定項目）の抽出に直結します。
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="zukanSearch" oninput="searchZukan()" placeholder="略語、英字、マーク、日本語で爆速検索..." class="search-input">
         </div>
 
-        <div class="mb-10">
-            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-900 text-white inline-block px-3 py-1 rounded">🌟 SECTION 01 : カルテ特有のシンボル記号</h2>
-            <div class="grid grid-cols-1 gap-4">
-                
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">✨</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">初診（しょしん）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">カルテの冒頭に記述されるマーク。基本診療料の「初診料（291点）」を算定する絶対的なトリガー。乳幼児や時間外の条件がないか合わせてチェック。</p>
-                    </div>
-                </div>
+        <div id="noResultsMessage" class="no-results">該当する略語やシンボルは見つかりません。</div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">再</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">再診（さいしん）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「再」または「◯に再」と書かれる。診療所や200床未満の病院なら「再診料（74点）」、大病院なら「外来診療料（76点）」の算定へ。同日複数科受診時は2科目半額ルールを意識。</p>
+        <div class="zukan-wrapper">
+            
+            <div class="section-block js-section">
+                <div class="section-title sec-01">🔷 カルテ特有のシンボル記号</div>
+                <div class="zukan-list">
+                    
+                    <div class="zukan-card" data-keyword="初診 しょしん shoshin ✨ はじめて">
+                        <div class="avatar-zone bg-symbol">✨</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">✨（または「初」）</span>
+                                <span class="sub-jp">初診（しょしん）の合図</span>
+                            </div>
+                            <p class="desc-text">患者が新規来院、または1ヶ月以上経過して同一病名で受診した際、医師が冒頭に記述する初診受付の絶対的サイン。基本診療料のベースとなる。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">無条件で「初診料（291点）」を算定。さらに年齢（6歳未満なら乳幼児加算 75点）や、時間帯（夜間・早朝等加算 50点、時間外加算 85点など）の上乗せ漏れがないか秒速で点検すること！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">⚔️</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">手術・切開（オぺ / 切開）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「⚔️」や「Op」は手術を行ったサイン。当日に発生した「創傷処置」や「消毒」の手技料は、手術の点数の中に包括（まるめ）されて単独算定できなくなるためレセプト請求時に外す処理が必須。</p>
+                    <div class="zukan-card" data-keyword="再診 さいしん saishin 再 継続">
+                        <div class="avatar-zone bg-symbol">再</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">再（または ◯に再）</span>
+                                <span class="sub-jp">再診（さいしん）の継続指示</span>
+                            </div>
+                            <p class="desc-text">前回の診療に続く一連の治療行為が行われていることを示す印。診療所や200床未満の一般病院では「再診料（74点）」をレセプトへ計上するトリガー。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">200床以上の大病院の場合は再診料ではなく「外来診療料（76点）」へ自動分岐！また、同日複数科受診の場合、2つ目の診療科の再診料は「37点（半額）」にする独自の端数ルールを適用せよ。</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-2xl font-black text-center w-14 h-14 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-inner">✝️</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">死亡・転帰（しぼう）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">患者が亡くなったことを示すカルテ上のマーク。レセプトの転帰欄を「死亡」に修正する。入院中の場合は看取りに関する高度な指導管理加算の有無をカルテの余白から探す。</p>
+                    <div class="zukan-card" data-keyword="手術 切開 オペ op ⚔️ 処置 まるめ 包括">
+                        <div class="avatar-zone bg-symbol">⚔️</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">⚔️（または Op / 切開）</span>
+                                <span class="sub-jp">手術・切開（おぺ・せっかい）</span>
+                            </div>
+                            <p class="desc-text">メスを用いて皮膚組織を切開、膿の排出や縫合を行った手術の合図。皮膚切開術（軽微なもの）なら「510点」など、高得点の手技料を選択する。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">最大の地雷！手術を行った当日に、看護師が傷口を拭いた「創傷処置（52点）」や「消毒」の手技料は、すべて手術の点数（510点など）の中に包括（まるめ）されて消滅するため、二重請求は絶対に不可！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
+                    <div class="zukan-card" data-keyword="死亡 転帰 しぼう ✝️ カルテ最後">
+                        <div class="avatar-zone bg-symbol">✝️</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">✝️（または 死亡）</span>
+                                <span class="sub-jp">死亡・転帰（しぼう）</span>
+                            </div>
+                            <p class="desc-text">患者が治療の甲斐なく亡くなったことを示すカルテ最後のシンボルマーク。レセプトの請求管理上、最も厳格な処理が求められる。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">レセプトの「転帰欄」を必ず「死亡」に変更。入院中の場合は看取りやターミナルケアに関する高度な加算が漏れていないか、全履歴を再確認すること。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
 
-        <div class="mb-10">
-            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-900 text-white inline-block px-3 py-1 rounded">📋 SECTION 02 : 医師の指示・診療ステータス</h2>
-            <div class="grid grid-cols-1 gap-4">
+            <div class="section-block js-section">
+                <div class="section-title sec-02">🌙 医師の指示・診療ステータス略語</div>
+                <div class="zukan-list">
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Rx</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Prescription（処方・お薬指示）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「ここから以下が処方内容である」という医師の宣言マーク。「処方料（42点）」か「処方箋料（68点）」の算定に移行。種類数が7種以上なら多剤投与減算の罠がないか薬の数を数える。</p>
+                    <div class="zukan-card" data-keyword="処方 お薬指示 prescription rx 処方料 処方箋料 多剤">
+                        <div class="avatar-zone bg-status">Rx</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">Rx</span>
+                                <span class="sub-jp">Prescription（処方・お薬指示の宣言）</span>
+                            </div>
+                            <p class="desc-text">「ここから下に書くお薬を調剤しなさい」という医師の命令開始マーク。院内処方なら「処方料（42点）」、院外処方箋発行なら「処方箋料（68点）」の算定スイッチとなる。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">多剤投与ペナルティを絶対に見逃すな！お薬の総種類数が「7種類以上」になった場合、処方料は42点➔29点に、処方箋料は68点➔40点へと【減算（マイナス）】処理を行わないと返戻になる！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Rp</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Recipe（調剤指示・処方せよ）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">薬の名前、分量、飲むタイミング（毎食後など）の直前に書かれる。院内処方の場合は服用時期が同じものを1つにまとめる「一剤の原則」に基づき「調剤料（9点）」を再計算する。</p>
+                    <div class="zukan-card" data-keyword="調剤指示 レシピ recipe rp 一剤 院内処方">
+                        <div class="avatar-zone bg-status">Rp</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">Rp</span>
+                                <span class="sub-jp">Recipe（調剤指示・具体的な処方内容）</span>
+                            </div>
+                            <p class="desc-text">具体的な薬品名、分量、服用方法（1日3回毎食後など）の直前に書かれる記号。この塊をベースに「調剤料」を積み上げる。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">【一剤の原則】院内処方の場合、飲むタイミング（内服薬の服用時期）が全く同じお薬は、何種類あっても合算して「1剤」と数える（最高3剤まで算定可、1剤につき9点）。</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Do</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">同上（前回の処方・注射と同様に）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「前回と全く同じ検査・処置・投薬を行う」という手抜き指示。過去カルテを遡って全く同じセット（薬剤費や手技料）を今回も算定するが、月を跨いでいる場合の判断料（月1回制限）の重複請求に警戒。</p>
+                    <div class="zukan-card" data-keyword="同上 前回同様 do コピー 検査判断料 月1回">
+                        <div class="avatar-zone bg-status">Do</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">Do（ディーオー）</span>
+                                <span class="sub-jp">Ditto / Dittoオーダ（前回と同様に）</span>
+                            </div>
+                            <p class="desc-text">「前回と全く同じ内容のお薬・検査・処置をそのまま実行せよ」という超頻出指示。過去カルテのセットをそのまま当日に複製する。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">月を跨いで「Do検査（尿検査やCBCなど）」が行われた場合、先月に算定した「検査判断料（34点や125点）」が、今月も月1回に限り別途もらえる！電子カルテの自動コピーに頼りすぎると判断料の算定が漏れるので注意！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">Mtd</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Mitudo（転医・他院へ紹介）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">他院へ患者を紹介したステータス。紹介状を発行したはずなので、「診療情報提供料（Ⅰ）（250点）」がカルテに書かれていなくても算定漏れがないか確認する。</p>
+                    <div class="zukan-card" data-keyword="転医 紹介 mitudo mtd 診療情報提供料 しょうかいじょう ミツド">
+                        <div class="avatar-zone bg-status">Mtd</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">Mtd（ミツド）</span>
+                                <span class="sub-jp">Mitudo（他院への紹介・転医指示）</span>
+                            </div>
+                            <p class="desc-text">患者の症状に合わせて、より高度な医療機関へ紹介・転医させるステータス記号。紹介状（診療情報提供書）がセットで発行される合図。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">医師が他院宛ての紹介状を記述しているため、高額点数である「診療情報提供料（Ⅰ）（250点）」が算定可能！カルテの会計データに点数が漏れていても確実に請求に乗せること！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-lg font-black text-emerald-800 bg-emerald-100/70 w-14 h-14 rounded-xl border border-emerald-300 font-mono shrink-0 flex items-center justify-center shadow-inner">🌟</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">指導管理（しどう・管理料）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「🌟」や「C（Care）」のマークと共に丁寧な生活指導の記録がある場合、「特定疾患管理料（225点）」などの医学管理料の算定チャンス。主病名の要件を満たしているか確認。</p>
-                    </div>
                 </div>
-
             </div>
-        </div>
 
-        <div class="mb-10">
-            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-900 text-white inline-block px-3 py-1 rounded">🩺 SECTION 03 : 実務頻出の病名・部位・検査略語</h2>
-            <div class="grid grid-cols-1 gap-4">
+            <div class="section-block js-section">
+                <div class="section-title sec-03">🔬 実務最頻出の病名・検査略語</div>
+                <div class="zukan-list">
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">DM</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Diabetes Mellitus（糖尿病）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">超頻出病名。インスリン自己注射を行っている場合は「在宅自己注射指導管理料」の算定対象。また、血糖値検査や尿糖検査のセット請求漏れがないかチェック。</p>
+                    <div class="zukan-card" data-keyword="糖尿病 diabetes mellitus dm 自己注射 血糖値">
+                        <div class="avatar-zone bg-medical">DM</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">DM</span>
+                                <span class="sub-jp">Diabetes Mellitus（糖尿病）</span>
+                            </div>
+                            <p class="desc-text">内科を中心に遭遇する慢性疾患の王様。これがあるだけで管理料や長期処方の加算ロジックが大きく動く。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">自宅でインスリン自己注射をしている記述があれば「在宅自己注射指導管理料」が算定可能。さらに、28日以上の長期処方があれば「特定疾患処方管理加算（長期）（66点）」の対象になる（※生活習慣病管理料を算定していない場合）。</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">HT</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Hypertension（高血圧症）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">「高血圧」。内服薬の継続処方がメインとなる。かつては特定疾患管理料の対象だったが、現在の改定では「生活習慣病管理料」の対象病名へ移行したため算定ロジックの切り替えが必要。</p>
+                    <div class="zukan-card" data-keyword="高血圧症 hypertension ht 生活習慣病 特定疾患管理料 移行">
+                        <div class="avatar-zone bg-medical">HT</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">HT</span>
+                                <span class="sub-jp">Hypertension（高血圧症）</span>
+                            </div>
+                            <p class="desc-text">「ハイパーテンション＝高血圧」。日本の医療現場において最もカルテへの記載率が高いモンスター慢性疾患病名。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">【法改定の最大地雷】かつては「特定疾患管理料（225点）」の対象主病だったが、現在は【生活習慣病管理料】の対象へ完全移行！昔の知識のまま特定疾患で請求すると一発返戻（エラー却下）になるので超厳禁！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">✨A</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Appendix（虫垂炎・アッペ）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">いわゆる「盲腸（もうちょう）」。急性腹症として緊急で夜間に皮膚切開（皮膚切開術 510点）や摘出手術を行うケースが多く、時間外緊急手術加算などの高額加算の対象になりやすい。</p>
+                    <div class="zukan-card" data-keyword="特定疾患管理料 とくとく とくしつ 慢性疾患 225点 まるめ 重複不可">
+                        <div class="avatar-zone bg-medical">特疾</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">特定疾患管理料（225点）</span>
+                                <span class="sub-jp">慢性疾患に対する計画的管理料（月2回まで）</span>
+                            </div>
+                            <p class="desc-text">厚生労働大臣が指定する特定の慢性疾患（結核、甲状腺疾患、喘息、慢性胃炎など）を主病とする患者に対し、計画的な治療管理を行った場合に算定。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">【重複算定不可】新設された「生活習慣病管理料」とは同一月に同時に算定することは絶対にできない。主病がどちらに該当するか、カルテの病名登録を必ず照合せよ。</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">🎬</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">XP / 🎬（エックス線撮影・レントゲン）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">カルテ上に「XP施行」「🎬胸部」などと書かれる。胸部単純X線撮影などの「撮影料」と、医師の所見（カルテに結果の記載があること）を確認して「写真診断料」をダブルで算定する。</p>
+                    <div class="zukan-card" data-keyword="レントゲン エックス線 xp 写真診断 撮影料 所見">
+                        <div class="avatar-zone bg-medical">XP</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">XP</span>
+                                <span class="sub-jp">X-ray Photograph（エックス線撮影・レントゲン）</span>
+                            </div>
+                            <p class="desc-text">カルテ上に「XP施行」や「🎬マーク」で出現する胸部・四肢のレントゲン指示。撮影料（胸部単純2方向なら60点）と写真診断料（60点）で構成。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">撮影だけの請求は片手落ち！医師がカルテに「異常なし」「肺炎像なし」などの【診断所見】を1文字でも書いているのを確認して、初めて「写真診断料（60点〜）」をあわせて二重算定できる。何も書いてなければ医師に突っ返せ！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">CT</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Computed Tomography（コンピュータ断層撮影）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">頭部や腹部の横断スライス撮影。「撮影料（マルチ16列以上なら900点など）」にプラスして、「コンピューター断層診断料（450点）」を算定。造影剤（薬代）の有無もカルテから見落とさないこと。</p>
+                    <div class="zukan-card" data-keyword="コンピュータ断層撮影 ct 撮影料 診断料 1350点">
+                        <div class="avatar-zone bg-medical">CT</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">CT</span>
+                                <span class="sub-jp">Computed Tomography（コンピュータ断層撮影）</span>
+                            </div>
+                            <p class="desc-text">頭部や腹部の横断スライス精密検査。「撮影料（マルチ16列以上なら900点）」と、「コンピューター断層診断料（450点）」を合わせて計1,350点の巨大点数が動く。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">XPと同様に医師の診断所見の記載が必須。さらに、カルテに「造影剤使用」の記述や、注射指示（静脈内注射など）が紛れていれば、そのお薬代（薬価）の請求漏れがないか全点検せよ。</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4 hover:border-emerald-500 transition-all shadow-sm">
-                    <span class="text-sm font-black text-slate-700 bg-slate-200 w-14 h-14 rounded-xl border border-slate-300 font-mono shrink-0 flex items-center justify-center shadow-inner">CBC</span>
-                    <div>
-                        <h3 class="font-black text-slate-900 text-base">Complete Blood Count（末梢血液一般検査）</h3>
-                        <p class="text-xs sm:text-sm text-slate-600 font-normal mt-1 leading-relaxed">貧血や感染症を調べる基本の採血（末梢血液一般検査 21点）。これとセットで、月1回だけ「血液学的検査判断料（125点）」をレセプトに乗せるロジックを起動する。</p>
+                    <div class="zukan-card" data-keyword="尿検査 尿一般 26点 判断料 34点 尿・糞便等検査判断料">
+                        <div class="avatar-zone bg-medical">尿一般</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">尿一般検査（26点）</span>
+                                <span class="sub-jp">定性半定量検査（蛋白・糖・ウロビリノーゲン等）</span>
+                            </div>
+                            <p class="desc-text">試験紙を用いて尿の状態を調べるド定番の検査。大病院の外来診療料では包括（まるめ）されるが、診療所では単独算定可能。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">尿一般検査（26点）をレセプトに乗せたら、月に1回だけ別途上乗せできる【尿・糞便等検査判断料（34点）】の請求漏れがないか必ずチェック！</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
+                    <div class="zukan-card" data-keyword="採血 末梢血液一般検査 cbc 判断料 血液学的検査判断料 125点">
+                        <div class="avatar-zone bg-medical">CBC</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">CBC</span>
+                                <span class="sub-jp">Complete Blood Count（末梢血液一般検査）</span>
+                            </div>
+                            <p class="desc-text">赤血球、白血球、血小板、ヘモグロビンなどを測定し、貧血や体内の感染・炎症状態を調べる採血検査セット（技術点数は21点）。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">CBCが出た瞬間、レセプトの裏側で月に1回だけ別途上乗せ請求可能な【血液学的検査判断料（125点）】の請求トリガーを絶対にオンにすること！たった21点だけで終わらせると大赤字になる！</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="zukan-card" data-keyword="生化学検査 5〜7項目 84点 生化学的検査判断料 144点 肝機能 腎機能">
+                        <div class="avatar-zone bg-medical">生化学</div>
+                        <div class="info-zone">
+                            <div class="name-row">
+                                <span class="main-abbr">生化学検査（Ⅰ）5〜7項目</span>
+                                <span class="sub-jp">肝機能・腎機能・コレステロール等の血液検査（84点）</span>
+                            </div>
+                            <p class="desc-text">GOT、GPT、γ-GTP、尿素窒素など、抽出した血清を用いて内臓の状態を調べる検査。項目数（1〜4項目、5〜7項目、8〜9項目など）によって段階的に点数が変動する。</p>
+                            <div class="trap-box">
+                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                <p class="trap-text">生化学検査を行った当月は、月に1回だけ【生化学的検査判断料（Ⅰ）（144点）】が別途算定できる。CBCの血液判断料（125点）とは完全に別物なので、両方立っている場合は二重でしっかりと算定せよ！</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
         </div>
 
-        <div class="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 font-bold">
-            <div>CrossCare Hub Learning Resources</div>
-            <div class="mt-2 sm:mt-0">© 2026 CrossCare Hub / Medical Billing Master Project.</div>
+        <div class="footer">
+            © 2026 CrossCare Hub / Medical Billing Master
         </div>
     </div>
 
+    <script>
+        function searchZukan() {
+            const input = document.getElementById('zukanSearch').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.zukan-card');
+            const sections = document.querySelectorAll('.js-section');
+            const noResults = document.getElementById('noResultsMessage');
+            
+            let totalVisible = 0;
+
+            cards.forEach(card => {
+                const keyword = card.getAttribute('data-keyword').toLowerCase();
+                if (keyword.includes(input)) {
+                    card.style.display = 'flex';
+                    totalVisible++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            sections.forEach(section => {
+                const visibleCardsInside = section.querySelectorAll('.zukan-card[style="display: flex;"]');
+                if (visibleCardsInside.length === 0 && input !== "") {
+                    section.style.display = 'none';
+                } else {
+                    section.style.display = 'block';
+                }
+            });
+
+            if (totalVisible === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
