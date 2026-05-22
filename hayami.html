@@ -2,249 +2,564 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医療事務 実務マスター点数早見表（2024年・2025年改定完全対応）</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>医療事務 点数早見表（スマホ完全特化・最速入力版）</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        /* ==========================================
+           オフライン完全対応：スマホ特化スタイルシート v5.0
+           ========================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
+            background-color: #f1f5f9;
+            color: #020617;
+            min-height: 100vh;
+            padding: 8px;
+            padding-bottom: 240px; /* 下部ダッシュボード用の余白 */
+            line-height: 1.4;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        @media (min-width: 640px) { body { padding: 20px; padding-bottom: 220px; } }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* ヘッダー */
+        .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; }
+        .version-badge { display: inline-block; padding: 2px 8px; background-color: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 900; border-radius: 4px; text-transform: uppercase; }
+        .title { font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+        .subtitle { font-size: 11px; color: #475569; margin-top: 2px; font-weight: bold; }
+        
+        /* コントロールエリア */
+        .controls-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .search-input { width: 100%; padding: 12px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; font-weight: bold; -webkit-appearance: none; }
+        .select-input { width: 100%; padding: 12px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        
+        /* 警告アラート */
+        #alertBanner {
+            display: none;
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* セクション（スマホ最適化） */
+        .section-block { margin-bottom: 24px; }
+        .section-title { font-size: 14px; font-weight: 900; color: #0f172a; background-color: #e2e8f0; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .section-title.sec-01 { border-left: 4px solid #2563eb; }
+        .section-title.sec-02 { border-left: 4px solid #059669; }
+        .section-title.sec-03 { border-left: 4px solid #d97706; }
+        .section-title.sec-04 { border-left: 4px solid #0d9488; }
+        .section-title.sec-05 { border-left: 4px solid #e11d48; }
+
+        /* スマホ用カード型アイテムリスト（横スクロール完全撤廃） */
+        .item-list { display: flex; flex-direction: column; gap: 8px; }
+        
+        .item-card {
+            display: flex;
+            align-items: flex-start;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .item-card:hover { background-color: #f8fafc; }
+        .item-card.selected { background-color: #f0fdf4; border-color: #bbf7d0; }
+        
+        /* 左端チェックボックスエリア（親指で押しやすい大きさ） */
+        .check-zone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            margin-right: 8px;
+        }
+        .calc-check { width: 22px; height: 22px; cursor: pointer; pointer-events: none; } /* カードタップで動くためイベント無効化 */
+        
+        /* 中央・コンテンツエリア */
+        .content-zone { flex-grow: 1; }
+        .item-main-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+        .target-name { font-size: 14px; font-weight: 900; color: #0f172a; padding-right: 4px; }
+        
+        .score-cell { font-size: 15px; font-weight: 900; white-space: nowrap; }
+        .sec-01 .score-cell { color: #2563eb; }
+        .sec-02 .score-cell { color: #047857; }
+        .sec-03 .score-cell { color: #b45309; }
+        .sec-04 .score-cell { color: #0f766e; }
+        .sec-05 .score-cell { color: #be123c; }
+        
+        .rule-cell { font-size: 11px; color: #475569; line-height: 1.4; font-weight: 500; }
+        .badge { display: inline-block; padding: 1px 4px; font-size: 10px; font-weight: bold; border-radius: 4px; margin-right: 2px; }
+        .badge-amber { background-color: #fef3c7; color: #92400e; }
+        .badge-teal { background-color: #ccfbf1; color: #115e59; }
+
+        /* ボタン */
+        .btn-action { padding: 8px 12px; font-size: 11px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-clear { background-color: #475569; color: #ffffff; white-space: nowrap; }
+        .btn-copy { background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+
+        /* スマホ固定ボトムボード（極力スリムに） */
+        .bottom-dashboard {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background-color: #0f172a;
+            color: #ffffff;
+            border-top: 2px solid #1e293b;
+            box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            padding: 8px 12px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom)); /* iPhone等の下部バー対策 */
+        }
+        .dashboard-container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+        
+        /* 5区分一列スリムメーター */
+        .meter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+        .meter-box { font-size: 9px; text-align: center; color: #94a3b8; font-weight: bold; }
+        .meter-score { display: block; color: #ffffff; font-weight: 900; font-size: 10px; margin-bottom: 2px; }
+        .meter-bar-bg { width: 100%; height: 4px; background-color: #334155; border-radius: 2px; overflow: hidden; }
+        .meter-bar-fill { height: 100%; width: 0%; transition: width 0.2s; }
+        .fill-sec01 { background-color: #3b82f6; }
+        .fill-sec02 { background-color: #10b981; }
+        .fill-sec03 { background-color: #f59e0b; }
+        .fill-sec04 { background-color: #14b8a6; }
+        .fill-sec05 { background-color: #f43f5e; }
+
+        /* コピー欄 */
+        .preview-row { display: flex; align-items: center; justify-content: space-between; background-color: #1e293b; padding: 4px 8px; border-radius: 6px; font-size: 11px; }
+        .preview-list-wrapper { flex-grow: 1; overflow-x: auto; white-space: nowrap; text-overflow: ellipsis; font-weight: bold; color: #cbd5e1; padding-right: 6px; }
+        .preview-list-wrapper::-webkit-scrollbar { height: 0px; }
+
+        /* カウンター数値 */
+        .counter-row { display: flex; justify-content: space-between; align-items: center; }
+        .counter-block { display: flex; flex-direction: column; }
+        .counter-label { font-size: 9px; color: #94a3b8; font-weight: bold; }
+        .points-display { font-size: 16px; font-weight: 900; color: #60a5fa; }
+        .fee-display { font-size: 13px; font-weight: bold; color: #e2e8f0; }
+        .window-display { font-size: 18px; font-weight: 900; color: #34d399; }
+        
+        .footer { text-align: center; margin-top: 24px; font-size: 10px; color: #94a3b8; font-weight: bold; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-950 min-h-screen p-3 sm:p-6 select-none">
+<body>
 
-    <div class="max-w-5xl mx-auto bg-white rounded-3xl p-5 sm:p-8 shadow-md border border-slate-200 mt-2">
-        <div class="border-b-2 border-slate-900 pb-5 mb-8">
-            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-black rounded-md tracking-widest uppercase">Professional Edition</span>
-            <h1 class="text-2xl sm:text-4xl font-black text-slate-900 flex items-center gap-2 mt-2 tracking-tighter">📊 医療事務 実務完全対応・点数早見表</h1>
-            <p class="text-xs sm:text-sm text-slate-600 mt-1 font-bold">診療報酬改定準拠 / カルテ読解・レセプト点検・症例シミュレーション完全連動資料</p>
+    <div class="container">
+        <div class="header">
+            <span class="version-badge">Mobile Native v5.0</span>
+            <h1 class="title">📊 医療事務マスター早見表</h1>
+            <p class="subtitle">スマホ入力完全特化・タップ選択仕様</p>
         </div>
 
-        <div class="bg-slate-50 border-l-4 border-slate-900 p-4 rounded-xl mb-8 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            ※本資料は実務における算定漏れ・誤請求（請求不可パターンの見落とし）を防ぐための、現場直結型チェックシートです。医療費1点は10円に換算され、患者は自己負担割合（1〜3割）に応じた窓口負担を支払います。
+        <div id="alertBanner"></div>
+
+        <div class="controls-grid">
+            <input type="text" id="searchInput" oninput="filterCards()" placeholder="🔍 項目名やキーワードで瞬時に検索..." class="search-input">
+            <select id="burdenRate" onchange="calculateTotal()" class="select-input">
+                <option value="0.3" selected>患者負担割合: 3割</option>
+                <option value="0.2">患者負担割合: 2割</option>
+                <option value="0.1">患者負担割合: 1割</option>
+                <option value="0.0">患者負担割合: 0割</option>
+            </select>
         </div>
 
-        <div class="space-y-12">
-            <div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900 bg-slate-100 px-4 py-2.5 rounded-xl mb-4 border-l-4 border-blue-600 flex items-center justify-between">
-                    <span>🔷 基本診療料（初診・再診・医学管理）</span>
-                    <span class="text-[10px] text-slate-500 font-mono">SECTION 01</span>
+        <div class="sections-wrapper">
+            
+            <div class="section-block sec-01">
+                <h2 class="section-title sec-01">
+                    <span>🔷 基本診療料</span>
+                    <span>SECTION 01</span>
                 </h2>
-                <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-                        <thead>
-                            <tr class="bg-slate-900 text-white text-xs font-black tracking-wider border-b border-slate-900">
-                                <th class="p-3 sm:p-4 w-1/4">算定項目・加算名</th>
-                                <th class="p-3 sm:p-4 w-20 text-right">点数</th>
-                                <th class="p-3 sm:p-4 pl-6">実務における算定ルール・注意点・重複不可条件</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-xs sm:text-sm font-bold divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">初診料</td>
-                                <td class="p-3 sm:p-4 text-right text-blue-600 font-black text-base">291 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">患者が任意に診療を中止し、1ヶ月以上経過した後に同一病名で受診した場合は原則初診扱い。紹介状なしの大病院では特別料金の徴収義務あり。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">乳幼児加算（初診）</td>
-                                <td class="p-3 sm:p-4 text-right text-blue-600 font-black text-base">75 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">6歳未満の乳幼児に対して初診を行った場合に上乗せ算定。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">再診料</td>
-                                <td class="p-3 sm:p-4 text-right text-blue-600 font-black text-base">74 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">診療所・一般病院（200床未満）の基本再診料。同日に2つの診療科を連続受診（複数科受診）した場合、2つ目の科は「37点（半額）」で算定する。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">外来診療料</td>
-                                <td class="p-3 sm:p-4 text-right text-blue-600 font-black text-base">76 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">200床以上の大病院における再診料。一部の簡易な検査（尿一般など）や注射の技術料がこの点数の中に「まるめ（包括）」されるため単独算定不可。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">乳幼児加算（再診）</td>
-                                <td class="p-3 sm:p-4 text-right text-blue-600 font-black text-base">38 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">6歳未満の乳幼児に対して再診を行った場合に算定。外来診療料の病院でも適用。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">特定疾患管理料</td>
-                                <td class="p-3 sm:p-4 text-right text-blue-600 font-black text-base">225 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">厚生労働大臣が指定する慢性疾患（結核、悪性新生物、甲状腺疾患など）主病の患者に対し、計画的な医学管理を行った場合に月2回まで算定可能。※生活習慣病（高血圧・脂質異常・糖尿病）は「生活習慣病管理料」へ移行したため対象外。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="item-list">
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" id="chk_shoshin" class="calc-check" data-sec="1"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">初診料</span><span class="score-cell" data-score="291">291点</span></div>
+                            <div class="rule-cell">1ヶ月以上経過の同一病名は原則初診。紹介状なし大病院は特別料金義務。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="1"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">乳幼児加算（初診）</span><span class="score-cell" data-score="75">75点</span></div>
+                            <div class="rule-cell">6歳未満の乳幼児に対して初診を行った場合に上乗せ算定。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" id="chk_saishin" class="calc-check" data-sec="1"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">再診料</span><span class="score-cell" data-score="74">74点</span></div>
+                            <div class="rule-cell">診療所・一般病院の再診料。同日複数科受診の場合、2つ目の科は37点（半額）。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" id="chk_gairai" class="calc-check" data-sec="1"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">外来診療料</span><span class="score-cell" data-score="76">76点</span></div>
+                            <div class="rule-cell">200床以上の大病院の再診料。一部の検査・注射技術料が包括（まるめ）される。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="1"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">特定疾患管理料</span><span class="score-cell" data-score="225">225点</span></div>
+                            <div class="rule-cell">慢性疾患主病に計画的管理で月2回まで。※生活習慣病管理料とは重複不可。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900 bg-slate-100 px-4 py-2.5 rounded-xl mb-4 border-l-4 border-emerald-600 flex items-center justify-between">
-                    <span>🌙 時間外・特例加算（救急体制・夜間）</span>
-                    <span class="text-[10px] text-slate-500 font-mono">SECTION 02</span>
+            <div class="section-block sec-02">
+                <h2 class="section-title sec-02">
+                    <span>🌙 時間外・特例加算</span>
+                    <span>SECTION 02</span>
                 </h2>
-                <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-                        <thead>
-                            <tr class="bg-slate-900 text-white text-xs font-black tracking-wider border-b border-slate-900">
-                                <th class="p-3 sm:p-4 w-1/4">算定項目・加算名</th>
-                                <th class="p-3 sm:p-4 w-20 text-right">点数</th>
-                                <th class="p-3 sm:p-4 pl-6">実務における算定ルール・注意点・重複不可条件</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-xs sm:text-sm font-bold divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">時間外加算（初診）</td>
-                                <td class="p-3 sm:p-4 text-right text-emerald-700 font-black text-base">85 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">医療機関が定めた「標榜時間外」であって、深夜・休日を除いた時間帯（例：平日早朝や夜間）に、やむを得ない理由で受診した患者に適用。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">休日加算（初診）</td>
-                                <td class="p-3 sm:p-4 text-right text-emerald-700 font-black text-base">250 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">日曜日、祝祭日、年末年始（12月29日〜1月3日）に受診した場合に算定。当番医として待機している場合や救急医療機関で適用。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">深夜加算（初診）</td>
-                                <td class="p-3 sm:p-4 text-right text-emerald-700 font-black text-base">480 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">午後10時から翌朝午前6時までの「深夜時間帯」に受付・診療を行った場合に算定。時間外・休日加算とは重複不可。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">夜間・早朝等加算</td>
-                                <td class="p-3 sm:p-4 text-right text-emerald-700 font-black text-base">50 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">平日の午後6時（土曜は正午）から翌朝午前8時までの間、医療機関が「通常の診療時間内」として開けている時間帯に受付した初診・再診患者全員に自動算定。※時間外加算・休日加算等とは同時に算定できない。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="item-list">
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="2"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">時間外加算（初診）</span><span class="score-cell" data-score="85">85点</span></div>
+                            <div class="rule-cell">医療機関が定めた「標榜時間外」に、やむを得ない理由で受診した場合。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="2"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">休日加算（初診）</span><span class="score-cell" data-score="250">250点</span></div>
+                            <div class="rule-cell">日祝、年末年始（12/29〜1/3）に受診。当番医や救急医療機関で適用。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="2"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">深夜加算（初診）</span><span class="score-cell" data-score="480">480点</span></div>
+                            <div class="rule-cell">22時〜翌朝6時の「深夜時間帯」に診療。時間外・休日加算とは重複不可。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="2"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">夜間・早朝等加算</span><span class="score-cell" data-score="50">50点</span></div>
+                            <div class="rule-cell">平日18時（土曜正午）〜翌朝8時の診療時間内の受付で全員自動算定。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900 bg-slate-100 px-4 py-2.5 rounded-xl mb-4 border-l-4 border-amber-600 flex items-center justify-between">
-                    <span>🔬 検査・画像診断（まるめ・撮影料）</span>
-                    <span class="text-[10px] text-slate-500 font-mono">SECTION 03</span>
+            <div class="section-block sec-03">
+                <h2 class="section-title sec-03">
+                    <span>🔬 検査・画像診断</span>
+                    <span>SECTION 03</span>
                 </h2>
-                <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-                        <thead>
-                            <tr class="bg-slate-900 text-white text-xs font-black tracking-wider border-b border-slate-900">
-                                <th class="p-3 sm:p-4 w-1/4">算定項目・加算名</th>
-                                <th class="p-3 sm:p-4 w-20 text-right">点数</th>
-                                <th class="p-3 sm:p-4 pl-6">実務における算定ルール・注意点・重複不可条件</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-xs sm:text-sm font-bold divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">尿一般検査</td>
-                                <td class="p-3 sm:p-4 text-right text-amber-700 font-black text-base">26 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">定性半定量試験（蛋白・糖・ウロビリノーゲン等）を含む。判断料は「尿・糞便等検査判断料（34点）」が月1回に限り別途必要。大病院の外来診療料では包括（まるめ）される。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">末梢血液一般検査</td>
-                                <td class="p-3 sm:p-4 text-right text-amber-700 font-black text-base">21 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">赤血球・白血球・血小板・ヘモグロビン濃度の測定。血液学的検査判断料（125点）が月1回別途かかる。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">生化学検査（Ⅰ）5〜7項目</td>
-                                <td class="p-3 sm:p-4 text-right text-amber-700 font-black text-base">84 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">肝機能や腎機能（AST、ALT、ALP、クレアチニンなど）の検査。項目数（1〜4項目、5〜7項目、8〜9項目など）によって段階的に点数が細かく変動するため、カルテ記載の検査数カウント漏れに細心の注意。生化学的検査判断料（144点）が別途必要。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">胸部単純X線撮影（斜位・前後2方向）</td>
-                                <td class="p-3 sm:p-4 text-right text-amber-700 font-black text-base">120 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">撮影料（60点）＋写真診断料（60点）の合算。フィルムやデジタルデータの「診断行為」がカルテ上で行われていること（所見の記載）が算定必須条件。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">コンピュータ断層撮影（CT）（マルチ16列以上）</td>
-                                <td class="p-3 sm:p-4 text-right text-amber-700 font-black text-base">900 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">スライス性能によって点数が異なる（16列未満は520点など）。これに「コンピューター断層診断料（450点）」をあわせて算定するのが基本（計1,350点）。造影剤を使用した場合は造影剤注入手技料（100点）および造影剤の薬剤費がさらに加算。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="item-list">
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="3"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">尿一般検査</span><span class="score-cell" data-score="26">26点</span></div>
+                            <div class="rule-cell">定性半定量を含む。判断料（34点）が月1回必要。大病院外来では包括。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="3"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">尿・糞便等検査判断料</span><span class="score-cell" data-score="34">34点</span></div>
+                            <div class="rule-cell"><span class="badge badge-amber">追加</span> 尿一般検査時等に、月に1回に限り別途算定可能な判断料。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="3"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">末梢血液一般検査</span><span class="score-cell" data-score="21">21点</span></div>
+                            <div class="rule-cell">赤・白血球、血小板等。血液学的検査判断料（125点）が月1回必要。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="3"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">生化学検査（Ⅰ）5〜7項目</span><span class="score-cell" data-score="84">84点</span></div>
+                            <div class="rule-cell">肝・腎機能等。項目数で点数変動。生化学的検査判断料（144点）が必要。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="3"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">胸部単純X線撮影（2方向）</span><span class="score-cell" data-score="120">120点</span></div>
+                            <div class="rule-cell">撮影料(60点)＋写真診断料(60点)。医師の「診断所見の記載」が必須。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="3"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">コンピュータ断層撮影（16列以上）</span><span class="score-cell" data-score="900">900点</span></div>
+                            <div class="rule-cell">CT本体。通常、断層診断料（450点）をあわせて計1,350点。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900 bg-slate-100 px-4 py-2.5 rounded-xl mb-4 border-l-4 border-teal-600 flex items-center justify-between">
-                    <span>💊 投薬・処方（内服・調剤技術・院外）</span>
-                    <span class="text-[10px] text-slate-500 font-mono">SECTION 04</span>
+            <div class="section-block sec-04">
+                <h2 class="section-title sec-04">
+                    <span>💊 投薬・処方</span>
+                    <span>SECTION 04</span>
                 </h2>
-                <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-                        <thead>
-                            <tr class="bg-slate-900 text-white text-xs font-black tracking-wider border-b border-slate-900">
-                                <th class="p-3 sm:p-4 w-1/4">算定項目・加算名</th>
-                                <th class="p-3 sm:p-4 w-20 text-right">点数</th>
-                                <th class="p-3 sm:p-4 pl-6">実務における算定ルール・注意点・重複不可条件</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-xs sm:text-sm font-bold divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">調剤料（内服薬・1剤につき）</td>
-                                <td class="p-3 sm:p-4 text-right text-teal-700 font-black text-base">9 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">院内処方の場合に算定。最高3剤まで算定可能（4剤目以降は調剤料ゼロ）。服用時期（毎食後など）が同じものはまとめて「1剤」としてカウントするルール（一剤の原則）の適用間違いが多発するポイント。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">処方料（その他）</td>
-                                <td class="p-3 sm:p-4 text-right text-teal-700 font-black text-base">42 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">院内で実際にお薬を出す場合の医療機関側の医師の技術料。7種類以上の内服薬の多剤投与が行われた場合は、処方料が「29点」へ減算ペナルティ。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">処方箋料（その他）</td>
-                                <td class="p-3 sm:p-4 text-right text-teal-700 font-black text-base">68 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">院外の調剤薬局でお薬を貰うための「処方箋」を発行した場合に算定。処方料（42点）とは絶対に同時算定できない（100%どちらか片方のみ）。こちらも7種類以上の多剤投与で「40点」に減算。処方箋の有効期限は発行日を含めて4日間（日曜祝日を含む）。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">一般名処方加算1</td>
-                                <td class="p-3 sm:p-4 text-right text-teal-700 font-black text-base">10 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">院外処方箋において、後発医薬品（ジェネリック）が存在する「すべての医薬品」について、商品名（ロキソニン等）ではなく成分名（ロキソプロフェンナトリウム等）で医師が処方指示を出した場合に、処方箋1枚につき加算。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="item-list">
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="4"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">調剤料（内服薬・1剤につき）</span><span class="score-cell" data-score="9">9点</span></div>
+                            <div class="rule-cell">院内処方で最高3剤まで。服用時期が同じものはまとめて「1剤」扱い。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" id="chk_shofuryo" class="calc-check" data-sec="4"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">処方料（その他）</span><span class="score-cell" data-score="42">42点</span></div>
+                            <div class="rule-cell">院内処方時の医師技術料。7種類以上の多剤投与は29点に減算。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" id="chk_shofusenryo" class="calc-check" data-sec="4"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">処方箋料（その他）</span><span class="score-cell" data-score="68">68点</span></div>
+                            <div class="rule-cell">院外処方箋発行時に算定。処方料（42点）とは同時算定不可。多剤は40点減算。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="4"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">特定疾患処方管理加算（長期）</span><span class="score-cell" data-score="66">66点</span></div>
+                            <div class="rule-cell"><span class="badge badge-teal">追加</span> 特疾管理対象者に28日以上の長期処方を行った場合（月1回）。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="4"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">一般名処方加算1</span><span class="score-cell" data-score="10">10点</span></div>
+                            <div class="rule-cell">院外処方箋において全対象薬を成分名（一般名）で指示した場合。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900 bg-slate-100 px-4 py-2.5 rounded-xl mb-4 border-l-4 border-rose-600 flex items-center justify-between">
-                    <span>💉 手術・処置（創傷・注射手技・加算）</span>
-                    <span class="text-[10px] text-slate-500 font-mono">SECTION 05</span>
+            <div class="section-block sec-05">
+                <h2 class="section-title sec-05">
+                    <span>💉 手術・処置</span>
+                    <span>SECTION 05</span>
                 </h2>
-                <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
-                        <thead>
-                            <tr class="bg-slate-900 text-white text-xs font-black tracking-wider border-b border-slate-900">
-                                <th class="p-3 sm:p-4 w-1/4">算定項目・加算名</th>
-                                <th class="p-3 sm:p-4 w-20 text-right">点数</th>
-                                <th class="p-3 sm:p-4 pl-6">実務における算定ルール・注意点・重複不可条件</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-xs sm:text-sm font-bold divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">皮下、筋肉内注射（手技料）</td>
-                                <td class="p-3 sm:p-4 text-right text-rose-700 font-black text-base">20 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">注射を行った医師や看護師の技術料（別途お薬の薬剤費が1点以上で合算）。大病院の外来診療料では包括（まるめ）されるため手技料単独での請求は不可。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">静脈内注射（手技料）</td>
-                                <td class="p-3 sm:p-4 text-right text-rose-700 font-black text-base">34 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">腕の静脈などへ直接注射を行う手技。こちらも外来診療料包括対象。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">創傷処置（100cm²未満）</td>
-                                <td class="p-3 sm:p-4 text-right text-rose-700 font-black text-base">52 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">きず口の消毒やガーゼ交換の手技料。傷の合計面積（100〜500cm²は60点、500cm²以上は85点）で段階評価。ガーゼや包帯、消毒液の費用はすべてこの52点の中に包括されるため別途請求すると過誤請求。同一患者に複数の傷がある場合は「最も面積の大きい1箇所のみ」を代表として算定する。</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="p-3 sm:p-4 text-slate-900">皮膚切開術（軽微なもの）</td>
-                                <td class="p-3 sm:p-4 text-right text-rose-700 font-black text-base">510 点</td>
-                                <td class="p-3 sm:p-4 text-slate-600 font-normal pl-6 leading-normal">皮膚をメスで切開して膿を出す等の小手術。手術に分類されるため、当日に発生した「創傷処置」や「消毒」の手技料はすべて手術の点数（510点）に包括されて消滅（単独算定不可）。使用したメスの刃や麻酔薬、縫合糸などの「特定保険医療材料・薬剤」のみ個別に加算請求できる。時間外や深夜に緊急で行った場合は、手術独自の「時間外加算（5割増・10割増）」が適用可能。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="item-list">
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="5"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">皮下、筋肉内注射（手技）</span><span class="score-cell" data-score="20">20点</span></div>
+                            <div class="rule-cell">注射の手技料。大病院の外来診療料では包括（まるめ）のため算定不可。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="5"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">静脈内注射（手技）</span><span class="score-cell" data-score="34">34点</span></div>
+                            <div class="rule-cell">静脈内へ直接注射を行う手技。こちらも外来診療料包括対象。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="5"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">創傷処置（100cm²未満）</span><span class="score-cell" data-score="52">52点</span></div>
+                            <div class="rule-cell">消毒やガーゼ交換の手技料。複数傷がある場合は最大面積の1箇所のみ。</div>
+                        </div>
+                    </div>
+                    <div class="item-card" onclick="toggleCard(this)">
+                        <div class="check-zone"><input type="checkbox" class="calc-check" data-sec="5"></div>
+                        <div class="content-zone">
+                            <div class="item-main-row"><span class="target-name">皮膚切開術（軽微なもの）</span><span class="score-cell" data-score="510">510点</span></div>
+                            <div class="rule-cell">小手術。当日の創傷処置や消毒の手技料はすべてこの点数に包括され消滅。</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-        <div class="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 font-bold">
-            <div>CrossCare Hub Learning Resources</div>
-            <div class="mt-2 sm:mt-0">© 2026 CrossCare Hub / Medical Billing Master Project.</div>
+        <div class="footer">
+            © 2026 CrossCare Hub / Medical Billing Master
         </div>
     </div>
 
+    <div class="bottom-dashboard">
+        <div class="dashboard-container">
+            <div class="meter-grid">
+                <div class="meter-box">基 <span id="m_sec1" class="meter-score">0点</span><div class="meter-bar-bg"><div id="bar_sec1" class="meter-bar-fill fill-sec01"></div></div></div>
+                <div class="meter-box">夜 <span id="m_sec2" class="meter-score">0点</span><div class="meter-bar-bg"><div id="bar_sec2" class="meter-bar-fill fill-sec02"></div></div></div>
+                <div class="meter-box">検 <span id="m_sec3" class="meter-score">0点</span><div class="meter-bar-bg"><div id="bar_sec3" class="meter-bar-fill fill-sec03"></div></div></div>
+                <div class="meter-box">薬 <span id="m_sec4" class="meter-score">0点</span><div class="meter-bar-bg"><div id="bar_sec4" class="meter-bar-fill fill-sec04"></div></div></div>
+                <div class="meter-box">手 <span id="m_sec5" class="meter-score">0点</span><div class="meter-bar-bg"><div id="bar_sec5" class="meter-bar-fill fill-sec05"></div></div></div>
+            </div>
+            
+            <div class="preview-row">
+                <div id="previewList" class="preview-list-wrapper">選択項目なし</div>
+                <button onclick="copyToClipboard()" class="btn-action btn-copy">📋 コピー</button>
+            </div>
+            
+            <div class="counter-row">
+                <div class="counter-block">
+                    <span class="counter-label">合計点数</span>
+                    <div class="points-display"><span id="totalPoints">0</span> 点</div>
+                </div>
+                <div class="counter-block">
+                    <span class="counter-label">総医療費</span>
+                    <div class="fee-display">￥<span id="totalMedicalFee">0</span></div>
+                </div>
+                <div class="counter-block">
+                    <span class="counter-label">窓口負担</span>
+                    <div class="window-display">￥<span id="patientWindowFee">0</span></div>
+                </div>
+                <button onclick="clearAllSelections()" class="btn-action btn-clear">🔄 クリア</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // カードタップでチェック状態を反転させる
+        function toggleCard(cardElement) {
+            const checkbox = cardElement.querySelector('.calc-check');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                cardElement.classList.add('selected');
+            } else {
+                cardElement.classList.remove('selected');
+            }
+            calculateTotal();
+        }
+
+        function filterCards() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.item-card');
+            cards.forEach(card => {
+                const name = card.querySelector('.target-name').textContent.toLowerCase();
+                card.style.display = name.includes(input) ? '' : 'none';
+            });
+        }
+
+        function clearAllSelections() {
+            const checkboxes = document.querySelectorAll('.calc-check');
+            checkboxes.forEach(cb => cb.checked = false);
+            const cards = document.querySelectorAll('.item-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            calculateTotal();
+        }
+
+        function copyToClipboard() {
+            const previewText = document.getElementById('previewList').textContent;
+            if (previewText === "選択項目なし" || previewText.includes("算定エラー")) {
+                alert("コピーする項目がありません。");
+                return;
+            }
+            const formattedText = previewText.replace(/ ／ /g, "\n");
+            navigator.clipboard.writeText(formattedText).then(() => {
+                alert("コピー完了！");
+            }).catch(err => {
+                alert("コピーに失敗しました。");
+            });
+        }
+
+        function calculateTotal() {
+            const checkboxes = document.querySelectorAll('.calc-check');
+            const alertBanner = document.getElementById('alertBanner');
+            const previewList = document.getElementById('previewList');
+            
+            let hasError = false;
+            let errorMessages = [];
+            let selectedItems = [];
+
+            // 1. 重複不可チェック
+            const shoshin = document.getElementById('chk_shoshin').checked;
+            const saishin = document.getElementById('chk_saishin').checked;
+            const gairai = document.getElementById('chk_gairai').checked;
+            const shofuryo = document.getElementById('chk_shofuryo').checked;
+            const shofusenryo = document.getElementById('chk_shofusenryo').checked;
+
+            let baseCount = (shoshin ? 1 : 0) + (saishin ? 1 : 0) + (gairai ? 1 : 0);
+            if (baseCount > 1) {
+                hasError = true;
+                errorMessages.push("初診・再診・外来診療料は同時算定不可。");
+            }
+            if (shofuryo && shofusenryo) {
+                hasError = true;
+                errorMessages.push("処方料と処方箋料は同時算定不可。");
+            }
+
+            if (hasError) {
+                alertBanner.innerHTML = "⚠️ " + errorMessages.join("<br>⚠️ ");
+                alertBanner.style.display = 'block';
+            } else {
+                alertBanner.style.display = 'none';
+            }
+
+            // 2. 点数集計
+            let secTotals = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            let globalTotalPoints = 0;
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const card = checkbox.closest('.item-card');
+                    const name = card.querySelector('.target-name').textContent;
+                    const score = parseInt(card.querySelector('.score-cell').getAttribute('data-score'));
+                    const secId = parseInt(checkbox.getAttribute('data-sec'));
+                    
+                    secTotals[secId] += score;
+                    selectedItems.push(`・${name} (${score}点)`);
+                }
+            });
+
+            if (selectedItems.length > 0) {
+                previewList.textContent = selectedItems.join(" ／ ");
+                previewList.style.color = "#ffffff";
+            } else {
+                previewList.textContent = "選択項目なし";
+                previewList.style.color = "#94a3b8";
+            }
+
+            if (!hasError) {
+                for (let i = 1; i <= 5; i++) {
+                    globalTotalPoints += secTotals[i];
+                }
+            } else {
+                globalTotalPoints = 0;
+                previewList.textContent = "⚠️ 算定エラー解消までテキスト停止";
+                previewList.style.color = "#f87171";
+            }
+
+            // 3. 画面数値反映
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`m_sec${i}`).textContent = (hasError ? 0 : secTotals[i]) + "点";
+                let percent = Math.min((secTotals[i] / 1000) * 100, 100);
+                document.getElementById(`bar_sec${i}`).style.width = (hasError ? 0 : percent) + "%";
+            }
+
+            const totalMedicalFee = globalTotalPoints * 10;
+            const rate = parseFloat(document.getElementById('burdenRate').value);
+            const patientWindowFee = Math.round((totalMedicalFee * rate) / 10) * 10;
+
+            document.getElementById('totalPoints').textContent = globalTotalPoints.toLocaleString();
+            document.getElementById('totalMedicalFee').textContent = totalMedicalFee.toLocaleString();
+            document.getElementById('patientWindowFee').textContent = patientWindowFee.toLocaleString();
+        }
+    </script>
 </body>
 </html>
