@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crosscare-v1';
+const CACHE_NAME = 'crosscare-v2';
 const urlsToCache = ['index.html', 'manifest.json', 'icon.png'];
 
 self.addEventListener('install', (event) => {

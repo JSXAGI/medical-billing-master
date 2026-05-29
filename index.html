@@ -180,6 +180,12 @@
             background: #e2e8f0;
         }
     </style>
+	<link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Billing Master">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
 </head>
 
 <body>
@@ -329,6 +335,15 @@
 
         // ページ読み込み時に全リスト表示（スマホでは裏でリストを作るだけで前面には出ません）
         render('ALL');
+		
+    // PWAサービスワーカーの登録ロジックを復元
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker 登録成功:', reg.scope))
+                    .catch(err => console.error('Service Worker 登録失敗:', err));
+            });
+        }
     </script>
 </body>
 
