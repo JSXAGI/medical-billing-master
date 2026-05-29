@@ -3,1353 +3,326 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrossCare Hub v4.0 - Professional Master</title>
-    <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CrossCare Hub - Billing Master</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap');
-
-        /* ==========================================================================
-           🎨 純国産プレミアムCSS（PC・スマホ完全自動切り替えレスポンシブ）
-           ========================================================================== */
         body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: #f1f5f9; /* bg-slate-100 */
-            color: #0f172a;            /* text-slate-900 */
             margin: 0;
-            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        /* パソコン画面（幅768px以上）の時は横並び（左右分割）にする */
-        @media (min-width: 768px) {
-            body {
-                flex-direction: row !important;
-            }
-        }
-
-        #app-root {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            position: relative;
-        }
-
-        /* アプリ全体のコンテナ */
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-        @media (min-width: 768px) {
-            .app-container {
-                flex-direction: row !important;
-            }
-        }
-
-        /* 📱 スマホ用全画面ジャンルメニュー（PCでは強制的に非表示！） */
-        .mobile-overlay-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(2, 6, 23, 0.95); /* bg-slate-950/95 */
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            padding: 32px;
+            padding: 20px;
             box-sizing: border-box;
         }
-        @media (min-width: 768px) {
-            .mobile-overlay-menu {
-                display: none !important; /* PC画面では絶対に表示させない */
-            }
-        }
-        
-        .mobile-menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .mobile-menu-title {
-            font-weight: 900;
-            font-style: italic;
-            font-size: 20px;
-            color: #3b82f6;
-        }
-        .mobile-close-btn {
-            padding: 8px 16px;
-            background-color: #1e293b;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #ffffff;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-        .mobile-genre-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            flex-grow: 1;
-            padding-right: 4px;
-            margin-bottom: 24px;
-        }
-        .mobile-genre-btn {
-            width: 100%;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-weight: 900;
-            text-align: left;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .mobile-genre-btn.active {
-            background-color: #2563eb;
-            color: #ffffff;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
-        }
-        .mobile-genre-btn.inactive {
-            background-color: #0f172a;
-            color: #94a3b8;
-            border: 1px solid #1e293b;
-        }
 
-        /* 🖥️ PC用サイドバー */
-        .sidebar-pc {
-            display: none; /* スマホでは隠す */
-            flex-direction: column;
-            width: 260px; 
-            background-color: #0f172a;
-            color: #cbd5e1;
-            padding: 24px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            height: 100vh;
-            overflow-y: auto;
-        }
-        /* PC画面（幅768px以上）になったら絶対に表示する */
-        @media (min-width: 768px) {
-            .sidebar-pc {
-                display: flex !important;
-            }
-        }
-        
-        .sidebar-logo-area {
-            margin-bottom: 24px;
-        }
-        .sidebar-logo-title {
-            font-size: 20px;
-            font-weight: 900;
-            color: #ffffff;
-            letter-spacing: -0.05em;
-            font-style: italic;
-            margin: 0;
-        }
-        .sidebar-logo-sub {
-            font-size: 10px;
-            color: #64748b;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        /* 👑 プレイヤーランクカード */
-        .rank-card {
+        .rank-box {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
             margin-bottom: 20px;
-            padding: 16px;
-            background-color: #1e293b;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
-        .rank-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #64748b;
-            margin-bottom: 4px;
-            letter-spacing: 0.1em;
-        }
-        .rank-value {
-            font-weight: 900;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .rank-progress-bg {
-            width: 100%;
-            background-color: #334155;
-            height: 6px;
-            margin-top: 8px;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-        .rank-progress-bar {
-            background-color: #3b82f6;
-            height: 100%;
-        }
-        .rank-stats {
-            font-size: 10px;
-            color: #cbd5e1;
-            margin-top: 8px;
-            margin-bottom: 0;
         }
 
-        /* 🔗 外部連携リンクボタン */
-        .links-grid-2col {
-            margin-bottom: 12px;
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-            flex-shrink: 0;
+        .menu-item {
+            padding: 12px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: bold;
+            border-bottom: 1px solid #1e293b;
         }
+
+        .menu-item:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .footer-tools {
+            margin-top: auto;
+            padding-top: 30px;
+            padding-bottom: 20px;
+        }
+
+        .link-btn-nurse-full {
+            display: block;
+            background: #00bcd4;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .links-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         .link-btn-premium {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px 8px;
+            padding: 8px;
             border-radius: 8px;
-            color: #ffffff;
-            text-align: center;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            font-weight: 700;
-            font-size: 12px;
             text-decoration: none;
-            transition: all 0.2s;
-            box-sizing: border-box;
+            color: white;
+            font-size: 12px;
         }
-        .link-btn-premium:active {
-            transform: scale(0.95);
-        }
+
         .btn-emerald {
-            background: linear-gradient(to right, #059669, #0f766e);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: #10b981;
         }
+
         .btn-teal {
-            background: linear-gradient(to right, #0f766e, #059669);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        
-        /* 🌟 ナースサプリボタン */
-        .link-btn-nurse-full {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #1d59db, #15DAF6);
-            color: #ffffff;
-            font-weight: 900;
-            font-size: 13px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(29, 89, 219, 0.3);
-            border: 1px solid rgba(21, 218, 246, 0.3);
-            transition: all 0.2s;
-            box-sizing: border-box;
-            flex-shrink: 0;
-        }
-        .link-btn-nurse-full:active {
-            transform: scale(0.97);
+            background: #0d9488;
         }
 
-        /* PCサイドバーのジャンル選択メニュー */
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex-grow: 1; 
-            margin-bottom: 24px;
-        }
-        .nav-genre-btn {
-            width: 100%;
-            text-align: left;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            background: transparent;
-            border: none;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .nav-genre-btn:hover {
-            background-color: #1e293b;
-            color: #ffffff;
-        }
-
-        .sidebar-item-active {
-            background: #1e293b !important;
-            color: #3b82f6 !important;
-            border-left: 4px solid #3b82f6 !important;
-            border-radius: 0 8px 8px 0 !important;
-            font-weight: 900 !important;
-        }
-
-        /* 📄 右側：メインコンテンツ表示エリア */
-        .main-content-view {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #f8fafc;
-        }
-
-        /* スマホ用トップバー */
-        .mobile-top-bar {
-            display: flex;
-            background-color: #0f172a;
-            color: #ffffff;
-            padding: 16px;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        @media (min-width: 768px) {
-            .mobile-top-bar {
-                display: none !important; /* PCでは非表示 */
-            }
-        }
-        
-        .mobile-top-bar-title {
-            font-weight: 900;
-            font-style: italic;
-        }
-        .mobile-menu-open-btn {
-            padding: 8px 12px;
-            background-color: #1e293b;
-            border: none;
-            border-radius: 4px;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* スクロールする症例エリア */
-        .scrollable-case-area {
-            flex-grow: 1;
+        .main-content {
+            flex: 1;
+            background: #f1f5f9;
+            padding: 20px;
             overflow-y: auto;
-            padding: 16px;
-        }
-        @media (min-width: 768px) {
-            .scrollable-case-area {
-                padding: 40px; 
-            }
-        }
-        
-        .inner-max-width {
-            width: 100%;
-            max-width: 1000px; 
-            margin: 0 auto;
-            box-sizing: border-box;
         }
 
-        /* メインヘッダー */
-        .main-view-header {
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+        .case-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
-        .main-view-title {
-            font-size: 28px;
-            font-weight: 900;
-            color: #020617;
-            letter-spacing: -0.05em;
-            margin: 0;
+
+        .home-btn {
+            display: inline-block;
+            background: #0f172a;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
         }
-        .main-view-subtitle {
-            color: #64748b;
-            font-size: 13px;
-            margin: 6px 0 0 0;
-        }
-        .progress-right-block {
-            text-align: right;
-            display: none;
-        }
-        @media (min-width: 640px) {
-            .progress-right-block {
+
+        @media (max-width: 767px) {
+            .sidebar {
+                width: 100%;
+                position: absolute;
+                height: 100%;
+                z-index: 20;
+            }
+
+            .main-content {
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 30;
+                background: #f1f5f9;
+            }
+
+            .main-content.active {
                 display: block;
             }
+
+            .mobile-back-btn {
+                display: block;
+                width: 100%;
+                padding: 15px;
+                background: #0f172a;
+                color: white;
+                border: none;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
         }
-        .progress-right-label {
-            color: #94a3b8;
-            font-size: 10px;
-            font-weight: 700;
+
+        .mobile-back-btn {
+            display: none;
+        }
+
+        .case-card {
+            background: white;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sim-container {
+            padding: 20px;
+        }
+
+        .choices button {
             display: block;
-            text-transform: uppercase;
-            font-style: italic;
-        }
-        .progress-right-val {
-            font-size: 24px;
-            font-weight: 900;
-            color: #0f172a;
-        }
-
-        /* 📋 症例カードグリッド */
-        .cases-grid {
-            display: grid;
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-            gap: 20px;
-        }
-        @media (min-width: 768px) {
-            .cases-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr)); 
-            }
-        }
-
-        .case-card-btn {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: all 0.25s ease;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f8fafc;
             cursor: pointer;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .case-card-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08);
-            border-color: #3b82f6;
-        }
-        .case-icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background-color: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            transition: transform 0.2s;
-            flex-shrink: 0;
-        }
-        .case-card-btn:hover .case-icon-box {
-            transform: rotate(12deg);
-        }
-        .case-text-flex {
-            flex-grow: 1;
-        }
-        .case-badge-id {
-            font-size: 10px;
-            font-weight: 700;
-            color: #2563eb;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-family: monospace;
-            margin-bottom: 4px;
-        }
-        .case-title-name {
-            font-weight: 900;
-            color: #1e293b;
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
-        .case-short-desc {
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.4;
-        }
-        .case-go-label {
-            color: #cbd5e1;
-            font-weight: 900;
-            font-style: italic;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-        .case-card-btn:hover .case-go-label {
-            color: #2563eb;
         }
 
-        /* 🎬 シミュレーション画面関係 */
-        .sim-fullscreen-view {
-            width: 100%;
-            height: 100vh;
-            background-color: #0f172a;
-            display: flex;
-            flex-direction: column;
-            color: #ffffff;
-            overflow: hidden;
-        }
-        @media (min-width: 768px) {
-            .sim-fullscreen-view {
-                flex-direction: row;
-            }
-        }
-
-        .sim-sidebar {
-            width: 100%;
-            padding: 24px;
-            border-bottom: 1px solid #1e293b;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            overflow-y: auto;
-        }
-        @media (min-width: 768px) {
-            .sim-sidebar {
-                width: 33.333333%;
-                padding: 40px;
-                border-bottom: none;
-                border-right: 1px solid #1e293b;
-            }
-        }
-        .sim-quit-btn {
-            background: transparent;
-            border: none;
-            color: #64748b;
-            margin-bottom: 32px;
-            display: block;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-style: italic;
-            cursor: pointer;
-            text-align: left;
-            padding: 0;
-        }
-        .sim-quit-btn:hover {
-            color: #ffffff;
-        }
-        .sim-genre-badge {
-            padding: 4px 12px;
-            background-color: #2563eb;
-            font-size: 10px;
-            font-weight: 900;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        .sim-patient-name {
-            font-size: 36px;
-            font-weight: 900;
-            margin-top: 16px;
-            margin-bottom: 0;
-            letter-spacing: -0.05em;
-            line-height: 1;
-        }
-        .sim-patient-desc {
-            color: #94a3b8;
-            margin-top: 16px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .sim-score-box {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #1e293b;
-        }
-        .score-row-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-        .score-label-title {
-            color: #64748b;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-style: italic;
-        }
-        .score-large-val {
-            font-size: 48px;
-            font-weight: 900;
-            color: #60a5fa;
-            letter-spacing: -0.05em;
-            line-height: 1;
-        }
-        .score-pts-unit {
-            font-size: 14px;
-            margin-left: 4px;
-            color: #64748b;
-        }
-        .score-sub-details {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            padding-top: 8px;
-            margin-top: 8px;
-        }
-        .score-details-label {
-            color: #64748b;
-        }
-        .score-details-val {
-            color: #cbd5e1;
-            font-family: monospace;
-        }
-        .score-payment-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            font-weight: 900;
-            border-top: 1px solid #1e293b;
-            padding-top: 8px;
-            margin-top: 8px;
-            align-items: center;
-        }
-        .payment-label {
-            color: #64748b;
-            font-size: 12px;
-        }
-        .payment-val-green {
-            color: #4ade80;
-            font-family: monospace;
-            font-size: 18px;
-        }
-
-        /* 右側問題エリア */
-        .sim-main-panel {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #020617;
-            padding: 24px;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-        @media (min-width: 768px) {
-            .sim-main-panel {
-                padding: 48px;
-            }
-        }
-        
-        .panel-inner-max {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
-        .step-indicator-area {
-            margin-bottom: 32px;
-        }
-        .step-num-text {
-            color: #3b82f6;
-            font-weight: 900;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin: 0 0 8px 0;
-        }
-        .step-progress-bg {
-            height: 6px;
-            width: 100%;
-            background-color: #1e293b;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-        .step-progress-bar {
-            height: 100%;
-            background-color: #3b82f6;
-            transition: all 0.7s;
-        }
-
-        /* 📋 問題カードの白い箱 */
-        .question-card-box {
-            background-color: #0f172a;
-            border: 1px solid #1e293b;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            margin-bottom: 32px;
-            position: relative;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        .question-hint-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 24px;
-            color: #f8fafc;
-            line-height: 1.4;
-        }
-
-        /* アクションボタン各種 */
-        .action-list-space {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .action-standard-btn {
-            width: 100%;
-            background-color: #1e293b;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            font-weight: 900;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-        }
-        .action-standard-btn:hover {
-            background-color: #2563eb;
-        }
-        .action-btn-next-label {
-            opacity: 0.3;
-            font-style: italic;
-        }
-        .action-standard-btn:hover .action-btn-next-label {
-            opacity: 1;
-        }
-        .action-pts-add-label {
-            font-size: 10px;
-            color: #60a5fa;
-        }
-
-        /* 選択肢ボタン */
-        .choices-btn-layout {
-            display: grid;
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-            gap: 16px;
-            width: 100%;
-        }
-        .choice-item-btn {
-            width: 100%;
-            text-align: left;
-            padding: 20px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-sizing: border-box;
-        }
-        .choice-item-btn.ok-style {
-            background-color: #1e293b;
-            color: #ffffff;
-            border: none;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .choice-item-btn.ok-style:hover {
-            background-color: #2563eb;
-        }
-        .choice-pts-mono {
-            font-size: 10px;
-            opacity: 0.4;
-            font-family: monospace;
-            letter-spacing: -0.05em;
-        }
-
-        /* トリビア表示まわり */
-        .trivia-center-wrapper {
-            text-align: center;
-            padding: 16px 0;
-            position: relative;
-            z-index: 10;
-        }
-        .trivia-icon-big {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-        .trivia-heading {
-            font-size: 20px;
-            font-weight: 900;
-            margin-top: 0;
-            margin-bottom: 16px;
-            letter-spacing: -0.05em;
-        }
-        .trivia-content-quote {
-            background-color: rgba(30, 41, 59, 0.5);
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 32px;
-            border-left: 4px solid #3b82f6;
-            text-align: left;
-        }
-        .trivia-text-inside {
-            color: #cbd5e1;
-            font-size: 14px;
-            line-height: 1.6;
-            font-weight: 500;
-            margin: 0;
-        }
-        .finish-action-btn {
-            width: 100%;
-            background-color: #2563eb;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            font-weight: 900;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s;
-            font-size: 14px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-        .finish-action-btn:hover {
-            background-color: #3b82f6;
-        }
-
-        /* 算定一覧リスト */
-        .billing-list-container {
-            margin-top: 8px;
-        }
-        .billing-list-header {
-            font-size: 10px;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
-        }
-        .billing-row-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(30, 41, 59, 0.5);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(30, 41, 59, 0.5);
-            margin-bottom: 8px;
-        }
-        .billing-item-name {
-            font-size: 11px;
-            font-weight: 700;
-            color: #94a3b8;
-        }
-        .billing-item-pts {
-            font-size: 11px;
-            font-weight: 900;
-            color: #3b82f6;
-        }
-        
-        .opacity-60 {
-            opacity: 0.6;
+        .choices button:hover {
+            background: #e2e8f0;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="app-root"></div>
+    <aside class="sidebar">
+        <div class="rank-box">PLAYER RANK<br>🐣 算定の見類い</div>
+        <div id="menuList"></div>
+        <div class="footer-tools">
+            <a href="NurseApp.html" class="link-btn-nurse-full">✦ ナースの読書サプリを開く ＞</a>
+            <div class="links-grid-2col">
+                <a href="hayami.html" class="link-btn-premium btn-emerald">📊 点数早見表</a>
+                <a href="zukan.html" class="link-btn-premium btn-teal">📖 略語ミニ図鑑</a>
+            </div>
+        </div>
+    </aside>
 
+    <main class="main-content" id="mainContent">
+        <button class="mobile-back-btn" onclick="document.getElementById('mainContent').classList.remove('active')">←
+            メニューへ戻る</button>
+        <div id="contentArea"></div>
+    </main>
+
+    <script src="scenarios.js"></script>
     <script>
-        /**
-         * ==========================================
-         * 1. 症例データセット (150名フル実装用スペース)
-         * ==========================================
-         */
-        const GENRES = ['ALL', '外来算定', '画像・検査', '投薬・管理', '時間外・特例', '手術・処置'];
-        const SCENARIOS = [
-              // --- 第1弾：【外来算定】トリビア付き30名（GAI-001〜GAI-030） --- 
-            { id: "GAI-001", genre: "外来算定", name: "佐藤 栄一 様", desc: "酸素算定と適応病名", icon: "👤", color: "blue", scenario: "酸素吸入の報告あり。適応病名の有無をチェックしてください。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "病名チェック", type: "check", hint: "酸素(J024)に必要な病名を依頼します。" }, { label: "算定", type: "add", item: "酸素(J024)", pts: 65, hint: "65点追加。" }, { type: "finish" }], trivia: "酸素は「薬」ではなく「材料」扱い。実は使う量や装置によって、計算式がパズルのように複雑な項目なんです。" },
-            { id: "GAI-002", genre: "外来算定", name: "鈴木 芳子 様", desc: "処方漏れ確認", icon: "💊", color: "blue", scenario: "医師のオーダー漏れを指摘してください。", initial: [{ n: "再診料一式", p: 147 }], steps: [{ label: "不備指摘", type: "check", hint: "カルテの不備を医師に伝えます。" }, { label: "算定", type: "add", item: "処方箋料", pts: 86, hint: "86点。" }, { type: "finish" }], trivia: "処方箋料は「お薬の指示書代」。医師がカルテに書き忘れると、病院は1円も請求できない「事務の確認」が光る場所です。" },
-            { id: "GAI-003", genre: "外来算定", name: "高橋 健太 様", desc: "初再診の境界線", icon: "🩹", color: "blue", scenario: "風邪通院中にケガで来院。初診になるか再診になるか？", initial: [], steps: [{ label: "判断", type: "choice", choices: [{ l: "初診料を算定", p: 288, ok: false }, { l: "再診料を算定", p: 73, ok: true }], hint: "別の病気で通院中の場合、初診料は取れません。" }, { type: "finish" }], trivia: "別の病気でも「通院中」なら再診。でも、本人が勝手に中断して期間が空くと初診に戻る「1ヶ月ルール」が存在します。" },
-            { id: "GAI-004", genre: "外来算定", name: "田中 美子 様", desc: "電話再診の判断", icon: "📞", color: "blue", scenario: "検査結果を電話で確認したいという要望。", initial: [], steps: [{ label: "判断", type: "add", item: "電話再診料", pts: 73, hint: "電話での指示も再診料がつきます。" }, { type: "finish" }], trivia: "電話でアドバイスをもらうだけでも、実は立派な「診察」。コロナ禍以降、この算定は劇的に一般的になりました。" },
-            { id: "GAI-005", genre: "外来算定", name: "伊藤 博 様", desc: "複数科受診のルール", icon: "🏥", color: "blue", scenario: "内科と整形外科を同日に受診。", initial: [{ n: "1科目再診", p: 73 }], steps: [{ label: "2科目目", type: "add", item: "2科目目再診料", pts: 37, hint: "2つ目の科は半額になります。" }, { type: "finish" }], trivia: "2つ目の科は「37点」。現場では「サナ」と略されます。患者さんからは「安くなるんだ！」と喜ばれる豆知識です。" },
-            { id: "GAI-006", genre: "外来算定", name: "渡辺 裕子 様", desc: "紹介状なしの初診", icon: "📄", color: "blue", scenario: "大病院に紹介状を持たずに来院。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "特別加算", type: "check", hint: "選定療養費の説明が必要です。" }, { type: "finish" }], trivia: "紹介状がないと、診察料とは別に「7,000円」以上取られることも！「まずは近くのクリニックへ」という国のメッセージです。" },
-            { id: "GAI-007", genre: "外来算定", name: "山本 太郎 様", desc: "乳幼児加算の確認", icon: "👶", color: "blue", scenario: "3歳の子供の風邪診察。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "加算", type: "add", item: "乳幼児加算(初診)", pts: 75, hint: "6歳未満には加算があります。" }, { type: "finish" }], trivia: "乳幼児は診察に手間がかかるため、点数が高めです。でも自治体の助成で窓口負担が0円のことが多く、あまり気づかれません。" },
-            { id: "GAI-008", genre: "外来算定", name: "中村 昭二 様", desc: "明細書発行体制", icon: "🖨️", color: "blue", scenario: "明細書を希望。算定できる項目は？", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "明細書発行体制加算", pts: 1, hint: "1点だけ加算できます。" }, { type: "finish" }], trivia: "たった「1点(10円)」ですが、レシートのように詳しい明細を出すための事務コストとして認められている点数なんです。" },
-            { id: "GAI-009", genre: "外来算定", name: "小林 直子 様", desc: "コンタクトレンズ検査", icon: "👁️", color: "blue", scenario: "CL処方希望。通常診察と違う点数は？", initial: [], steps: [{ label: "専用算定", type: "add", item: "コンタクトレンズ検査料1", pts: 200, hint: "眼科特有のセット点数です。" }, { type: "finish" }], trivia: "コンタクトの検査は「一律の点数」と決まっていて、他の検査をたくさんしても点数が上がらない「定額制」に近い仕組みです。" },
-            { id: "GAI-010", genre: "外来算定", name: "加藤 浩二 様", desc: "特定疾患療養管理料", icon: "💓", color: "blue", scenario: "高血圧で継続治療中。管理料の算定は？", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "管理料", type: "add", item: "特定疾患療養管理料(病院)", pts: 147, hint: "147点を追加。" }, { type: "finish" }], trivia: "慢性的な病気には「丁寧な説明代」としてこの点数がつきます。2024年の改定で対象の病名が変わり、今現場は大混乱中です！" },
-            { id: "GAI-011", genre: "外来算定", name: "阿部 寛 様", desc: "外来管理加算の条件", icon: "👂", color: "blue", scenario: "処置はないが、詳しい説明を行った。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "外来管理加算", pts: 52, hint: "処置がない場合に52点。" }, { type: "finish" }], trivia: "「5分以上、手技を伴わない診察」に付く52点。処置を一つでもすると消えてしまう、切ない点数でもあります。" },
-            { id: "GAI-012", genre: "外来算定", name: "佐藤 健 様", desc: "地域包括診療料", icon: "🏠", color: "blue", scenario: "かかりつけ医として全人的な管理を実施。", initial: [], steps: [{ label: "定額算定", type: "add", item: "地域包括診療料1", pts: 560, hint: "まるっと560点。" }, { type: "finish" }], trivia: "「何をやっても定額」という、かかりつけ医専用の魔法の点数。患者さんは毎回の支払いが安定するメリットがあります。" },
-            { id: "GAI-013", genre: "外来算定", name: "長澤 まさみ 様", desc: "時間外対応加算", icon: "🕔", color: "blue", scenario: "夜間でも連絡が取れる体制を維持。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "体制加算", type: "add", item: "時間外対応加算1", pts: 5, hint: "体制を評価して5点。" }, { type: "finish" }], trivia: "診察が時間外だったわけではなく、「いつでも連絡が取れる体制を整えている」ことへの、24時間営業のご褒美点数です。" },
-            { id: "GAI-014", genre: "外来算定", name: "岡田 准一 様", desc: "紹介状の発行", icon: "✉️", color: "blue", scenario: "他院への紹介状を希望された。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "書類代", type: "add", item: "診療情報提供料(I)", pts: 250, hint: "紹介状は250点。" }, { type: "finish" }], trivia: "紹介状は、医師同士の大切なバトン。患者さんが持参すると、次の病院での初診料が少し安くなるお得な手紙でもあります。" },
-            { id: "GAI-015", genre: "外来算定", name: "橋本 環奈 様", desc: "セカンドオピニオン", icon: "🗣️", color: "blue", scenario: "他院の診断について相談したい。", initial: [], steps: [{ label: "自費確認", type: "check", hint: "保険適用外(全額自費)になります。" }, { type: "finish" }], trivia: "セカンドオピニオンは「治療」ではなく「相談」なので保険が利きません。30分で数万円という病院もあり、高級な相談料なんです。" },
-            { id: "GAI-016", genre: "外来算定", name: "大泉 洋 様", desc: "特定疾患処方管理加算", icon: "📄", color: "blue", scenario: "長期処方(28日以上)を行った。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "長期加算", type: "add", item: "特定疾患処方管理加算(長期)", pts: 66, hint: "28日以上なら66点。" }, { type: "finish" }], trivia: "長くお薬を出すと、手間がかかるため加点されます。でも、無駄な薬を出しすぎないか事務員が目を光らせるポイントです。" },
-            { id: "GAI-017", genre: "外来算定", name: "石原 さとみ 様", desc: "電子処方箋の導入", icon: "💻", color: "blue", scenario: "電子処方箋を発行した。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "加算", type: "add", item: "医療情報体制基盤整備体制加算", pts: 1, hint: "IT化の加算です。" }, { type: "finish" }], trivia: "紙の処方箋がなくなる日も近い！？IT化を進めている病院には、国から「1点」の応援ボーナスが入ります。" },
-            { id: "GAI-018", genre: "外来算定", name: "菅田 将暉 様", desc: "再診料の加算漏れ", icon: "🕰️", color: "blue", scenario: "18時を過ぎての受付。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "夜間加算", type: "add", item: "夜間早朝等加算", pts: 50, hint: "18時以降は50点追加。" }, { type: "finish" }], trivia: "仕事帰りの受診に付く50点。受付時間が1分でも18時を過ぎると発生するので、時計との戦いになることも！" },
-            { id: "GAI-019", genre: "外来算定", name: "北川 景子 様", desc: "生活習慣病管理料I", icon: "🥗", color: "blue", scenario: "糖尿病の検査込みの包括管理。", initial: [], steps: [{ label: "包括算定", type: "add", item: "生活習慣病管理料(I)", pts: 760, hint: "検査込なら760点。" }, { type: "finish" }], trivia: "検査代も全部込みの「おまとめパック」。たくさん検査した月は、病院にとっては少しドキドキする（赤字リスク）算定です。" },
-            { id: "GAI-020", genre: "外来算定", name: "役所 広司 様", desc: "ニコチン依存症管理", icon: "🚭", color: "blue", scenario: "禁煙外来の初診。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "管理料", type: "add", item: "ニコチン依存症管理料", pts: 230, hint: "禁煙指導で230点。" }, { type: "finish" }], trivia: "タバコを辞めるのも「治療」。一定の基準を満たせば、お薬代も含めて保険で禁煙できる、健康への投資プログラムです。" },
-            { id: "GAI-021", genre: "外来算定", name: "綾瀬 はるか 様", desc: "院内処方の算定", icon: "💊", color: "blue", scenario: "病院でお薬を直接渡した。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "調剤", type: "add", item: "処方料", pts: 42, hint: "院内なら処方料(42点)。" }, { type: "finish" }], trivia: "外の薬局に行くのが「処方箋料(86点)」、中でもらうのが「処方料(42点)」。実は中でもらう方が、手数料は安いんです。" },
-            { id: "GAI-022", genre: "外来算定", name: "福山 雅治 様", desc: "療養担当規則の遵守", icon: "📏", color: "blue", scenario: "患者から過剰な検査を要求された。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "拒否/判断", type: "check", hint: "医学的に不要な検査は算定不可。" }, { type: "finish" }], trivia: "「お金払うから検査して！」と言われても、医学的に不要なら保険はNG。ルールを守るのが事務員の「正義」です。" },
-            { id: "GAI-023", genre: "外来算定", name: "吉高 由里子 様", desc: "薬剤情報提供料", icon: "📖", color: "blue", scenario: "薬の説明書を渡した。", initial: [{ n: "処方料", p: 42 }], steps: [{ label: "情報提供", type: "add", item: "薬剤情報提供料", pts: 10, hint: "説明書代で10点。" }, { type: "finish" }], trivia: "あのカラーの薬の説明書、実は1枚100円相当(10点)の価値があります。捨てずにファイリングするのがおすすめです！" },
-            { id: "GAI-024", genre: "外来算定", name: "堺 雅人 様", desc: "ウイルス疾患指導", icon: "🌡️", color: "blue", scenario: "インフルエンザの生活指導。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "指導料", type: "add", item: "ウイルス疾患指導料", pts: 240, hint: "特定のウイルス疾患への指導。" }, { type: "finish" }], trivia: "ただの風邪ではなく、特定のウイルスには特別な指導料が。でも、月に1回しか取れないという厳しい回数制限があります。" },
-            { id: "GAI-025", genre: "外来算定", name: "広瀬 すず 様", desc: "オンライン診療初診", icon: "📱", color: "blue", scenario: "スマホによる遠隔診察。", initial: [], steps: [{ label: "初診", type: "add", item: "情報通信機器を用いた初診", pts: 251, hint: "オンライン初診は251点。" }, { type: "finish" }], trivia: "対面の初診(288点)より少し安い251点。通院の手間と時間を「点数」で天秤にかける、現代の算定スタイルです。" },
-            { id: "GAI-026", genre: "外来算定", name: "木村 拓哉 様", desc: "がん性疼痛管理", icon: "🏥", color: "blue", scenario: "痛み止めの細かい調整指導。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "管理料", type: "add", item: "がん性疼痛緩和指導管理料", pts: 200, hint: "緩和ケアの指導です。" }, { type: "finish" }], trivia: "「痛みを我慢しない」ことも立派な治療。専門的なチームで痛みをケアすると、手厚い管理料が認められています。" },
-            { id: "GAI-027", genre: "外来算定", name: "長野 博 様", desc: "食生活の栄養指導", icon: "🍲", color: "blue", scenario: "管理栄養士による食事指導。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "栄養指導", type: "add", item: "外来栄養食事指導料", pts: 200, hint: "30分以上の指導で200点。" }, { type: "finish" }], trivia: "医師ではなく「管理栄養士」が主役の珍しい点数。美味しいもの好きの長野さんにも、バランスの取れた算定を！" },
-            { id: "GAI-028", genre: "外来算定", name: "新垣 結衣 様", desc: "婦人科特定疾患管理", icon: "🚺", color: "blue", scenario: "子宮内膜症の継続的な管理。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "管理料", type: "add", item: "婦人科特定疾患治療管理料", pts: 250, hint: "ホルモン剤の管理などで250点。" }, { type: "finish" }], trivia: "女性特有のデリケートな疾患への、長期的な寄り添いを評価する点数。これも2024年の改定で対象が広がりました。" },
-            { id: "GAI-029", genre: "外来算定", name: "松本人志 様", desc: "疑い病名の整理", icon: "❓", color: "blue", scenario: "検査はしたが異常なしだった病名。", initial: [], steps: [{ label: "整理", type: "check", hint: "「〜の疑い」としてレセプトに残します。" }, { type: "finish" }], trivia: "「異常なし」でも検査は無駄じゃない！「疑い」という名前で残すことで、検査代がしっかり認められるのが医療事務のコツです。" },
-            { id: "GAI-030", genre: "外来算定", name: "黒柳 徹子 様", desc: "高齢者等長期療養", icon: "👵", color: "blue", scenario: "長期の療養について丁寧な聞き取り。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "地域包括診療加算", pts: 25, hint: "かかりつけ機能を評価。" }, { type: "finish" }], trivia: "たくさんお話を聞いて、お薬の整理もして……。お話好きな方への「丁寧な対応」を応援する、あたたかい加算なんです。" },
+        // --- 状態管理 ---
+        let currentScenario = null;
+        let currentStepIndex = 0;
 
-            // --- 第2弾：【画像・検査】トリビア付き30名（GA-001〜GA-030） --- 			
-            { id: "GA-001", genre: "画像・検査", name: "福山 雅治 様", desc: "胸部XPの左右", icon: "🩻", color: "purple", scenario: "胸部レントゲンを2方向（正面・側面）撮影。", initial: [], steps: [{ label: "撮影", type: "add", item: "胸部エックス線撮影(2方向)", pts: 210, hint: "撮影料と診断料の合計。" }, { type: "finish" }], trivia: "レントゲン写真は、実は「影」を見ているもの。骨は白く、空気（肺）は黒く写ります。左右を間違えないよう、事務員は常に目を光らせています。" },
-            { id: "GA-002", genre: "画像・検査", name: "天海 祐希 様", desc: "心電図の算定", icon: "📈", color: "purple", scenario: "動悸のため心電図検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "心電図検査", pts: 130, hint: "130点を算定。" }, { type: "finish" }], trivia: "心臓が動くときの微弱な電気をキャッチする検査。もし検査中に動いてしまうと波形が乱れ、算定し直しになることもあります。" },
-            { id: "GA-003", genre: "画像・検査", name: "タモリ 様", desc: "胃カメラの判断", icon: "📸", color: "purple", scenario: "胃の内視鏡検査を実施（鎮静剤使用）。", initial: [{ n: "胃内視鏡検査", p: 1140 }], steps: [{ label: "薬剤", type: "add", item: "鎮静剤薬剤料", pts: 15, hint: "使った薬剤分を合算。" }, { type: "finish" }], trivia: "胃カメラの点数は「1140点（11,400円相当）」。医療事務では、カメラが「喉」を通ったか「鼻」を通ったかで、使うコードが変わるんです。" },
-            { id: "GA-004", genre: "画像・検査", name: "笑福亭鶴瓶 様", desc: "血液検査のまるめ", icon: "🧪", color: "purple", scenario: "一度に15項目の血液検査を実施。", initial: [], steps: [{ label: "包括算定", type: "add", item: "検体検査実施料(10項目以上)", pts: 112, hint: "項目が多いと包括されます。" }, { type: "finish" }], trivia: "血液検査は、やればやるほど高くなるわけではなく、一定数を超えると「一律の点数（まるめ）」になります。国の医療費節約ルールです。" },
-            { id: "GA-005", genre: "画像・検査", name: "黒柳 徹子 様", desc: "腹部エコー検査", icon: "🦇", color: "purple", scenario: "お腹の調子が悪いので超音波検査。", initial: [], steps: [{ label: "エコー", type: "add", item: "腹部超音波検査", pts: 530, hint: "530点を算定。" }, { type: "finish" }], trivia: "超音波（エコー）は、コウモリと同じ仕組み！体に害がないので、妊婦さんや何度も検査が必要な方にとても優しい検査なんです。" },
-            { id: "GA-006", genre: "画像・検査", name: "イチロー 様", desc: "MRI撮影(頭部)", icon: "🌀", color: "purple", scenario: "頭痛のためMRI（1.5テスラ以上）を実施。", initial: [], steps: [{ label: "撮影", type: "add", item: "ＭＲＩ撮影(1.5T以上)", pts: 1330, hint: "1330点の高額点数。" }, { type: "finish" }], trivia: "MRIは巨大な磁石。点数が1330点と高いのは、あの巨大な機械の維持費や電気代がとんでもなく高いからなんです。" },
-            { id: "GA-007", genre: "画像・検査", name: "北川 景子 様", desc: "マンモグラフィ", icon: "🎀", color: "purple", scenario: "乳がん検診（保険診療分）。", initial: [], steps: [{ label: "撮影", type: "add", item: "乳房エックス線撮影(両側)", pts: 400, hint: "400点を算定。" }, { type: "finish" }], trivia: "マンモグラフィの点数は、片側か両側かで変わります。事務員は「どっちを撮ったか」のオーダーミスを必ずチェックします。" },
-            { id: "GA-008", genre: "画像・検査", name: "ムロツヨシ 様", desc: "CT撮影(造影剤あり)", icon: "🏥", color: "purple", scenario: "造影剤を使用して腹部CTを撮影。", initial: [{ n: "CT撮影料", p: 1020 }], steps: [{ label: "加算", type: "add", item: "造影剤使用加算", pts: 500, hint: "造影剤使用で500点追加。" }, { type: "finish" }], trivia: "造影剤を使うと、血管がくっきり！でも副作用のリスクもあるため、算定には「医師の立ち会い」という条件がある厳しい項目です。" },
-            { id: "GA-009", genre: "画像・検査", name: "新垣 結衣 様", desc: "骨密度測定", icon: "🦴", color: "purple", scenario: "骨粗鬆症の疑いで骨密度を測定。", initial: [], steps: [{ label: "検査", type: "add", item: "骨密度の測定(DEXA法)", pts: 360, hint: "精度の高いDEXA法で360点。" }, { type: "finish" }], trivia: "測定方法によって点数がバラバラ。一番正確な「DEXA法」は腰の骨や足の付け根で測ります。ガッキーの骨もこれでチェック！" },
-            { id: "GA-010", genre: "画像・検査", name: "大野 智 様", desc: "尿一般検査", icon: "🥛", color: "purple", scenario: "健康診断で尿検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "尿一般検査", pts: 26, hint: "基本の検査で26点。" }, { type: "finish" }], trivia: "尿検査は「26点（260円相当）」。安く見えますが、腎臓の健康状態を一瞬で見抜く、コスパ最強の検査と言われています。" },
-            { id: "GA-011", genre: "画像・検査", name: "木村 拓哉 様", desc: "負荷心電図", icon: "🏃", color: "purple", scenario: "階段昇降後の心電図を計測（マスター）", initial: [], steps: [{ label: "検査", type: "add", item: "負荷心電図検査(マスター法)", pts: 150, hint: "150点を算定。" }, { type: "finish" }], trivia: "運動して心臓に負荷をかけた状態を測る検査。事務員は、ただの心電図(130点)と間違えて算定しないよう注意が必要です。" },
-            { id: "GA-012", genre: "画像・検査", name: "綾瀬 はるか 様", desc: "インフルエンザ検査", icon: "🌡️", color: "purple", scenario: "発熱のため抗原迅速検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "インフルエンザウイルス抗原", pts: 139, hint: "139点を算定。" }, { type: "finish" }], trivia: "鼻に綿棒を突っ込むあの検査。実は「139点」。インフルエンザが流行る冬場、事務員はこのコードを何百回も打ち込みます。" },
-            { id: "GA-013", genre: "画像・検査", name: "菅田 将暉 様", desc: "HbA1cの測定", icon: "🩸", color: "purple", scenario: "糖尿病の経過観察で採血。", initial: [], steps: [{ label: "検査", type: "add", item: "ヘモグロビンＡ１ｃ", pts: 43, hint: "43点を算定。" }, { type: "finish" }], trivia: "過去1〜2ヶ月の砂糖（血糖）の状態がわかる「ごまかせない検査」。糖尿病管理の最も重要な指標の一つです。" },
-            { id: "GA-014", genre: "画像・検査", name: "石原 さとみ 様", desc: "細胞診検査", icon: "🔬", color: "purple", scenario: "しこりから細胞を採取して検査。", initial: [], steps: [{ label: "検査", type: "add", item: "細胞診(1部位)", pts: 190, hint: "採取料は別で190点。" }, { type: "finish" }], trivia: "がん細胞がないか顕微鏡で覗く検査。細胞を採る「採取料」と、それを調べる「診断料」が別々に発生する、二段構えの算定です。" },
-            { id: "GA-015", genre: "画像・検査", name: "大谷 翔平 様", desc: "アレルギー検査(特異的IgE)", icon: "🤧", color: "purple", scenario: "花粉症の原因を調べるため採血。", initial: [], steps: [{ label: "検査", type: "add", item: "特異的ＩｇＥ(1項目)", pts: 110, hint: "項目数分算定（上限あり）。" }, { type: "finish" }], trivia: "スギ、ヒノキ、猫……。項目を増やせば増やすほど高くなりますが、上限は「13項目」まで。それ以上は病院のサービスになります！" },
-            { id: "GA-016", genre: "画像・検査", name: "広瀬 すず 様", desc: "ホルター心電図", icon: "💓", color: "purple", scenario: "24時間の心電図を記録。", initial: [], steps: [{ label: "検査", type: "add", item: "ホルター心電図(24時間)", pts: 1500, hint: "解析料込で1500点。" }, { type: "finish" }], trivia: "24時間心臓を監視し続ける検査。点数は「1500点（15,000円相当）」と高め。機械を壊したり紛失したりすると大変なことに……！" },
-            { id: "GA-017", genre: "画像・検査", name: "阿部 寛 様", desc: "ピロリ菌除菌判定", icon: "🦠", color: "purple", scenario: "除菌後の呼気テストを実施。", initial: [], steps: [{ label: "検査", type: "add", item: "尿素呼気試験", pts: 110, hint: "診断料含め合計点数。" }, { type: "finish" }], trivia: "袋に「ふぅー」と息を吹き込むだけの検査。でも胃がんの原因になるピロリ菌がいなくなったか判定する、超重要な検査です。" },
-            { id: "GA-018", genre: "画像・検査", name: "長澤 まさみ 様", desc: "眼底カメラ", icon: "👁️", color: "purple", scenario: "眼底出血の疑いで撮影。", initial: [], steps: [{ label: "撮影", type: "add", item: "眼底写真", pts: 112, hint: "112点を算定。" }, { type: "finish" }], trivia: "目の奥をパシャリ。瞳孔を開く薬を使う場合は、その薬代や「散瞳」の加算がつくこともある、眼科事務のチェックポイントです。" },
-            { id: "GA-019", genre: "画像・検査", name: "斎藤 工 様", desc: "梅毒血清反応", icon: "🩸", color: "purple", scenario: "感染症チェックで採血。", initial: [], steps: [{ label: "検査", type: "add", item: "梅毒血清反応(STS)", pts: 13, hint: "13点（激安）。" }, { type: "finish" }], trivia: "なんと「13点（130円相当）」。血液検査の中でもトップクラスの安さですが、公衆衛生を守るための大切な検査です。" },
-            { id: "GA-020", genre: "画像・検査", name: "本田 翼 様", desc: "聴力検査", icon: "👂", color: "purple", scenario: "耳鳴りのため標準純音聴力検査。", initial: [], steps: [{ label: "検査", type: "add", item: "標準純音聴力検査", pts: 350, hint: "350点を算定。" }, { type: "finish" }], trivia: "「ピー」と聞こえたらボタンを押すアレです。左右両方の聴力を測るので、この点数。静かな部屋（防音室）で行う必要があります。" },
-            { id: "GA-021", genre: "画像・検査", name: "佐藤 健 様", desc: "腫瘍マーカー(PSA)", icon: "🧪", color: "purple", scenario: "前立腺がんの疑いで検査。", initial: [], steps: [{ label: "検査", type: "add", item: "腫瘍マーカー(1項目)", pts: 114, hint: "114点を算定。" }, { type: "finish" }], trivia: "血液で「がんの影」を探す腫瘍マーカー。がん以外でも数値が上がることがあるので、他の検査との組み合わせが大切です。" },
-            { id: "GA-022", genre: "画像・検査", name: "柴咲 コウ 様", desc: "喀痰検査", icon: "🗣️", color: "purple", scenario: "咳が止まらないため痰を提出。", initial: [], steps: [{ label: "検査", type: "add", item: "微生物学的検査(痰)", pts: 150, hint: "培養など含め算定。" }, { type: "finish" }], trivia: "痰の中に悪い菌がいないか、数日間「培養」して調べます。結果が出るまでに時間がかかるので、算定日と結果報告日がずれることも。" },
-            { id: "GA-023", genre: "画像・検査", name: "山崎 賢人 様", desc: "パルスオキシメーター", icon: "☝️", color: "purple", scenario: "指先で酸素飽和度を測定。", initial: [], steps: [{ label: "検査", type: "check", hint: "処置等の付随検査は診察料に含みます。" }, { type: "finish" }], trivia: "コロナ禍で有名になった洗濯バサミのような機械。実は「診察料」に含まれていて、これ単体で点数を取ることはできないんです。" },
-            { id: "GA-024", genre: "画像・検査", name: "米津 玄師 様", desc: "脳波検査", icon: "🧠", color: "purple", scenario: "意識消失の疑いで脳波計測。", initial: [], steps: [{ label: "検査", type: "add", item: "脳波検査(通常)", pts: 500, hint: "500点を算定。" }, { type: "finish" }], trivia: "頭にたくさんの電極をつけます。髪の毛が乱れる大変な検査ですが、脳が活動している「電気信号」を捉える唯一の手段です。" },
-            { id: "GA-025", genre: "画像・検査", name: "石田 ゆり子 様", desc: "骨シンチグラフィ", icon: "☢️", color: "purple", scenario: "放射性医薬品を注射して全身撮影。", initial: [], steps: [{ label: "撮影", type: "add", item: "骨シンチグラフィ", pts: 1600, hint: "診断料含め1600点。" }, { type: "finish" }], trivia: "わずかな放射線を出す薬を注射します。「自分から放射線が出る」状態を撮るので、非常に高額な算定（16,000円相当）になります。" },
-            { id: "GA-026", genre: "画像・検査", name: "松本人志 様", desc: "大腸カメラ(ポリープ切除なし)", icon: "📸", color: "purple", scenario: "大腸の内視鏡検査を実施。", initial: [], steps: [{ label: "検査", type: "add", item: "大腸内視鏡検査", pts: 1550, hint: "1550点を算定。" }, { type: "finish" }], trivia: "胃カメラ(1140点)よりも高額な1550点。大腸は曲がりくねっていて、医師の技術と時間がより多く必要だからなんです。" },
-            { id: "GA-027", genre: "画像・検査", name: "浜辺 美波 様", desc: "血液型検査(ABO・Rh)", icon: "🅰️", color: "purple", scenario: "手術前に自分の血液型を確認。", initial: [], steps: [{ label: "検査", type: "add", item: "血液型不適合等(ABO+Rh)", pts: 48, hint: "合計48点。" }, { type: "finish" }], trivia: "血液型検査は「48点（480円相当）」。一生に一度調べれば十分な検査なので、保険で受けられるケースは限られています。" },
-            { id: "GA-028", genre: "画像・検査", name: "横浜 流星 様", desc: "肺機能検査(スパイロ)", icon: "🌬️", color: "purple", scenario: "喘息の疑いで肺活量を測定。", initial: [], steps: [{ label: "検査", type: "add", item: "肺機能検査", pts: 200, hint: "200点を算定。" }, { type: "finish" }], trivia: "「吸って！吐いて！！」と限界まで頑張る検査。全力でやらないと正確な数値が出ないので、実は体力勝負の検査でもあります。" },
-            { id: "GA-029", genre: "画像・検査", name: "今田 美桜 様", desc: "甲状腺機能検査(TSH)", icon: "🦋", color: "purple", scenario: "喉の腫れ、疲れやすさで採血。", initial: [], steps: [{ label: "検査", type: "add", item: "甲状腺刺激ホルモン", pts: 110, hint: "110点を算定。" }, { type: "finish" }], trivia: "ホルモンのバランスを見る検査。美容に関心の高い方でも、疲れや肌荒れの原因が「ホルモン」にあることがわかる大切な検査です。" },
-            { id: "GA-030", genre: "画像・検査", name: "明石家さんま 様", desc: "喉頭ファイバー", icon: "🎙️", color: "purple", scenario: "声枯れのため喉をカメラで確認。", initial: [], steps: [{ label: "検査", type: "add", item: "喉頭ファイバースコピー", pts: 600, hint: "600点を算定。" }, { type: "finish" }], trivia: "喋りすぎ……？ではなく、声帯の状態を細いスコープで見る検査。さんまさんのようなお仕事の方には命に関わる算定ですね。" },
+        // --- 1. 一覧表示（メイン画面） ---
+        function render(genre) {
+            const contentArea = document.getElementById('contentArea');
+            const filtered = genre === 'ALL' ? SCENARIOS : SCENARIOS.filter(s => s.genre === genre);
 
-            // --- 第3弾：【投薬・管理】トリビア付き30名（TOK-001〜TOK-030） --- 	
-            { id: "TOK-001", genre: "投薬・管理", name: "木村 拓哉 様", desc: "お薬手帳の持参", icon: "📕", color: "emerald", scenario: "3ヶ月以内に再診。手帳を持参した場合の算定は？", initial: [], steps: [{ label: "指導料", type: "choice", choices: [{ l: "手帳あり(45点)", p: 45, ok: true }, { l: "手帳なし(59点)", p: 59, ok: false }], hint: "持ってきた方が点数は低くなります。" }, { type: "finish" }], trivia: "手帳を持ってくると安くなるのは、薬剤師さんの確認の手間が省けるから。逆に持ってないと、確認に時間がかかるので「高く」なるんです。" },
-            { id: "TOK-002", genre: "投薬・管理", name: "綾瀬 はるか 様", desc: "特定疾患処方管理加算1", icon: "💊", color: "emerald", scenario: "生活習慣病で、28日未満の処方を行った。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "加算", type: "add", item: "特定疾患処方管理加算1", pts: 18, hint: "18点を算定。" }, { type: "finish" }], trivia: "生活習慣病などで丁寧な指導を伴う処方にはボーナスがつきます。でも、28日以上の長期処方になると別の高い点数に変わるんです。" },
-            { id: "TOK-003", genre: "投薬・管理", name: "堺 雅人 様", desc: "特定疾患処方管理加算2", icon: "処", color: "emerald", scenario: "生活習慣病で、30日間の長期処方を行った。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "加算", type: "add", item: "特定疾患処方管理加算2", pts: 66, hint: "28日以上は66点。" }, { type: "finish" }], trivia: "28日を境に、18点から66点へと一気に跳ね上がります！「4週間分」を出すかどうかが、医療事務のチェックの分かれ目です。" },
-            { id: "TOK-004", genre: "投薬・管理", name: "北川 景子 様", desc: "一般名処方加算1", icon: "📝", color: "emerald", scenario: "後発品（ジェネリック）を希望。処方箋の書き方は？", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "加算", type: "add", item: "一般名処方加算1", pts: 7, hint: "全品目一般名なら7点。" }, { type: "finish" }], trivia: "商品名ではなく、成分の名前（一般名）で書くと加点されます。薬局で安いジェネリックを選びやすくするための国の工夫です。" },
-            { id: "TOK-005", genre: "投薬・管理", name: "阿部 寛 様", desc: "一般名処方加算2", icon: "💊", color: "emerald", scenario: "一部の薬だけ一般名で処方した。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "加算", type: "add", item: "一般名処方加算2", pts: 5, hint: "一部なら5点。" }, { type: "finish" }], trivia: "全部一般名なら7点、一部なら5点。たった20円（2点）の差ですが、1ヶ月に何百人も診る病院にとっては大きな差になります。" },
-            { id: "TOK-006", genre: "投薬・管理", name: "長澤 まさみ 様", desc: "外来後発医薬品使用体制", icon: "🏥", color: "emerald", scenario: "病院全体でジェネリックを推進している体制。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "体制加算", type: "add", item: "外来後発医薬品使用体制加算1", pts: 5, hint: "体制を評価して5点。" }, { type: "finish" }], trivia: "「病院全体でジェネリックを8割以上使っています！」という看板を出すと、処方箋を出すたびにもらえるご褒美点数です。" },
-            { id: "TOK-007", genre: "投薬・管理", name: "菅田 将暉 様", desc: "乳幼児指導管理料", icon: "👶", color: "emerald", scenario: "3歳児への投薬に関する詳しい指導。", initial: [{ n: "処方料", p: 42 }], steps: [{ label: "管理料", type: "add", item: "乳幼児心理教育等管理料", pts: 280, hint: "心身のケアを含め280点。" }, { type: "finish" }], trivia: "小さなお子様への投薬指導は、親御さんへの説明も含めて大変な作業。その「手間」をしっかりと点数化したものです。" },
-            { id: "TOK-008", genre: "投薬・管理", name: "石原 さとみ 様", desc: "ハイリスク薬指導加算", icon: "⚠️", color: "emerald", scenario: "副作用に注意が必要な薬（抗てんかん剤等）を処方。", initial: [{ n: "処方料", p: 42 }], steps: [{ label: "加算", type: "add", item: "特定薬剤管理指導加算", pts: 4, hint: "特別な指導で4点。" }, { type: "finish" }], trivia: "効果が強い分、副作用も怖い「ハイリスク薬」。血液検査の結果を確認しながら説明すると加算されます。命を守るための4点です。" },
-            { id: "TOK-009", genre: "投薬・管理", name: "佐藤 健 様", desc: "生活習慣病管理料II", icon: "🍎", color: "emerald", scenario: "高血圧の治療計画。検査は外注（別算定）する場合。", initial: [], steps: [{ label: "管理料", type: "add", item: "生活習慣病管理料(II)", pts: 333, hint: "2024年新設の333点。" }, { type: "finish" }], trivia: "2024年から糖尿病・高血圧・脂質異常症はこの点数に！食事や運動の目標を立てて、患者さんと「約束」するための管理料です。" },
-            { id: "TOK-010", genre: "投薬・管理", name: "広瀬 すず 様", desc: "長期処方管理加算", icon: "🗓️", color: "emerald", scenario: "安定しているため、60日の長期処方を実施。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "管理加算", type: "add", item: "外来在宅共同初診料(等)", pts: 0, hint: "2024年より長期処方の説明が義務化。" }, { type: "finish" }], trivia: "28日以上の長期処方ができるのは、病状が安定している証拠。でも「リフィル処方箋」という新しい選択肢の説明も必要になりました。" },
-            { id: "TOK-011", genre: "投薬・管理", name: "松本人志 様", desc: "多剤投与の減算ルール", icon: "💊", color: "emerald", scenario: "一度に10種類以上の内服薬を処方。", initial: [{ n: "処方箋料(通常)", p: 68 }], steps: [{ label: "減算適用", type: "choice", choices: [{ l: "通常通り算定", p: 68, ok: false }, { l: "多剤投与で減算", p: 28, ok: true }], hint: "7種類以上は点数がガクッと下がります。" }, { type: "finish" }], trivia: "お薬を出しすぎると、逆に病院の取り分が減る！？「ポリファーマシー（多剤併用）」を防ぐための厳しいペナルティルールです。" },
-            { id: "TOK-012", genre: "投薬・管理", name: "本田 翼 様", desc: "向精神薬多剤投与", icon: "💤", color: "emerald", scenario: "睡眠薬を3種類以上同時に処方。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "制限", type: "check", hint: "精神科以外の多剤処方は厳格に制限されます。" }, { type: "finish" }], trivia: "睡眠薬や抗不安薬は、依存を防ぐために「2種類まで」が基本。3種類出すと、病院への支払いが大幅にカットされる仕組みです。" },
-            { id: "TOK-013", genre: "投薬・管理", name: "山崎 賢人 様", desc: "薬剤情報提供料", icon: "📑", color: "emerald", scenario: "処方した薬の効能を紙で渡した。", initial: [{ n: "処方料", p: 42 }], steps: [{ label: "情報提供", type: "add", item: "薬剤情報提供料", pts: 10, hint: "10点を算定。" }, { type: "finish" }], trivia: "薬の写真付きの説明書。あれを渡すだけで100円（10点）分になります。でも、1ヶ月に1回しか算定できない節約ルールがあります。" },
-            { id: "TOK-014", genre: "投薬・管理", name: "今田 美桜 様", desc: "外来服薬支援料", icon: "🛍️", color: "emerald", scenario: "手持ちの薬がバラバラなので、整理を支援。", initial: [], steps: [{ label: "支援料", type: "add", item: "外来服薬支援料1", pts: 185, hint: "薬の整理で185点。" }, { type: "finish" }], trivia: "「どの薬をいつ飲むか分からなくなった！」という患者さんのために、薬を仕分けたり整理したりするプロのサポート代です。" },
-            { id: "TOK-015", genre: "投薬・管理", name: "横浜 流星 様", desc: "リフィル処方箋の発行", icon: "🔄", color: "emerald", scenario: "同じ処方箋を3回繰り返し使えるようにした。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "リフィル", type: "check", hint: "リフィル可にチェック。" }, { type: "finish" }], trivia: "病院に行かずに薬局で直接お薬がもらえる「リフィル」。2022年から始まった、忙しい現代人のための画期的なシステムです。" },
-            { id: "TOK-016", genre: "投薬・管理", name: "斎藤 工 様", desc: "麻薬処方管理加算", icon: "💉", color: "emerald", scenario: "がんの痛みのために医療用麻薬を処方。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "加算", type: "add", item: "麻薬処方管理加算", pts: 70, hint: "70点の高い加算。" }, { type: "finish" }], trivia: "麻薬の管理は超厳重！鍵付きの金庫での保管や、1本単位での帳簿記録が必要です。その管理コストとして70点（700円）認められています。" },
-            { id: "TOK-017", genre: "投薬・管理", name: "浜辺 美波 様", desc: "湿布薬の枚数制限", icon: "🩹", color: "emerald", scenario: "腰痛のため、湿布を100枚希望された。", initial: [{ n: "処方箋料", p: 68 }], steps: [{ label: "制限判断", type: "choice", choices: [{ l: "100枚処方する", p: 0, ok: false }, { l: "70枚制限を守る", p: 0, ok: true }], hint: "湿布は1回70枚までがルール。" }, { type: "finish" }], trivia: "昔は出し放題だった湿布ですが、今は「1回70枚まで」と法律で決まっています。それ以上出すには、医師の特別な理由が必要です。" },
-            { id: "TOK-018", genre: "投薬・管理", name: "ムロツヨシ 様", desc: "うがい薬のみの処方", icon: "🥤", color: "emerald", scenario: "風邪予防にうがい薬だけがほしい。", initial: [], steps: [{ label: "算定不可", type: "check", hint: "予防目的の処方は保険適用外です。" }, { type: "finish" }], trivia: "「治療」ではなく「予防」のためのうがい薬は、実は保険が利きません。医療費を正しく使うための、意外と知られていないルールです。" },
-            { id: "TOK-019", genre: "投薬・管理", name: "小栗 旬 様", desc: "地域包括診療料(投薬込)", icon: "🏥", color: "emerald", scenario: "かかりつけ医として、お薬代も込みの定額管理。", initial: [], steps: [{ label: "包括", type: "add", item: "地域包括診療料1", pts: 560, hint: "560点を算定。" }, { type: "finish" }], trivia: "診察もお薬の管理もセットの定額制。お薬の種類が増えても患者さんの負担が急増しない、安心の「サブスク」的算定です。" },
-            { id: "TOK-020", genre: "投薬・管理", name: "指原 莉乃 様", desc: "バイオ後続品使用体制", icon: "💉", color: "emerald", scenario: "高価なバイオ薬品のジェネリックを使用。", initial: [{ n: "処方料", p: 42 }], steps: [{ label: "体制加算", type: "add", item: "バイオ後続品使用体制加算", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "バイオ薬品は1回数万円することも！その安価版（バイオシミラー）を使うと、患者さんの負担が劇的に減るため、国も100点のご褒美をくれます。" },
-            { id: "TOK-021", genre: "投薬・管理", name: "大泉 洋 様", desc: "糖尿病合併症管理", icon: "👁️", color: "emerald", scenario: "糖尿病からくる目の合併症を予防指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "糖尿病合併症管理料", pts: 170, hint: "170点を算定。" }, { type: "finish" }], trivia: "糖尿病は「全身の血管」の病気。目や足の先まで丁寧にチェックして、失明や壊疽を防ぐための、まさに「守り」の管理料です。" },
-            { id: "TOK-022", genre: "投薬・管理", name: "柴咲 コウ 様", desc: "二次性骨粗鬆症管理", icon: "🦴", color: "emerald", scenario: "ステロイド治療中の骨折予防管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "二次性骨粗鬆症管理料", pts: 90, hint: "90点を算定。" }, { type: "finish" }], trivia: "他の薬の副作用で骨が弱くなるのを防ぐための点数。2024年の改定で、よりきめ細かくサポートできるように新設されました。" },
-            { id: "TOK-023", genre: "投薬・管理", name: "福山 雅治 様", desc: "特定疾患処方管理(院内)", icon: "💊", color: "emerald", scenario: "院内で生活習慣病の薬を28日以上処方。", initial: [{ n: "処方料", p: 42 }], steps: [{ label: "加算", type: "add", item: "特定疾患処方管理加算(院内長期)", pts: 65, hint: "院内でも65点。" }, { type: "finish" }], trivia: "院外処方箋なら66点、院内処方なら65点。この「1点（10円）」の差の謎に気づけるようになったら、あなたも立派な医療事務マニアです。" },
-            { id: "TOK-024", genre: "投薬・管理", name: "天海 祐希 様", desc: "腎代替療法指導管理", icon: "💧", color: "emerald", scenario: "腎不全の治療選択肢（透析等）を説明。", initial: [], steps: [{ label: "管理料", type: "add", item: "腎代替療法指導管理料", pts: 500, hint: "500点を算定。" }, { type: "finish" }], trivia: "人工透析になる前に、他にどんな治療法があるか、患者さんが納得して選べるようにサポートする、非常に重みのある500点です。" },
-            { id: "TOK-025", genre: "投薬・管理", name: "米津 玄師 様", desc: "喘息治療管理料", icon: "🌬️", color: "emerald", scenario: "吸入薬の使い方を模型を使って指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "喘息治療管理料1", pts: 280, hint: "280点を算定。" }, { type: "finish" }], trivia: "吸入薬は使い方が難しく、正しく吸えないと効果がありません。医師が「シュッとする練習」に付き合うための、技術料なんです。" },
-            { id: "TOK-026", genre: "投薬・管理", name: "吉高 由里子 様", desc: "慢性腎臓病透析予防", icon: "🚰", color: "emerald", scenario: "透析を回避するため、チームで栄養・生活指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "慢性腎臓病透析予防指導管理料", pts: 350, hint: "350点を算定。" }, { type: "finish" }], trivia: "医師、看護師、栄養士がチームで関わります。「絶対に透析にさせない！」という情熱がこもった、チームプレーの管理料です。" },
-            { id: "TOK-027", genre: "投薬・管理", name: "ディーン・フジオカ 様", desc: "禁煙外来の継続管理", icon: "🚭", color: "emerald", scenario: "禁煙治療の2回目の診察と処方。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "管理料", type: "add", item: "ニコチン依存症管理料(2回目)", pts: 184, hint: "184点を算定。" }, { type: "finish" }], trivia: "禁煙外来は「全5回」のパッケージ。最後まで通い切ると、タバコ代よりも医療費のほうが安くなるように設定されています。" },
-            { id: "TOK-028", genre: "投薬・管理", name: "広瀬 アリス 様", desc: "肝炎インターフェロン", icon: "💉", color: "emerald", scenario: "肝炎の特殊な注射薬の管理指導。", initial: [], steps: [{ label: "管理料", type: "add", item: "肝炎インターフェロン治療計画", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "肝炎を根本から治すための、緻密な治療計画を評価する点数。副作用のチェックなど、事務員もスケジュール管理に協力します。" },
-            { id: "TOK-029", genre: "投薬・管理", name: "タモリ 様", desc: "外来腫瘍化学療法", icon: "🏥", color: "emerald", scenario: "外来で抗がん剤点滴を実施し、副作用管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "外来腫瘍化学療法診療料", pts: 450, hint: "450点を算定。" }, { type: "finish" }], trivia: "「入院ではなく自宅で過ごしながら治療したい」という願いを支える点数。24時間相談できる体制が病院に求められる、高度な管理料です。" },
-            { id: "TOK-030", genre: "投薬・管理", name: "笑福亭鶴瓶 様", desc: "認知症地域包括診療", icon: "🧠", color: "emerald", scenario: "認知症の方のかかりつけ医として総合管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "認知症地域包括診療料1", pts: 700, hint: "700点を算定。" }, { type: "finish" }], trivia: "認知症の方は多くの薬を飲んでいることが多いため、それを一元管理する責任を負います。安心を守るための、厚みのある700点です。" },
-
-            // --- 第4弾：【時間外・特例】トリビア付き30名（TIM-001〜TIM-030） --- 
-            { id: "TIM-001", genre: "時間外・特例", name: "渡辺 謙 様", desc: "深夜救急受診", icon: "🌙", color: "red", scenario: "深夜2時に腹痛で緊急来院。再診での対応。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "深夜加算(再診)", pts: 420, hint: "深夜は420点の大きな加算です。" }, { type: "finish" }], trivia: "深夜22時から朝6時までは「深夜」扱い。再診料73点に対して加算が420点（4200円分）も付くのは、夜の医療体制を守るための特別なルールなんです。" },
-            { id: "TIM-002", genre: "時間外・特例", name: "役所 広司 様", desc: "時間外初診", icon: "🕔", color: "red", scenario: "平日の19時に初診で来院（診療時間外）。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "加算", type: "add", item: "時間外加算(初診)", pts: 85, hint: "時間外は85点加算。" }, { type: "finish" }], trivia: "病院が定めた診療時間外に来ると付く点数。でも、もし病院が「19時まで受付」と掲げているなら、19時ちょうどは時間外になりません。時計の1分が大事な世界です。" },
-            { id: "TIM-003", genre: "時間外・特例", name: "阿部 寛 様", desc: "休日初診", icon: "🗓️", color: "red", scenario: "日曜日の朝に急病で来院。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "加算", type: "add", item: "休日加算(初診)", pts: 250, hint: "休日は250点加算。" }, { type: "finish" }], trivia: "日曜日、祝日、そして年末年始。世間がお休みの時に診察を受けると250点（2500円）アップ。医療スタッフへの「休日手当」のような意味合いもあります。" },
-            { id: "TIM-004", genre: "時間外・特例", name: "小栗 旬 様", desc: "小児救急夜間加算", icon: "👦", color: "red", scenario: "6歳未満の子供が夜間に救急受診。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "小児夜間救急再診加算", pts: 200, hint: "子供の夜間救急は200点加算。" }, { type: "finish" }], trivia: "小児の救急は「夜間・休日」の特別枠があります。親御さんは不安でいっぱい。事務員は不安を和らげつつ、正確にこの厚い点数を算定します。" },
-            { id: "TIM-005", genre: "時間外・特例", name: "大谷 翔平 様", desc: "救急搬送の受け入れ", icon: "🚑", color: "red", scenario: "救急車で搬送され、そのまま入院の判断。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "加算", type: "add", item: "救急医療管理加算1", pts: 1050, hint: "重症者の受け入れで1050点。" }, { type: "finish" }], trivia: "救急車で運ばれるような重症患者さんを受け入れると「1050点（10,500円相当）」の加算！病院の設備と人手を総動員する対価なんです。" },
-            { id: "TIM-006", genre: "時間外・特例", name: "木村 拓哉 様", desc: "時間外の再診", icon: "🌃", color: "red", scenario: "土曜日の午後に再診で来院（診療時間外）。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "時間外加算(再診)", pts: 65, hint: "再診の時間外は65点。" }, { type: "finish" }], trivia: "土曜日の午後は多くの病院が「時間外」。平日の夜よりも、土曜の午後に「ついうっかり」受診して加算がつくケースが多いんです。" },
-            { id: "TIM-007", genre: "時間外・特例", name: "堺 雅人 様", desc: "深夜初診の加算", icon: "🌕", color: "red", scenario: "深夜3時に初めての病院へ緊急受診。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "加算", type: "add", item: "深夜加算(初診)", pts: 480, hint: "初診の深夜は480点加算。" }, { type: "finish" }], trivia: "全項目の中でもトップクラスの加算「480点」。深夜に病院を開け、医師とスタッフが待機していることへの最大の評価です。" },
-            { id: "TIM-008", genre: "時間外・特例", name: "菅田 将暉 様", desc: "特例都県加算", icon: "🏢", color: "red", scenario: "東京都の特別区での時間外受診。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "夜間・早朝等加算", pts: 50, hint: "受付時間によって50点。" }, { type: "finish" }], trivia: "18時以降（土曜は12時以降）に受付をすると付く50点。診察が始まってからではなく、「受付」をした時間で決まるのが事務のポイントです。" },
-            { id: "TIM-009", genre: "時間外・特例", name: "福山 雅治 様", desc: "救急搬送診療料", icon: "🚑", color: "red", scenario: "診療所から大病院へ救急車で同乗搬送。", initial: [], steps: [{ label: "搬送", type: "add", item: "救急搬送診療料", pts: 1300, hint: "同乗して管理すれば1300点。" }, { type: "finish" }], trivia: "医師が救急車に同乗して、搬送中に治療を行うと付く「1300点」。まさに命を繋ぐための「移動診察室」代ですね。" },
-            { id: "TIM-010", genre: "時間外・特例", name: "北川 景子 様", desc: "産科特定疾患等管理", icon: "🤰", color: "red", scenario: "妊娠中の急激な体調不良による緊急管理。", initial: [], steps: [{ label: "管理料", type: "add", item: "産科特定疾患等管理料", pts: 500, hint: "緊急の管理で500点。" }, { type: "finish" }], trivia: "お腹の赤ちゃんとママ、二人の命を守るための緊急対応。産科特有のこの点数は、非常に高い専門性が評価されています。" },
-            { id: "TIM-011", genre: "時間外・特例", name: "天海 祐希 様", desc: "地域医療体制確保加算", icon: "🏥", color: "red", scenario: "救急を24時間受け入れる体制の病院を受診。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "体制加算", type: "add", item: "地域医療体制確保加算", pts: 12, hint: "体制を評価して12点。" }, { type: "finish" }], trivia: "「いつでも救急を受け入れます」という看板を出している大病院に付く点数。たった12点ですが、地域の安心を支える重い12点です。" },
-            { id: "TIM-012", genre: "時間外・特例", name: "ムロツヨシ 様", desc: "休日救急搬送", icon: "🚑", color: "red", scenario: "祝日に救急車で来院。処置を実施。", initial: [{ n: "初診料", p: 288 }, { n: "休日加算", p: 250 }], steps: [{ label: "処置加算", type: "add", item: "処置休日加算", pts: 40, hint: "処置料にも休日加算(4割増)を。" }, { type: "finish" }], trivia: "休日は診察料だけでなく、「処置」や「手術」の代金も1.4倍（4割増）になります！休日返上で働く医師たちの技術料がアップします。" },
-            { id: "TIM-013", genre: "時間外・特例", name: "佐藤 健 様", desc: "準夜帯の受診", icon: "🌆", color: "red", scenario: "20時に救急外来を受診。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "加算", type: "add", item: "時間外加算(再診)", pts: 65, hint: "22時前なら時間外加算。" }, { type: "finish" }], trivia: "22時までは「時間外」、22時を過ぎると「深夜」に昇格。同じ「夜の受診」でも、21時59分と22時01分では点数が大きく変わるんです。" },
-            { id: "TIM-014", genre: "時間外・特例", name: "綾瀬 はるか 様", desc: "紹介状なしの救急", icon: "🏥", color: "red", scenario: "大病院の救急外来を、紹介状なしで受診。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "選定療養", type: "check", hint: "救急でも緊急性がなければ自費が発生。" }, { type: "finish" }], trivia: "「救急外来なら紹介状がいらない」は誤解！緊急性がないと判断されると、夜間でも7,000円以上の「選定療養費」を請求されることがあります。" },
-            { id: "TIM-015", genre: "時間外・特例", name: "松本人志 様", desc: "往診の算定", icon: "🚗", color: "red", scenario: "動けないため、医師が急遽自宅へ訪問。", initial: [], steps: [{ label: "往診", type: "add", item: "往診料", pts: 720, hint: "緊急の訪問で720点。" }, { type: "finish" }], trivia: "「往診」と「訪問診療」は別物！予定になく、急に医師が駆けつけるのが「往診（720点）」。まさにドクターが家に来る特別料金です。" },
-            { id: "TIM-016", genre: "時間外・特例", name: "石原 さとみ 様", desc: "夜間往診の加算", icon: "🌙", color: "red", scenario: "夜間20時に往診を依頼。", initial: [{ n: "往診料", p: 720 }], steps: [{ label: "加算", type: "add", item: "夜間往診加算", pts: 600, hint: "夜間は600点加算。" }, { type: "finish" }], trivia: "往診料720点に、夜間加算600点が合体！さらに深夜ならもっと上がります。夜中に医師を呼ぶのは、それだけ大きな対価が必要なんです。" },
-            { id: "TIM-017", genre: "時間外・特例", name: "広瀬 すず 様", desc: "小児往診の特例", icon: "🧒", color: "red", scenario: "3歳の子供が夜間に高熱、往診を依頼。", initial: [{ n: "往診料", p: 720 }, { n: "夜間加算", p: 600 }], steps: [{ label: "小児加算", type: "add", item: "小児往診加算", pts: 200, hint: "子供ならさらに200点加算。" }, { type: "finish" }], trivia: "子供の急変は予測不能。往診に「小児加算」がつくのは、子供特有の診察の難しさと、親御さんへの指導の重要性が評価されているからです。" },
-            { id: "TIM-018", genre: "時間外・特例", name: "大泉 洋 様", desc: "救急受診後の帰宅", icon: "🏠", color: "red", scenario: "救急外来で受診したが、入院せず帰宅。", initial: [{ n: "再診料", p: 73 }, { n: "時間外加算", p: 65 }], steps: [{ label: "確認", type: "check", hint: "処置や検査がなければこれだけ。" }, { type: "finish" }], trivia: "「救急車で来たから高い」のではなく、実は「何をしたか」で決まります。検査も処置もせず様子見だけなら、意外と安く済むことも。" },
-            { id: "TIM-019", genre: "時間外・特例", name: "長澤 まさみ 様", desc: "入院初日の救急管理", icon: "🛌", color: "red", scenario: "救急搬送され、即入院、集中治療を実施。", initial: [{ n: "入院基本料", p: 1500 }], steps: [{ label: "管理加算", type: "add", item: "救急医療管理加算2", pts: 420, hint: "準重症者で420点。" }, { type: "finish" }], trivia: "命に関わるほどではないが、緊急の対応が必要な場合は「420点」。重症度の判定（スコアリング）は事務員の重要任務です。" },
-            { id: "TIM-020", genre: "時間外・特例", name: "指原 莉乃 様", desc: "オンライン診療の深夜", icon: "📱", color: "red", scenario: "深夜にオンラインで緊急診察。", initial: [{ n: "情報通信機器を用いた診察", p: 251 }], steps: [{ label: "加算", type: "check", hint: "オンラインには時間外加算は付きません。" }, { type: "finish" }], trivia: "実は、オンライン診療には「深夜加算」や「休日加算」は付きません！対面で医師が待機しているわけではないから、という考え方なんです。" },
-            { id: "TIM-021", genre: "時間外・特例", name: "山崎 賢人 様", desc: "災害時の特例対応", icon: "⛺", color: "red", scenario: "災害時、保険証なしでの受診。", initial: [], steps: [{ label: "特例算定", type: "check", hint: "氏名・生年月日で保険診療可能。" }, { type: "finish" }], trivia: "大地震などの災害時は、保険証がなくても「氏名・住所・生年月日」が分かれば保険が使えます。国が決めた、命を最優先する特例ルールです。" },
-            { id: "TIM-022", genre: "時間外・特例", name: "今田 美桜 様", desc: "時間外の手術加算", icon: "✂️", color: "red", scenario: "夜間23時に緊急手術を実施。", initial: [{ n: "手術料(通常)", p: 5000 }], steps: [{ label: "深夜加算", type: "add", item: "手術深夜加算", pts: 8000, hint: "深夜の手術は16割増！" }, { type: "finish" }], trivia: "深夜の手術は、通常料金の「16割増（2.6倍）」！ 5万円の手術なら13万円に。深夜にスタッフを集めて命を救う、凄まじいコストの評価です。" },
-            { id: "TIM-023", genre: "時間外・特例", name: "横浜 流星 様", desc: "休日往診の距離加算", icon: "🚲", color: "red", scenario: "休日に4km離れた場所へ往診。", initial: [{ n: "往診料", p: 720 }, { n: "休日加算", p: 800 }], steps: [{ label: "距離加算", type: "check", hint: "以前はあったが、現在は廃止されました。" }, { type: "finish" }], trivia: "実は昔、往診には「距離加算」という移動距離に応じた点数がありました。今は廃止されています。ガソリン代も大変なのに……お医者さん泣かせですね。" },
-            { id: "TIM-024", genre: "時間外・特例", name: "斎藤 工 様", desc: "酸素吸入の深夜加算", icon: "😷", color: "red", scenario: "深夜の救急外来で酸素吸入処置。", initial: [{ n: "酸素吸入", p: 65 }], steps: [{ label: "加算", type: "add", item: "処置深夜加算", pts: 40, hint: "処置料も16割増になります。" }, { type: "finish" }], trivia: "処置料にも深夜加算が付きます。酸素代そのものではなく、「酸素を吸わせる処置の手間」に対して、夜間ボーナスが付く仕組みです。" },
-            { id: "TIM-025", genre: "時間外・特例", name: "浜辺 美波 様", desc: "年末年始の救急", icon: "🎍", color: "red", scenario: "1月1日に急な腹痛で受診。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "加算", type: "add", item: "休日加算(初診)", pts: 250, hint: "元旦も休日扱いです。" }, { type: "finish" }], trivia: "12月29日〜1月3日は、暦が平日でも「休日」扱い！お正月返上で働く病院への応援歌が、この250点（2500円）なんです。" },
-            { id: "TIM-026", genre: "時間外・特例", name: "米津 玄師 様", desc: "精神科救急搬送", icon: "🧠", color: "red", scenario: "精神的な興奮状態で救急搬送受け入れ。", initial: [], steps: [{ label: "加算", type: "add", item: "精神科救急搬送患者地域連携受入加算", pts: 1000, hint: "精神科特有の救急加算。" }, { type: "finish" }], trivia: "体のケガだけでなく、心の救急もあります。興奮状態の患者さんを安全に受け入れるための体制は、非常に高い評価（10,000円分）がされています。" },
-            { id: "TIM-027", genre: "時間外・特例", name: "吉高 由里子 様", desc: "時間外の点滴加算", icon: "💧", color: "red", scenario: "19時に点滴を開始。", initial: [{ n: "点滴注射", p: 97 }], steps: [{ label: "加算", type: "add", item: "処置時間外加算", pts: 38, hint: "処置料も4割増に。" }, { type: "finish" }], trivia: "点滴そのものは安くても、時間外に行うと4割増！「夜に点滴をする」という看護師さんの労働への対価がしっかり含まれています。" },
-            { id: "TIM-028", genre: "時間外・特例", name: "ディーン・フジオカ 様", desc: "往診の緊急加算", icon: "🏃", color: "red", scenario: "診療中に、他の患者の急変で急いで往診。", initial: [{ n: "往診料", p: 720 }], steps: [{ label: "緊急加算", type: "add", item: "往診緊急加算", pts: 325, hint: "急いで駆けつけたら325点。" }, { type: "finish" }], trivia: "「今すぐ来てください！」という要請に、今の診察を切り上げて駆けつけた場合に付く325点。まさにドクターの機動力への評価です。" },
-            { id: "TIM-029", genre: "時間外・特例", name: "広瀬 アリス 様", desc: "夜間早朝の複数科", icon: "🏥", color: "red", scenario: "19時に内科と耳鼻科を同時受診。", initial: [{ n: "再診料(2科)", p: 110 }], steps: [{ label: "加算", type: "add", item: "夜間早朝等加算(2科分)", pts: 100, hint: "2科それぞれに50点つきます。" }, { type: "finish" }], trivia: "夜間早朝等加算は、診察料の数だけ付きます。2科受診なら100点、3科なら150点！夜遅くの複数科受診は、意外と高くつくんです。" },
-            { id: "TIM-030", genre: "時間外・特例", name: "笑福亭鶴瓶 様", desc: "休日救急の指導料", icon: "🗣️", color: "red", scenario: "休日に緊急受診し、今後の生活指導。", initial: [{ n: "初診料", p: 288 }, { n: "休日加算", p: 250 }], steps: [{ label: "指導料", type: "check", hint: "指導料には休日加算は付きません。" }, { type: "finish" }], trivia: "実は！「診察料」や「処置料」には休日加算がつきますが、特定疾患療養管理料などの「指導料」には加算がつかないんです。これぞ医療事務の落とし穴！" },
-
-            // --- 第5弾：【手術・処置】トリビア付き30名（SHO-001〜SHO-030） ---
-            { id: "SHO-001", genre: "手術・処置", name: "木村 拓哉 様", desc: "創傷処置のサイズ", icon: "🩹", color: "amber", scenario: "手に5cmの切り傷。処置の範囲を選択してください。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "サイズ選択", type: "choice", choices: [{ l: "100cm2未満", p: 52, ok: true }, { l: "100cm2以上", p: 90, ok: false }], hint: "5cmのキズなら最小区分です。" }, { type: "finish" }], trivia: "キズの手当（創傷処置）は面積で決まります。100平方cmは「ハガキ1枚分」くらい。それより小さいか大きいかが、算定の運命の分かれ道です！" },
-            { id: "SHO-002", genre: "手術・処置", name: "綾瀬 はるか 様", desc: "手術当日の再診料", icon: "✂️", color: "amber", scenario: "外来でイボ取り手術を実施。再診料は？", initial: [{ n: "皮膚皮下腫瘍摘出術", p: 1660 }], steps: [{ label: "再診料判断", type: "choice", choices: [{ l: "再診料を算定", p: 73, ok: false }, { l: "再診料は算定不可", p: 0, ok: true }], hint: "手術当日は再診料が含まれます。" }, { type: "finish" }], trivia: "医療事務の鉄則！「手術をした日は再診料（外来管理加算も）は取れない」。これを知らずに算定すると、後で必ず返戻（差し戻し）を食らいます。" },
-            { id: "SHO-003", genre: "手術・処置", name: "堺 雅人 様", desc: "軟膏処置の算定", icon: "🧪", color: "amber", scenario: "広範囲の湿疹に軟膏を塗布（1000cm2以上）。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "皮膚科軟膏処置", pts: 55, hint: "1000cm2以上なら55点。" }, { type: "finish" }], trivia: "ただ軟膏を塗るだけでも、面積が広ければ立派な「処置」。でも「1000平方cm（新聞紙半分くらい）」という広い面積が条件なので、意外とハードルが高いんです。" },
-            { id: "SHO-004", genre: "手術・処置", name: "北川 景子 様", desc: "点滴注射の回路", icon: "💧", color: "amber", scenario: "脱水症状のため500mlの点滴を実施。", initial: [], steps: [{ label: "注射料", type: "add", item: "点滴注射(500ml以上)", pts: 97, hint: "500ml以上は97点。" }, { type: "finish" }], trivia: "点滴の針を刺す手間、チューブ（回路）代、全部込みで97点。でも、15歳未満の子供だと、動かないように見守る「乳幼児加算」がさらにつきます。" },
-            { id: "SHO-005", genre: "手術・処置", name: "阿部 寛 様", desc: "鼻出血の止血処置", icon: "👃", color: "amber", scenario: "鼻血が止まらないため、ガーゼを詰めて止血。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "鼻出血止血法", pts: 110, hint: "110点を算定。" }, { type: "finish" }], trivia: "ティッシュを詰めるのとはワケが違う！医師が専門の器具で奥まで止血するのは「110点（1,100円相当）」の立派な手技なんです。" },
-            { id: "SHO-006", genre: "手術・処置", name: "長澤 まさみ 様", desc: "火傷（熱傷）の処置", icon: "🔥", color: "amber", scenario: "足に熱湯がかかった。初期の熱傷処置を実施。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "サイズ選択", type: "add", item: "熱傷処置(100cm2未満)", pts: 135, hint: "火傷は通常の処置より高額。" }, { type: "finish" }], trivia: "普通のケガは52点ですが、火傷は135点！火傷は感染症のリスクが高く、処置がより慎重で大変なため、高い点数が設定されています。" },
-            { id: "SHO-007", genre: "手術・処置", name: "菅田 将暉 様", desc: "腰椎穿刺の算定", icon: "💉", color: "amber", scenario: "髄液を調べるため、腰に針を刺して採取。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "手技", type: "add", item: "腰椎穿刺", pts: 220, hint: "220点を算定。" }, { type: "finish" }], trivia: "脊髄（せぼねの神経）の近くに針を通す、神経を使う処置。失敗が許されない難しい手技として、220点が認められています。" },
-            { id: "SHO-008", genre: "手術・処置", name: "石原 さとみ 様", desc: "ギプス固定(シーネ)", icon: "🦵", color: "amber", scenario: "足首の捻挫でギプス包帯固定（下腿）。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "固定", type: "add", item: "ギプス包帯(下腿)", pts: 780, hint: "780点を算定。" }, { type: "finish" }], trivia: "ギプスは「巻くとき」が一番高い！でも、翌日以降の巻き直しや調整は「ギプス修理」という別の点数（ぐっと安くなる）に変わります。" },
-            { id: "SHO-009", genre: "手術・処置", name: "佐藤 健 様", desc: "耳漏の清掃", icon: "👂", color: "amber", scenario: "外耳道が耳だれで汚れているため清掃。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "外耳道クリーニング", pts: 25, hint: "片耳なら25点。" }, { type: "finish" }], trivia: "耳掃除……ではなく「クリーニング」。耳鼻科ではよくある処置ですが、左右両方やっても点数が倍にはならない「片側・両側」のルールが重要です。" },
-            { id: "SHO-010", genre: "手術・処置", name: "広瀬 すず 様", desc: "抜歯手術（普通）", icon: "🦷", color: "amber", scenario: "虫歯が悪化した歯を1本抜いた。", initial: [], steps: [{ label: "手術", type: "add", item: "抜歯手術(普通歯)", pts: 165, hint: "165点を算定。" }, { type: "finish" }], trivia: "抜歯は「手術」のカテゴリー！歯の種類（親知らず等）によって点数が倍以上に跳ね上がるので、歯科事務の腕の見せ所です。" },
-            { id: "SHO-011", genre: "手術・処置", name: "松本人志 様", desc: "関節腔内注射", icon: "💉", color: "amber", scenario: "膝の痛みに対し、ヒアルロン酸を注入。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "注射", type: "add", item: "関節腔内注射", pts: 80, hint: "80点を算定。" }, { type: "finish" }], trivia: "普通の筋肉注射は20点ですが、関節の中へは80点。より深い場所に正確に打つ技術料が含まれています。まさに「神の一撃」ですね。" },
-            { id: "SHO-012", genre: "手術・処置", name: "本田 翼 様", desc: "コンタクト異物除去", icon: "👁️", color: "amber", scenario: "目の中にゴミが入ったため、医師が除去。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "眼表面異物除去術", pts: 135, hint: "角膜・結膜で点数が異なります。" }, { type: "finish" }], trivia: "目に刺さったゴミをピンセットで取る緊張感。場所が「黒目（角膜）」か「白目（結膜）」かで点数が変わる、非常に細かいルールがあります。" },
-            { id: "SHO-013", genre: "手術・処置", name: "山崎 賢人 様", desc: "吸入の算定", icon: "🌬️", color: "amber", scenario: "喉の腫れにネブライザーを実施。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "ネブライザー", pts: 12, hint: "12点を算定。" }, { type: "finish" }], trivia: "「12点（120円）」という安さ！でも、風邪薬の粉（薬剤料）は別で取れるので、事務員は薬剤代の合算を絶対に忘れてはいけません。" },
-            { id: "SHO-014", genre: "手術・処置", name: "今田 美桜 様", desc: "単純な皮膚切開", icon: "🔪", color: "amber", scenario: "膿が溜まった腫れを少し切って排出。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "手術", type: "add", item: "皮膚切開術(小)", pts: 470, hint: "470点を算定。" }, { type: "finish" }], trivia: "膿（うみ）を出すための「切開」。手術の中では小さい部類ですが、麻酔をしたり後片付けをしたりと、事務も医師も大忙しになる項目です。" },
-            { id: "SHO-015", genre: "手術・処置", name: "横浜 流星 様", desc: "気管内挿管", icon: "🚑", color: "amber", scenario: "呼吸困難のため、気道に管を挿入。", initial: [], steps: [{ label: "手技", type: "add", item: "気管内挿管", pts: 600, hint: "600点を算定。" }, { type: "finish" }], trivia: "呼吸を助けるための命綱。非常に高い技術が必要なため、600点（6000円分）が認められています。まさに救急の最前線の算定です。" },
-            { id: "SHO-016", genre: "手術・処置", name: "斎藤 工 様", desc: "導尿の算定", icon: "🚰", color: "amber", scenario: "尿が出ないため、管を通して排出。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "導尿(一時的)", pts: 37, hint: "37点を算定。" }, { type: "finish" }], trivia: "「37点（370円）」。処置代よりも、実は使った管（カテーテル）の材料費のほうが高いこともある、意外なバランスの算定項目です。" },
-            { id: "SHO-017", genre: "手術・処置", name: "浜辺 美波 様", desc: "イボの冷凍凝固法", icon: "❄️", color: "amber", scenario: "液体窒素でイボを焼く処置（3箇所）。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "皮膚冷凍凝固法", pts: 210, hint: "個数に関わらず一連で210点。" }, { type: "finish" }], trivia: "「3個やったから630点！」……とはなりません！イボは何個処置しても「一連（セット）」で210点。たくさんある人ほど、実は患者さんはお得なんです。" },
-            { id: "SHO-018", genre: "手術・処置", name: "ムロツヨシ 様", desc: "鶏眼・胼胝処置", icon: "🦶", color: "amber", scenario: "足の「魚の目」を削った。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "鶏眼・胼胝処置", pts: 170, hint: "170点を算定。" }, { type: "finish" }], trivia: "魚の目削りは「170点」。でも、これも「1ヶ月に1回しか取れない」という制限があります。何度も通う患者さんの場合は、事務員のカレンダーチェックが必須！" },
-            { id: "SHO-019", genre: "手術・処置", name: "小栗 旬 様", desc: "鎖骨骨折の整復", icon: "🦴", color: "amber", scenario: "鎖骨が折れた。手で位置を戻して固定。", initial: [{ n: "初診料", p: 288 }], steps: [{ label: "手術", type: "add", item: "鎖骨骨折非観血的整復術", pts: 1300, hint: "切らない手術で1300点。" }, { type: "finish" }], trivia: "「切らない手術」もあるんです。手でボキッと位置を戻すのは「非観血的（ひかんけつてき）」と呼ばれ、立派な高額算定の対象です。" },
-            { id: "SHO-020", genre: "手術・処置", name: "指原 莉乃 様", desc: "抜糸（手術後の糸抜き）", icon: "✂️", color: "amber", scenario: "手術の傷跡が治ったので糸を抜いた。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "判断", type: "check", hint: "抜糸は「創傷処置」に含まれます。" }, { type: "finish" }], trivia: "意外！「抜糸代」という独立した項目はありません。キズの手当て（創傷処置）の中に含まれているので、いつもの処置代として算定します。" },
-            { id: "SHO-021", genre: "手術・処置", name: "大泉 洋 様", desc: "浣腸の算定", icon: "🚽", color: "amber", scenario: "ひどい便秘のため、院内で浣腸を実施。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "浣腸", pts: 60, hint: "60点を算定。" }, { type: "finish" }], trivia: "「60点（600円）」。薬剤（グリセリン浣腸など）をたっぷり使う場合は、その薬剤料もプラス。恥ずかしがらずに、事務員は正確に記録します！" },
-            { id: "SHO-022", genre: "手術・処置", name: "柴咲 コウ 様", desc: "胃洗浄の算定", icon: "🥤", color: "amber", scenario: "誤飲のため、胃の中を洗浄。", initial: [], steps: [{ label: "処置", type: "add", item: "胃洗浄", pts: 300, hint: "300点を算定。" }, { type: "finish" }], trivia: "緊急事態の胃洗浄。300点（3,000円分）ですが、夜間に救急で行う場合は、これにさらに「時間外加算」が乗り、より高い評価になります。" },
-            { id: "SHO-023", genre: "手術・処置", name: "福山 雅治 様", desc: "超音波ネブライザー", icon: "🌬️", color: "amber", scenario: "喘息の発作に対し、超音波式で吸入。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "超音波ネブライザー", pts: 24, hint: "通常の倍、24点。" }, { type: "finish" }], trivia: "霧がより細かい超音波式は、通常のネブライザー（12点）の倍、24点！機械の種類をカルテで見極めるのが、算定のプロへの近道です。" },
-            { id: "SHO-024", genre: "手術・処置", name: "天海 祐希 様", desc: "胸腔穿刺", icon: "🫁", color: "amber", scenario: "肺に溜まった水を抜く処置。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "手技", type: "add", item: "胸腔穿刺", pts: 300, hint: "300点を算定。" }, { type: "finish" }], trivia: "肺の周りの水を抜くのは、呼吸を楽にするための大切な処置。300点ですが、抜いた水の検査を一緒にする場合は、検査代もセットで忘れずに！" },
-            { id: "SHO-025", genre: "手術・処置", name: "米津 玄師 様", desc: "咽頭異物摘出術", icon: "🐟", color: "amber", scenario: "喉に魚の骨が刺さったのを取った。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "手術", type: "add", item: "咽頭異物摘出術", pts: 320, hint: "320点を算定。" }, { type: "finish" }], trivia: "魚の骨を取るのも、医学的には「摘出術（手術）」！簡単なようで、デリケートな喉を傷つけない高度な技。3200円相当の価値があるんです。" },
-            { id: "SHO-026", genre: "手術・処置", name: "吉高 由里子 様", desc: "薬物除去(胃内)", icon: "💊", color: "amber", scenario: "過剰摂取した薬物を内視鏡で回収。", initial: [], steps: [{ label: "手術", type: "add", item: "胃内異物除去術", pts: 2160, hint: "2160点の高額算定。" }, { type: "finish" }], trivia: "内視鏡を使って異物を取るのは2,000点超えの大きな手術！使う道具（バスケットカテーテル等）が数万円することもある、緊迫の現場です。" },
-            { id: "SHO-027", genre: "手術・処置", name: "ディーン・フジオカ 様", desc: "流注穿刺", icon: "💉", color: "amber", scenario: "関節の炎症による膿を抜き、洗浄。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "流注穿刺", pts: 100, hint: "100点を算定。" }, { type: "finish" }], trivia: "関節の中に針を刺し、中の液体を抜いて洗う処置。普通の注射（80点）よりも工程が多いため、キリ良く100点（1000円）が設定されています。" },
-            { id: "SHO-028", genre: "手術・処置", name: "広瀬 アリス 様", desc: "鼓膜穿刺", icon: "👂", color: "amber", scenario: "中耳炎で鼓膜の内側に溜まった膿を抜く。", initial: [{ n: "再診料", p: 73 }], steps: [{ label: "処置", type: "add", item: "鼓膜穿刺", pts: 120, hint: "片耳120点。" }, { type: "finish" }], trivia: "鼓膜に針を通す、聞くだけで痛そうな処置。でもこれで一気に耳の痛みが取れることも！耳鼻科事務にとっては、子供が泣くのをなだめるのも仕事のうち？" },
-            { id: "SHO-029", genre: "手術・処置", name: "タモリ 様", desc: "人工呼吸の算定", icon: "🫁", color: "amber", scenario: "自発呼吸が弱いため、人工呼吸器を装着。", initial: [], steps: [{ label: "処置", type: "add", item: "人工呼吸", pts: 248, hint: "1日につき248点。" }, { type: "finish" }], trivia: "人工呼吸器は「1日248点」。もし30分しかやっていなくても、24時間やっていても、同じ点数。医療現場の「時間」と「点数」の不思議な関係です。" },
-            { id: "SHO-030", genre: "手術・処置", name: "笑福亭鶴瓶 様", desc: "体外衝撃波結石破砕術", icon: "⚡", color: "amber", scenario: "腎結石を衝撃波で粉砕。", initial: [], steps: [{ label: "手術", type: "add", item: "体外衝撃波結石破砕術", pts: 18600, hint: "18600点の超特大点数！" }, { type: "finish" }], trivia: "おめでとうございます！最後は驚愕の18,600点（18万6000円相当）！メスを使わず石を砕く最新技術は、医療事務で扱う点数の中でも最大級の輝きです！" },      
-        ];
-
-        /**
-         * ==========================================
-         * 2. アプリケーション・ロジック
-         * ==========================================
-         */
-        
-        // 💡 画面幅を見て初期値を決める賢い仕組み
-        // 横幅が768px未満(スマホ)なら最初からメニューを開く(true)、PCなら最初から閉じる(false)
-        const isCurrentlyMobile = window.innerWidth < 768;
-
-        let state = {
-            isMobileMenuOpen: isCurrentlyMobile, 
-            view: 'menu',
-            activeGenre: 'ALL',
-            selectedCase: null,
-            currentItems: [],
-            totalPts: 0,
-            step: 0,
-            completedCount: 0
-        };
-
-        if (localStorage.getItem('crossCare_completed')) {
-            state.completedCount = parseInt(localStorage.getItem('crossCare_completed'));
-        }
-
-        function getTrivia(sc) {
-            if (sc.trivia) return sc.trivia;
-            const genreTips = {
-                "外来算定": "「初診料」は紹介状なしの大病院では特別料金がかかるルールになっています。",
-                "画像・検査": "検査を一度にたくさん行うと点数が抑えられる「まるめ」という仕組みがあります。",
-                "投薬・管理": "お薬手帳を持参すると安くなるのは、確認の手間が省けるためです。",
-                "時間外・特例": "夜22時以降は深夜加算がつきます。夜間の医療体制を維持するためのコストです。",
-                "手術・処置": "手術代には基本的に糸やガーゼ代が含まれています。"
-            };
-            return genreTips[sc.genre] || "医療事務では1点は10円換算。窓口負担はその1〜3割です。";
-        }
-
-        function getRank(count) {
-            if (count >= 150) return { name: "医療事務総帥", color: "color: #c084fc;", icon: "👑" };
-            if (count >= 100) return { name: "レセプトの魔術師", color: "color: #f87171;", icon: "🧙" };
-            if (count >= 50) return { name: "受付のエース", color: "color: #60a5fa;", icon: "⭐" };
-            if (count >= 10) return { name: "期待の新人", color: "color: #4ade80;", icon: "🔰" };
-            return { name: "算定の見習い", color: "color: #cbd5e1;", icon: "🐣" };
-        }
-
-        function toggleMobileMenu() {
-            state.isMobileMenuOpen = !state.isMobileMenuOpen;
-            render();
-        }
-
-        function setGenre(g) {
-            state.activeGenre = g;
-            state.isMobileMenuOpen = false;
-            state.view = 'menu';
-            render();
-        }
-
-        function render() {
-            const root = document.getElementById('app-root');
-            const rank = getRank(state.completedCount);
-            const progressPercent = Math.floor((state.completedCount / 150) * 100);
-
-            if (state.view === 'menu') {
-                const filtered = state.activeGenre === 'ALL'
-                    ? SCENARIOS
-                    : SCENARIOS.filter(s => s.genre === state.activeGenre);
-
-                root.innerHTML = `
-                    <div class="app-container">
-                        
-                        ${state.isMobileMenuOpen ? `
-                        <div class="mobile-overlay-menu">
-                            <div class="mobile-menu-header">
-                                <div class="mobile-menu-title">GENRE MENU</div>
-                                <button onclick="toggleMobileMenu()" class="mobile-close-btn">Close</button>
-                            </div>
-
-                            <div class="mobile-genre-list">
-                                ${GENRES.map(g => `
-                                    <button onclick="setGenre('${g}')" 
-                                        class="mobile-genre-btn ${state.activeGenre === g ? 'active' : 'inactive'}">
-                                        ${g === 'ALL' ? '🌍 全ジャンル' : g}
-                                    </button>
-                                `).join('')}
-                            </div>
-
-                            <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid #1e293b; flex-shrink:0;">
-    <a href="https://jsxagi.github.io/medical-billing-master/NurseApp.html" class="link-btn-nurse-full" target="_blank" rel="noopener noreferrer" style="margin-bottom: 16px;">
-        <span>✦ ナースの読書サプリを開く ＞</span>
-    </a>
-
-    <div class="links-grid-2col">
-        <a href="https://jsxagi.github.io/medical-billing-master/hayami.html" 
-           target="_blank" 
-           class="link-btn-premium btn-emerald">
-            <span style="font-size:18px;">📊</span>
-            <span style="letter-spacing:-0.05em;">点数早見表</span>
-        </a>
-        <a href="https://jsxagi.github.io/medical-billing-master/zukan.html" 
-           target="_blank" 
-           class="link-btn-premium btn-teal">
-            <span style="font-size:18px;">📖</span>
-            <span style="letter-spacing:-0.05em;">略語ミニ図鑑</span>
-        </a>
-    </div>
-</div>
+            contentArea.innerHTML = `
+                <div class="grid-container" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:15px; padding:20px;">
+                    ${filtered.map(s => `
+                        <div class="case-card" onclick="startSimulation('${s.id}')" style="cursor:pointer; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <strong>${s.icon} ${s.id} ${s.name}</strong>
+                            <p style="font-size:0.9em; color:#64748b;">${s.desc}</p>
                         </div>
-                        ` : ''}
-
-                        <div class="sidebar-pc">
-                            <div class="sidebar-logo-area">
-                                <h1 class="sidebar-logo-title">CrossCare Hub</h1>
-                                <p class="sidebar-logo-sub">Learning Edition v4.0</p>
-                            </div>
-
-                            <div class="rank-card">
-                                <p class="rank-label">Player Rank</p>
-                                <div class="rank-value" style="${rank.color}">${rank.icon} ${rank.name}</div>
-                                <div class="rank-progress-bg">
-                                    <div class="rank-progress-bar" style="width: ${progressPercent}%"></div>
-                                </div>
-                                <p class="rank-stats">${state.completedCount} / 150 Cases Clear</p>
-                            </div>
-
-                            <nav class="sidebar-nav">
-                                ${GENRES.map(g => `
-                                    <button onclick="setGenre('${g}')" class="nav-genre-btn ${state.activeGenre === g ? 'sidebar-item-active' : ''}">
-                                        ${g === 'ALL' ? '🌍 全ジャンル' : g}
-                                    </button>
-                                `).join('')}
-                            </nav>
-
-                            <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid #1e293b;">
-    <a href="https://jsxagi.github.io/medical-billing-master/NurseApp.html" class="link-btn-nurse-full" target="_blank" rel="noopener noreferrer" style="margin-bottom: 12px;">
-        <span>✦ ナースの読書サプリ ＞</span>
-    </a>
-
-    <div class="links-grid-2col" style="margin-bottom: 0;">
-        <a href="https://jsxagi.github.io/medical-billing-master/hayami.html" 
-           target="_blank" 
-           class="link-btn-premium btn-emerald">
-            <span>📊</span>早見表
-        </a>
-        <a href="https://jsxagi.github.io/medical-billing-master/zukan.html" 
-           target="_blank" 
-           class="link-btn-premium btn-teal">
-            <span>📖</span>図鑑
-        </a>
-    </div>
-</div>
-                        </div>
-
-                        <div class="main-content-view">
-                            <div class="mobile-top-bar">
-                                <div class="mobile-top-bar-title">CrossCare Hub</div>
-                                <button onclick="toggleMobileMenu()" class="mobile-menu-open-btn">Menu</button>
-                            </div>
-
-                            <div class="scrollable-case-area">
-                                <div class="inner-max-width">
-                                    <header class="main-view-header">
-                                        <div>
-                                            <h2 class="main-view-title">${state.activeGenre}</h2>
-                                            <p class="main-view-subtitle">有名人お名前似の患者様の症例から学ぶ、医療費の仕組み。</p>
-                                        </div>
-                                        <div class="progress-right-block">
-                                            <span class="progress-right-label">Total Progress</span>
-                                            <span class="progress-right-val">${progressPercent}%</span>
-                                        </div>
-                                    </header>
-                                    <div class="cases-grid">
-                                        ${filtered.map(s => `
-                                            <button onclick="initCase('${s.id}')" class="case-card-btn">
-                                                <div class="case-icon-box">${s.icon}</div>
-                                                <div class="case-text-flex">
-                                                    <div class="case-badge-id">${s.id}</div>
-                                                    <div class="case-title-name">${s.name}</div>
-                                                    <div class="case-short-desc">${s.desc}</div>
-                                                </div>
-                                                <div class="case-go-label">GO</div>
-                                            </button>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (state.view === 'sim') {
-                const sc = state.selectedCase;
-                const currentStep = sc.steps[state.step];
-                const isFinished = currentStep.type === 'finish';
-                const yen = (state.totalPts * 10).toLocaleString();
-                const jiko = Math.floor(state.totalPts * 3).toLocaleString();
-
-                root.innerHTML = `
-                    <div class="sim-fullscreen-view">
-                        <div class="sim-sidebar">
-                            <div>
-                                <button onclick="quitOrFinish()" class="sim-quit-btn">← Quit Simulation</button>
-                                <div style="margin-bottom: 24px;">
-                                    <span class="sim-genre-badge">${sc.genre}</span>
-                                    <h2 class="sim-patient-name">${sc.name}</h2>
-                                    <p class="sim-patient-desc">${sc.scenario}</p>
-                                </div>
-                                <div class="sim-score-box">
-                                    <div class="score-row-flex">
-                                        <span class="score-label-title">Total Score</span>
-                                        <span class="score-large-val">${state.totalPts}<span class="score-pts-unit">pts</span></span>
-                                    </div>
-                                    <div class="score-sub-details">
-                                        <span class="score-details-label">診療費10割</span>
-                                        <span class="score-details-val">¥${yen}</span>
-                                    </div>
-                                    <div class="score-payment-row">
-                                        <span class="payment-label">窓口での支払い</span>
-                                        <span class="payment-val-green">¥${jiko}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sim-main-panel">
-                            <div class="panel-inner-max">
-                                <div class="step-indicator-area">
-                                    <p class="step-num-text">Step ${state.step + 1} / ${sc.steps.length}</p>
-                                    <div class="step-progress-bg">
-                                        <div class="step-progress-bar" style="width:${((state.step + 1) / sc.steps.length) * 100}%"></div>
-                                    </div>
-                                </div>
-                                <div class="question-card-box">
-                                    ${isFinished ? `
-                                        <div class="trivia-center-wrapper">
-                                            <div class="trivia-icon-big">📘</div>
-                                            <h3 class="trivia-heading">【医療事務トリビア】</h3>
-                                            <div class="trivia-content-quote">
-                                                <p class="trivia-text-inside">${getTrivia(sc)}</p>
-                                            </div>
-                                            <button onclick="quitOrFinish()" class="finish-action-btn">Finish Case</button>
-                                        </div>
-                                    ` : `
-                                        <h3 class="question-hint-title">${currentStep.hint || '適切なアクションを選択してください。'}</h3>
-                                        <div class="action-list-space">
-                                            ${renderAction(currentStep)}
-                                        </div>
-                                    `}
-                                </div>
-                                <div class="billing-list-container opacity-60">
-                                    <p class="billing-list-header">Billing Items List</p>
-                                    ${state.currentItems.map(item => `
-                                        <div class="billing-row-item">
-                                            <span class="billing-item-name">${item.n}</span>
-                                            <span class="billing-item-pts">${item.p} PTS</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function renderAction(s) {
-            if (s.type === 'check') return `<button onclick="state.step++;render();" class="action-standard-btn"><span>内容を反映する</span><span class="action-btn-next-label">NEXT</span></button>`;
-            if (s.type === 'add') return `<button onclick="doAdd('${s.item}', ${s.pts})" class="action-standard-btn"><span>${s.item}を算定</span><span class="action-pts-add-label">+${s.pts} PTS</span></button>`;
-            if (s.type === 'choice') {
-                return `<div class="choices-btn-layout">
-                    ${s.choices.map(c => `
-                        <button onclick="${c.ok ? `doAdd('${c.l}', ${c.p})` : `handleError('${c.l}')`}" 
-                                class="choice-item-btn ok-style">
-                            <span>${c.l}</span>
-                            <span class="choice-pts-mono">${c.p} PTS</span>
-                        </button>
                     `).join('')}
+                </div>
+            `;
+
+            // スマホならメイン画面を表示
+            if (window.innerWidth < 768) {
+                document.getElementById('mainContent').classList.add('active');
+            }
+        }
+
+        // --- 2. シミュレーション開始 ---
+        function startSimulation(id) {
+            currentScenario = SCENARIOS.find(s => s.id === id);
+            currentStepIndex = 0;
+            renderStep();
+        }
+
+        // --- 3. ステップの描画 ---
+        function renderStep() {
+            const contentArea = document.getElementById('contentArea');
+            const scenario = currentScenario;
+            const step = scenario.steps[currentStepIndex];
+
+            // ナビゲーション定義
+            const hasPrev = currentStepIndex > 0;
+            const hasNext = currentStepIndex < scenario.steps.length - 1;
+
+            // スマホ用ナビ（ヘッダー）
+            const navHtml = window.innerWidth < 768
+                ? `<div style="margin-bottom: 20px; display: flex; gap: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;">
+                     <button onclick="render('${scenario.genre}')" style="padding:6px 12px; background:#64748b; color:white; border:none; border-radius:4px; cursor:pointer;">← 一覧</button>
+                     <button onclick="document.getElementById('mainContent').classList.remove('active');" style="padding:6px 12px; background:#0f172a; color:white; border:none; border-radius:4px; cursor:pointer;">🏠 メニュー</button>
+                   </div>` : '';
+
+            // 終了判定（完了画面）
+            if (step.type === 'finish') {
+                const currentIndex = SCENARIOS.findIndex(s => s.id === scenario.id);
+                const nextScenario = SCENARIOS[currentIndex + 1];
+
+                contentArea.innerHTML = `
+                    <div class="sim-container" style="padding:20px;">
+                        ${navHtml}
+                        <h2>🎉 シミュレーション完了</h2>
+                        <p>${scenario.trivia || ""}</p>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
+                            ${nextScenario ? `
+                                <button onclick="startSimulation('${nextScenario.id}')" style="padding:15px; background:#10b981; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">
+                                    👉 次の患者へ（${nextScenario.name}）
+                                </button>` : ''}
+                            <button onclick="render('${scenario.genre}')" style="padding:15px; background:#64748b; color:white; border:none; border-radius:5px; cursor:pointer;">一覧に戻る</button>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            // 通常ステップの描画
+            contentArea.innerHTML = `
+                <div class="sim-container" style="padding:20px;">
+                    ${navHtml}
+                    <h3>${scenario.name} (${currentStepIndex + 1}/${scenario.steps.length - 1})</h3>
+                    <p style="background:#f1f5f9; padding:10px; border-radius:5px; margin-bottom:20px;">
+                        <strong>ヒント:</strong> ${step.hint || "指示に従ってください"}
+                    </p>
+                    <div class="choices">
+                        ${step.choices.map((c, i) => `
+                            <button onclick="handleChoice(${i})" style="width:100%; margin:8px 0; padding:15px; cursor:pointer; background:white; border:1px solid #ddd; border-radius:5px;">${c.l}</button>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                        ${hasPrev ? `<button onclick="changeStep(-1)" style="padding:8px 16px; cursor:pointer;">← 前へ</button>` : '<div></div>'}
+                        <button ${!hasNext ? 'disabled' : ''} onclick="changeStep(1)" style="padding:8px 16px; background:#00bcd4; color:white; border:none; cursor:pointer; border-radius:4px;">次へ →</button>
+                    </div>
                 </div>`;
+        }
+
+        // --- 4. 操作ロジック ---
+        function handleChoice(idx) {
+            const step = currentScenario.steps[currentStepIndex];
+            if (step.choices[idx].ok) {
+                alert("正解！");
+                changeStep(1);
+            } else {
+                alert("不正解: " + (step.choices[idx].err || "もう一度考えてみよう"));
             }
         }
 
-        function handleError(label) {
-            alert(`【誤請求アラート！】\n「${label}」は算定できません。条件を確認してください。`);
+        function changeStep(delta) {
+            currentStepIndex += delta;
+            renderStep();
         }
 
-        function doAdd(name, pts) {
-            state.currentItems.push({ n: name, p: pts });
-            state.totalPts += pts;
-            state.step++;
-            render();
-        }
+        // --- 5. 初期化 ---
+        const menuList = document.getElementById('menuList');
+        GENRES.forEach(g => {
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+            div.textContent = g;
+            div.onclick = () => render(g);
+            menuList.appendChild(div);
+        });
 
-        function initCase(id) {
-            const sc = SCENARIOS.find(x => x.id === id);
-            state.selectedCase = sc;
-            state.view = 'sim';
-            state.step = 0;
-            state.currentItems = JSON.parse(JSON.stringify(sc.initial));
-            state.totalPts = state.currentItems.reduce((acc, cur) => acc + cur.p, 0);
-            render();
-        }
-
-        // 💡 終了時（クリア/離脱）も画面幅をチェックして戻る
-        function quitOrFinish() {
-            if (state.step >= state.selectedCase.steps.length - 1) {
-                state.completedCount++;
-                localStorage.setItem('crossCare_completed', state.completedCount);
-            }
-            state.view = 'menu';
-            // 戻ったときもスマホならメニューを自動展開、PCなら閉じる
-            state.isMobileMenuOpen = window.innerWidth < 768; 
-            render();
-        }
-
-        render();
+        // ページ読み込み時に全リスト表示
+        render('ALL');
     </script>
 </body>
 
