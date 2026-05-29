@@ -223,11 +223,7 @@
                     `).join('')}
                 </div>
             `;
-
-            // スマホならメイン画面を表示
-            if (window.innerWidth < 768) {
-                document.getElementById('mainContent').classList.add('active');
-            }
+            // ★【修正箇所】ページ読み込み時に勝手に画面が切り替わる原因だったスマホ判定処理をここから削除しました。
         }
 
         // --- 2. シミュレーション開始 ---
@@ -279,6 +275,10 @@
             contentArea.innerHTML = `
                 <div class="sim-container" style="padding:20px;">
                     ${navHtml}
+                    <p style="font-size: 11px; color: #475569; margin-bottom: 10px; background: #f8fafc; padding: 8px; border-radius: 4px; border-left: 4px solid #00bcd4;">
+    <strong>本シミュレーションは、令和8年5月現在の診療報酬点数（初診料 291点）に基づき作成しています。</strong>
+</p>
+                    
                     <h3>${scenario.name} (${currentStepIndex + 1}/${scenario.steps.length - 1})</h3>
                     <p style="background:#f1f5f9; padding:10px; border-radius:5px; margin-bottom:20px;">
                         <strong>ヒント:</strong> ${step.hint || "指示に従ってください"}
@@ -317,11 +317,17 @@
             const div = document.createElement('div');
             div.className = 'menu-item';
             div.textContent = g;
-            div.onclick = () => render(g);
+            div.onclick = () => {
+                render(g);
+                // ★【修正箇所】メニュー（ジャンル）をクリックした時だけ、スマホ画面を前面に出すように変更しました
+                if (window.innerWidth < 768) {
+                    document.getElementById('mainContent').classList.add('active');
+                }
+            };
             menuList.appendChild(div);
         });
 
-        // ページ読み込み時に全リスト表示
+        // ページ読み込み時に全リスト表示（スマホでは裏でリストを作るだけで前面には出ません）
         render('ALL');
     </script>
 </body>
