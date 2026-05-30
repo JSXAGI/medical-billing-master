@@ -6,7 +6,7 @@
     <title>医療事務 頻出カルテ略語・シンボル完全図鑑（スマホ究極特化・実務限界版）</title>
     <style>
         /* ==========================================
-           外部連携一切なし（Tailwind不使用）：スマホ特化スタイル v5.5 究極版
+           外部連携一切なし：スマホ特化スタイル v6.0 データ駆動版
            ========================================== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
@@ -32,26 +32,22 @@
             border: 1px solid #e2e8f0;
         }
         
-        /* ヘッダー */
         .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; }
         .version-badge { display: inline-block; padding: 2px 8px; background-color: #ecfdf5; color: #059669; font-size: 11px; font-weight: 900; border-radius: 4px; text-transform: uppercase; }
         .title { font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 4px; }
         .subtitle { font-size: 11px; color: #475569; margin-top: 2px; font-weight: bold; }
         
-        /* 検索窓 */
         .search-box { position: relative; margin-bottom: 16px; }
         .search-input { width: 100%; padding: 12px 12px 12px 36px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; font-weight: bold; -webkit-appearance: none; transition: border-color 0.2s, background-color 0.2s; }
         .search-input:focus { border-color: #059669; background-color: #ffffff; outline: none; }
         .search-icon { position: absolute; left: 12px; top: 13px; color: #64748b; font-size: 14px; }
 
-        /* セクション見出し */
         .section-block { margin-bottom: 24px; }
         .section-title { font-size: 13px; font-weight: 900; color: #0f172a; background-color: #e2e8f0; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; }
         .section-title.sec-01 { border-left: 4px solid #d97706; }
         .section-title.sec-02 { border-left: 4px solid #059669; }
         .section-title.sec-03 { border-left: 4px solid #2563eb; }
 
-        /* カードレイアウト */
         .zukan-list { display: flex; flex-direction: column; gap: 10px; }
         
         .zukan-card {
@@ -65,7 +61,6 @@
         }
         .zukan-card:active { background-color: #f8fafc; }
         
-        /* 左側：アバターアイコン表示域 */
         .avatar-zone {
             display: flex;
             align-items: center;
@@ -84,7 +79,6 @@
         .bg-status { background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
         .bg-medical { background-color: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; }
         
-        /* 右側：解説テキスト域 */
         .info-zone { flex-grow: 1; min-width: 0; }
         .name-row { margin-bottom: 4px; }
         .main-abbr { font-size: 15px; font-weight: 900; color: #0f172a; display: block; }
@@ -92,7 +86,6 @@
         
         .desc-text { font-size: 12px; color: #334155; line-height: 1.5; font-weight: 500; margin-top: 4px; }
         
-        /* 実務の罠アラート */
         .trap-box { margin-top: 8px; padding: 6px 10px; background-color: #fff1f2; border-radius: 6px; border-left: 3px solid #f43f5e; }
         .trap-label { font-size: 9px; font-weight: 900; color: #e11d48; display: block; margin-bottom: 2px; }
         .trap-text { font-size: 11px; color: #9f1239; font-weight: bold; line-height: 1.4; }
@@ -105,7 +98,7 @@
 
     <div class="container">
         <div class="header">
-            <span class="version-badge">Ultimate Edition v5.5</span>
+            <span class="version-badge">Data-Driven Edition v6.0</span>
             <h1 class="title">📖 カルテ略語・シンボル完全図鑑</h1>
             <p class="subtitle">現場最速検索・2024＆2026年診療報酬改定トラップ対応</p>
         </div>
@@ -117,277 +110,338 @@
 
         <div id="noResultsMessage" class="no-results">該当する略語やシンボルは見つかりません。</div>
 
-        <div class="zukan-wrapper">
-            
-            <div class="section-block js-section">
-                <div class="section-title sec-01">🔷 カルテ特有のシンボル記号</div>
-                <div class="zukan-list">
-                    
-                    <div class="zukan-card" data-keyword="初診 しょしん shoshin ✨ はじめて">
-                        <div class="avatar-zone bg-symbol">✨</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">✨（または「初」）</span>
-                                <span class="sub-jp">初診（しょしん）の合図</span>
-                            </div>
-                            <p class="desc-text">患者が新規来院、または1ヶ月以上経過して同一病名で受診した際、医師が冒頭に記述する初診受付の絶対的サイン。基本診療料のベースとなる。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">無条件で「初診料（291点）」を算定。さらに年齢（6歳未満なら乳幼児加算 75点）や、時間帯（夜間・早朝等加算 50点、時間外加算 85点など）の上乗せ漏れがないか秒速で点検すること！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="再診 さいしん saishin 再 継続">
-                        <div class="avatar-zone bg-symbol">再</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">再（または ◯に再）</span>
-                                <span class="sub-jp">再診（さいしん）の継続指示</span>
-                            </div>
-                            <p class="desc-text">前回の診療に続く一連の治療行為が行われていることを示す印。診療所や200床未満の一般病院では「再診料（74点）」をレセプトへ計上するトリガー。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">200床以上の大病院の場合は再診料ではなく「外来診療料（76点）」へ自動分岐！また、同日複数科受診の場合、2つ目の診療科の再診料は「37点（半額）」にする独自の端数ルールを適用せよ。</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="手術 切開 オペ op ⚔️ 処置 まるめ 包括">
-                        <div class="avatar-zone bg-symbol">⚔️</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">⚔️（または Op / 切開）</span>
-                                <span class="sub-jp">手術・切開（おぺ・せっかい）</span>
-                            </div>
-                            <p class="desc-text">メスを用いて皮膚組織を切開、膿の排出や縫合を行った手術の合図。皮膚切開術（軽微なもの）なら「510点」など、高得点の手技料を選択する。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">最大の地雷！手術を行った当日に、看護師が傷口を拭いた「創傷処置（52点）」や「消毒」の手技料は、すべて手術の点数（510点など）の中に包括（まるめ）されて消滅するため、二重請求は絶対に不可！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="死亡 転帰 しぼう ✝️ カルテ最後">
-                        <div class="avatar-zone bg-symbol">✝️</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">✝️（または 死亡）</span>
-                                <span class="sub-jp">死亡・転帰（しぼう）</span>
-                            </div>
-                            <p class="desc-text">患者が治療の甲斐なく亡くなったことを示すカルテ最後のシンボルマーク。レセプトの請求管理上、最も厳格な処理が求められる。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">レセプトの「転帰欄」を必ず「死亡」に変更。入院中の場合は看取りやターミナルケアに関する高度な加算が漏れていないか、全履歴を再確認すること。</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="section-block js-section">
-                <div class="section-title sec-02">🌙 医師の指示・診療ステータス略語</div>
-                <div class="zukan-list">
-
-                    <div class="zukan-card" data-keyword="処方 お薬指示 prescription rx 処方料 処方箋料 多剤">
-                        <div class="avatar-zone bg-status">Rx</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">Rx</span>
-                                <span class="sub-jp">Prescription（処方・お薬指示の宣言）</span>
-                            </div>
-                            <p class="desc-text">「ここから下に書くお薬を調剤しなさい」という医師の命令開始マーク。院内処方なら「処方料（42点）」、院外処方箋発行なら「処方箋料（68点）」の算定スイッチとなる。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">多剤投与ペナルティを絶対に見逃すな！お薬の総種類数が「7種類以上」になった場合、処方料は42点➔29点に、処方箋料は68点➔40点へと【減算（マイナス）】処理を行わないと返戻になる！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="調剤指示 レシピ recipe rp 一剤 院内処方">
-                        <div class="avatar-zone bg-status">Rp</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">Rp</span>
-                                <span class="sub-jp">Recipe（調剤指示・具体的な処方内容）</span>
-                            </div>
-                            <p class="desc-text">具体的な薬品名、分量、服用方法（1日3回毎食後など）の直前に書かれる記号。この塊をベースに「調剤料」を積み上げる。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">【一剤の原則】院内処方の場合、飲むタイミング（内服薬の服用時期）が全く同じお薬は、何種類あっても合算して「1剤」と数える（最高3剤まで算定可、1剤につき9点）。</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="同上 前回同様 do コピー 検査判断料 月1回">
-                        <div class="avatar-zone bg-status">Do</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">Do（ディーオー）</span>
-                                <span class="sub-jp">Ditto / Dittoオーダ（前回と同様に）</span>
-                            </div>
-                            <p class="desc-text">「前回と全く同じ内容のお薬・検査・処置をそのまま実行せよ」という超頻出指示。過去カルテのセットをそのまま当日に複製する。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">月を跨いで「Do検査（尿検査やCBCなど）」が行われた場合、先月に算定した「検査判断料（34点や125点）」が、今月も月1回に限り別途もらえる！電子カルテの自動コピーに頼りすぎると判断料の算定が漏れるので注意！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="転医 紹介 mitudo mtd 診療情報提供料 しょうかいじょう ミツド">
-                        <div class="avatar-zone bg-status">Mtd</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">Mtd（ミツド）</span>
-                                <span class="sub-jp">Mitudo（他院への紹介・転医指示）</span>
-                            </div>
-                            <p class="desc-text">患者の症状に合わせて、より高度な医療機関へ紹介・転医させるステータス記号。紹介状（診療情報提供書）がセットで発行される合図。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">医師が他院宛ての紹介状を記述しているため、高額点数である「診療情報提供料（Ⅰ）（250点）」が算定可能！カルテの会計データに点数が漏れていても確実に請求に乗せること！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="section-block js-section">
-                <div class="section-title sec-03">🔬 実務最頻出の病名・検査略語</div>
-                <div class="zukan-list">
-
-                    <div class="zukan-card" data-keyword="糖尿病 diabetes mellitus dm 自己注射 血糖値">
-                        <div class="avatar-zone bg-medical">DM</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">DM</span>
-                                <span class="sub-jp">Diabetes Mellitus（糖尿病）</span>
-                            </div>
-                            <p class="desc-text">内科を中心に遭遇する慢性疾患の王様。これがあるだけで管理料や長期処方の加算ロジックが大きく動く。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">自宅でインスリン自己注射をしている記述があれば「在宅自己注射指導管理料」が算定可能。さらに、28日以上の長期処方があれば「特定疾患処方管理加算（長期）（66点）」の対象になる（※生活習慣病管理料を算定していない場合）。</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="高血圧症 hypertension ht 生活習慣病 特定疾患管理料 移行">
-                        <div class="avatar-zone bg-medical">HT</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">HT</span>
-                                <span class="sub-jp">Hypertension（高血圧症）</span>
-                            </div>
-                            <p class="desc-text">「ハイパーテンション＝高血圧」。日本の医療現場において最もカルテへの記載率が高いモンスター慢性疾患病名。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">【法改定の最大地雷】かつては「特定疾患管理料（225点）」の対象主病だったが、現在は【生活習慣病管理料】の対象へ完全移行！昔の知識のまま特定疾患で請求すると一発返戻（エラー却下）になるので超厳禁！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="特定疾患管理料 とくとく とくしつ 慢性疾患 225点 まるめ 重複不可">
-                        <div class="avatar-zone bg-medical">特疾</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">特定疾患管理料（225点）</span>
-                                <span class="sub-jp">慢性疾患に対する計画的管理料（月2回まで）</span>
-                            </div>
-                            <p class="desc-text">厚生労働大臣が指定する特定の慢性疾患（結核、甲状腺疾患、喘息、慢性胃炎など）を主病とする患者に対し、計画的な治療管理を行った場合に算定。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">【重複算定不可】新設された「生活習慣病管理料」とは同一月に同時に算定することは絶対にできない。主病がどちらに該当するか、カルテの病名登録を必ず照合せよ。</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="レントゲン エックス線 xp 写真診断 撮影料 所見">
-                        <div class="avatar-zone bg-medical">XP</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">XP</span>
-                                <span class="sub-jp">X-ray Photograph（エックス線撮影・レントゲン）</span>
-                            </div>
-                            <p class="desc-text">カルテ上に「XP施行」や「🎬マーク」で出現する胸部・四肢のレントゲン指示。撮影料（胸部単純2方向なら60点）と写真診断料（60点）で構成。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">撮影だけの請求は片手落ち！医師がカルテに「異常なし」「肺炎像なし」などの【診断所見】を1文字でも書いているのを確認して、初めて「写真診断料（60点〜）」をあわせて二重算定できる。何も書いてなければ医師に突っ返せ！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="コンピュータ断層撮影 ct 撮影料 診断料 1350点">
-                        <div class="avatar-zone bg-medical">CT</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">CT</span>
-                                <span class="sub-jp">Computed Tomography（コンピュータ断層撮影）</span>
-                            </div>
-                            <p class="desc-text">頭部や腹部の横断スライス精密検査。「撮影料（マルチ16列以上なら900点）」と、「コンピューター断層診断料（450点）」を合わせて計1,350点の巨大点数が動く。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">XPと同様に医師の診断所見の記載が必須。さらに、カルテに「造影剤使用」の記述や、注射指示（静脈内注射など）が紛れていれば、そのお薬代（薬価）の請求漏れがないか全点検せよ。</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="尿検査 尿一般 26点 判断料 34点 尿・糞便等検査判断料">
-                        <div class="avatar-zone bg-medical">尿一般</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">尿一般検査（26点）</span>
-                                <span class="sub-jp">定性半定量検査（蛋白・糖・ウロビリノーゲン等）</span>
-                            </div>
-                            <p class="desc-text">試験紙を用いて尿の状態を調べるド定番の検査。大病院の外来診療料では包括（まるめ）されるが、診療所では単独算定可能。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">尿一般検査（26点）をレセプトに乗せたら、月に1回だけ別途上乗せできる【尿・糞便等検査判断料（34点）】の請求漏れがないか必ずチェック！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="採血 末梢血液一般検査 cbc 判断料 血液学的検査判断料 125点">
-                        <div class="avatar-zone bg-medical">CBC</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">CBC</span>
-                                <span class="sub-jp">Complete Blood Count（末梢血液一般検査）</span>
-                            </div>
-                            <p class="desc-text">赤血球、白血球、血小板、ヘモグロビンなどを測定し、貧血や体内の感染・炎症状態を調べる採血検査セット（技術点数は21点）。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">CBCが出た瞬間、レセプトの裏側で月に1回だけ別途上乗せ請求可能な【血液学的検査判断料（125点）】の請求トリガーを絶対にオンにすること！たった21点だけで終わらせると大赤字になる！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="zukan-card" data-keyword="生化学検査 5〜7項目 84点 生化学的検査判断料 144点 肝機能 腎機能">
-                        <div class="avatar-zone bg-medical">生化学</div>
-                        <div class="info-zone">
-                            <div class="name-row">
-                                <span class="main-abbr">生化学検査（Ⅰ）5〜7項目</span>
-                                <span class="sub-jp">肝機能・腎機能・コレステロール等の血液検査（84点）</span>
-                            </div>
-                            <p class="desc-text">GOT、GPT、γ-GTP、尿素窒素など、抽出した血清を用いて内臓の状態を調べる検査。項目数（1〜4項目、5〜7項目、8〜9項目など）によって段階的に点数が変動する。</p>
-                            <div class="trap-box">
-                                <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
-                                <p class="trap-text">生化学検査を行った当月は、月に1回だけ【生化学的検査判断料（Ⅰ）（144点）】が別途算定できる。CBCの血液判断料（125点）とは完全に別物なので、両方立っている場合は二重でしっかりと算定せよ！</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
+        <div id="zukanContainer" class="zukan-wrapper"></div>
 
         <div class="footer">
-            © 2026 CrossCare Hub / Medical Billing Master
+            © 2026 CrossCare Hub / Medical Billing Master (Single-File Arch)
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // 1. 図鑑データベース（ここにデータを追加するだけで画面に自動反映されます）
+        // ==========================================
+        const zukanData = [
+            {
+                category: "🔷 カルテ特有のシンボル記号",
+                colorClass: "sec-01",
+                items: [
+                    {
+                        keyword: "初診 しょしん shoshin ✨ はじめて", avatarClass: "bg-symbol", avatarIcon: "✨",
+                        mainAbbr: "✨（または「初」）", subJp: "初診（しょしん）の合図",
+                        desc: "患者が新規来院、または1ヶ月以上経過して同一病名で受診した際、医師が冒頭に記述する初診受付の絶対的サイン。基本診療料のベースとなる。",
+                        trapText: "無条件で「初診料（291点）」を算定。さらに年齢（6歳未満なら乳幼児加算 75点）や、時間帯（夜間・早朝等加算 50点、時間外加算 85点など）の上乗せ漏れがないか秒速で点検すること！"
+                    },
+                    {
+                        keyword: "再診 さいしん saishin 再 継続", avatarClass: "bg-symbol", avatarIcon: "再",
+                        mainAbbr: "再（または ◯に再）", subJp: "再診（さいしん）の継続指示",
+                        desc: "前回の診療に続く一連の治療行為が行われていることを示す印。診療所や200床未満の一般病院では「再診料（74点）」をレセプトへ計上するトリガー。",
+                        trapText: "200床以上の大病院の場合は再診料ではなく「外来診療料（76点）」へ自動分岐！また、同日複数科受診の場合、2つ目の診療科の再診料は「37点（半額）」にする独自の端数ルールを適用せよ。"
+                    },
+                    {
+                        keyword: "手術 切開 オペ op ⚔️ 処置 まるめ 包括", avatarClass: "bg-symbol", avatarIcon: "⚔️",
+                        mainAbbr: "⚔️（または Op / 切開）", subJp: "手術・切開（おぺ・せっかい）",
+                        desc: "メスを用いて皮膚組織を切開、膿の排出や縫合を行った手術の合図。皮膚切開術（軽微なもの）なら「510点」など、高得点の手技料を選択する。",
+                        trapText: "最大の地雷！手術を行った当日に、看護師が傷口を拭いた「創傷処置（52点）」や「消毒」の手技料は、すべて手術の点数（510点など）の中に包括（まるめ）されて消滅するため、二重請求は絶対に不可！"
+                    },
+                    {
+                        keyword: "注射 ちゅうしゃ iv 💉 投薬 点滴", avatarClass: "bg-symbol", avatarIcon: "💉",
+                        mainAbbr: "💉（または iv / div）", subJp: "注射・点滴指示（ちゅうしゃ・てんてき）",
+                        desc: "静脈内注射（iv）や点滴静脈注射（div）など、体内へ直接薬液を投与する指示。投与量（cc）によって手技料の算定ルールが劇的に変化する。",
+                        trapText: "投与量が「50cc」を境に世界が変わる！49cc以下なら「静脈内注射（34点）」、50cc以上なら「点滴注射（99点）」となる。また、小児（6歳未満）の場合は点滴の手技料が跳ね上がるため年齢確認を怠るな！"
+                    },
+                    {
+                        keyword: "死亡 転帰 しぼう ✝️ カルテ最後", avatarClass: "bg-symbol", avatarIcon: "✝️",
+                        mainAbbr: "✝️（または 死亡）", subJp: "死亡・転帰（しぼう）",
+                        desc: "患者が治療の甲斐なく亡くなったことを示すカルテ最後のシンボルマーク。レセプトの請求管理上、最も厳格な処理が求められる。",
+                        trapText: "レセプトの「転帰欄」を必ず「死亡」に変更。入院中の場合は看取りやターミナルケアに関する高度な加算が漏れていないか、全履歴を再確認すること。"
+                    }
+                ]
+            },
+            {
+                category: "🌙 医師の指示・診療ステータス略語",
+                colorClass: "sec-02",
+                items: [
+                    {
+                        keyword: "処方 お薬指示 prescription rx 処方料 処方箋料 多剤", avatarClass: "bg-status", avatarIcon: "Rx",
+                        mainAbbr: "Rx", subJp: "Prescription（処方・お薬指示の宣言）",
+                        desc: "「ここから下に書くお薬を調剤しなさい」という医師の命令開始マーク。院内処方なら「処方料（42点）」、院外処方箋発行なら「処方箋料（68点）」の算定スイッチとなる。",
+                        trapText: "多剤投与ペナルティを絶対に見逃すな！お薬の総種類数が「7種類以上」になった場合、処方料は42点➔29点に、処方箋料は68点➔40点へと【減算（マイナス）】処理を行わないと返戻になる！"
+                    },
+                    {
+                        keyword: "調剤指示 レシピ recipe rp 一剤 院内処方", avatarClass: "bg-status", avatarIcon: "Rp",
+                        mainAbbr: "Rp", subJp: "Recipe（調剤指示・具体的な処方内容）",
+                        desc: "具体的な薬品名、分量、服用方法（1日3回毎食後など）の直前に書かれる記号。この塊をベースに「調剤料」を積み上げる。",
+                        trapText: "【一剤の原則】院内処方の場合、飲むタイミング（内服薬の服用時期）が全く同じお薬は、何種類あっても合算して「1剤」と数える（最高3剤まで算定可、1剤につき9点）。"
+                    },
+                    {
+                        keyword: "同上 前回同様 do コピー 検査判断料 月1回", avatarClass: "bg-status", avatarIcon: "Do",
+                        mainAbbr: "Do（ディーオー）", subJp: "Ditto / Dittoオーダ（前回と同様に）",
+                        desc: "「前回と全く同じ内容のお薬・検査・処置をそのまま実行せよ」という超頻出指示。過去カルテのセットをそのまま当日に複製する。",
+                        trapText: "月を跨いで「Do検査（尿検査やCBCなど）」が行われた場合、先月に算定した「検査判断料（34点や125点）」が、今月も月1回に限り別途もらえる！電子カルテの自動コピーに頼りすぎると判断料の算定が漏れるので注意！"
+                    },
+                    {
+                        keyword: "主訴 しゅそ c/o complain 症状", avatarClass: "bg-status", avatarIcon: "c/o",
+                        mainAbbr: "c/o", subJp: "complains of（主訴・患者の訴え）",
+                        desc: "患者が病院を訪れた一番の理由（症状）を記述する際の前置き。「c/o 腹痛と発熱」のように記載される。ここから初診時の病名推測が始まる。",
+                        trapText: "c/oに記載された症状と、レセプトの「病名」に矛盾がないか確認せよ。例えば「c/o 咳」なのに病名に呼吸器系疾患が一つも登録されていなければ、処方薬が査定（カット）されるリスクがある。"
+                    },
+                    {
+                        keyword: "抜糸 ばっし s/o stitch out 処置 まるめ", avatarClass: "bg-status", avatarIcon: "s/o",
+                        mainAbbr: "s/o（抜糸）", subJp: "stitch out（抜糸指示）",
+                        desc: "手術や創傷処理で縫合した糸を抜き取る処置。「抜糸のみ」の来院は外科系クリニックで非常に多い。",
+                        trapText: "抜糸行為そのものに「処置料」の点数はない！前回の手術点数や創傷処理の点数に「抜糸までの費用」が全て包括されているため、当日は「再診料」のみの算定となるのが大原則。"
+                    },
+                    {
+                        keyword: "転医 紹介 mitudo mtd 診療情報提供料 しょうかいじょう ミツド", avatarClass: "bg-status", avatarIcon: "Mtd",
+                        mainAbbr: "Mtd（ミツド）", subJp: "Mitudo（他院への紹介・転医指示）",
+                        desc: "患者の症状に合わせて、より高度な医療機関へ紹介・転医させるステータス記号。紹介状（診療情報提供書）がセットで発行される合図。",
+                        trapText: "医師が他院宛ての紹介状を記述しているため、高額点数である「診療情報提供料（Ⅰ）（250点）」が算定可能！カルテの会計データに点数が漏れていても確実に請求に乗せること！"
+                    },
+					{
+                        keyword: "経過観察 再診 f/u follow up ふぉろー", avatarClass: "bg-status", avatarIcon: "f/u",
+                        mainAbbr: "f/u", subJp: "Follow up（経過観察・再診指示）",
+                        desc: "「2週間後にf/u」など、次回予約や経過を診る際の頻出ワード。",
+                        trapText: "f/uのみで具体的な投薬や処置が一切ない場合、当日は「再診料（または外来診療料）」のみの算定。前回つけていた急性病名の「治癒・中止」処理を忘れるとレセプト病名が膨れ上がる原因に。"
+                    },
+                    {
+                        keyword: "異常なし 正常範囲内 wnl within normal limits 所見", avatarClass: "bg-status", avatarIcon: "WNL",
+                        mainAbbr: "WNL / w/n", subJp: "Within Normal Limits（正常範囲内・異常なし）",
+                        desc: "検査や診察の結果、特に異常が見られなかったことを医師が記述するサイン。",
+                        trapText: "【超重要】画像診断（XPやCT等）の所見欄に「WNL」とだけ記載されている場合でも、「異常なしという立派な診断所見」とみなされるため「写真診断料」が堂々と算定可能！見落とすな！"
+                    },
+                    {
+                        keyword: "術後 治療後 ステータスポスト s/p status post 既往歴", avatarClass: "bg-status", avatarIcon: "s/p",
+                        mainAbbr: "s/p", subJp: "Status post（〜の術後・治療後）",
+                        desc: "「s/p 胃がん」のように、過去に手術や治療を終えた病歴（既往歴）を示す前置き。",
+                        trapText: "「s/p 〇〇」は原則として「過去の病気」であるため、これを現在の【主病】としてレセプトに上げてしまうと、投薬の不適切病名として返戻（差し戻し）を食らうリスクが高い。"
+                    },
+                    {
+                        keyword: "交通事故 じこ traffic accident ta 自費 第三者行為", avatarClass: "bg-status", avatarIcon: "TA",
+                        mainAbbr: "TA", subJp: "Traffic Accident（交通事故）",
+                        desc: "交通事故による受傷で来院したことを示す。受付・医事課の動きが最も慌ただしくなるフラグ。",
+                        trapText: "原則、健康保険はそのままでは使えない！「第三者行為による傷病届」の有無を確認し、自費計算（1点20円等）、労災、自賠責のいずれに切り替えるか即座に判断する超重要フラグ。"
+                    },
+                    {
+                        keyword: "経口投与 飲み薬 内服 po per os 処方", avatarClass: "bg-status", avatarIcon: "p.o.",
+                        mainAbbr: "p.o.", subJp: "per os（経口投与・飲み薬指示）",
+                        desc: "口から薬を飲む指示。カルテの処方欄で最も多く見かける略語。",
+                        trapText: "院内処方の場合、p.o.指示のお薬は「1調剤（最大3剤まで）」のルールに組み込まれる。外用薬や頓服薬とは計算のハコ（枠）が違うため、合算して計算しないこと！"
+                    },
+                    {
+                        keyword: "入院 アドミッション adm admission 外来 入院基本料", avatarClass: "bg-status", avatarIcon: "adm",
+                        mainAbbr: "adm", subJp: "Admission（入院指示）",
+                        desc: "外来での診察の結果、そのまま入院へ切り替わるサイン。",
+                        trapText: "入院した日の外来診療において、「再診料」や「外来診療料」は入院基本料の中に丸められる（包括）ため、原則算定できない（初診料は算定可能なので注意）。"
+                    },
+                    {
+                        keyword: "退院 中止 ディスチャージ dc discharge discontinue", avatarClass: "bg-status", avatarIcon: "d/c",
+                        mainAbbr: "d/c", subJp: "Discharge / Discontinue（退院・処方中止）",
+                        desc: "文脈によって「退院」か「薬・処置の中止」を意味する。",
+                        trapText: "他院から持参した薬のd/c（中止・変更）指示があり、残薬調整を行った場合は「重複投薬・相互作用等防止加算（30点〜40点）」が算定できるチャンス！薬歴を確認せよ。"
+                    }					
+                ]
+            },
+            {
+                category: "🔬 実務最頻出の病名・検査略語",
+                colorClass: "sec-03",
+                items: [
+                    {
+                        keyword: "糖尿病 diabetes mellitus dm 自己注射 血糖値", avatarClass: "bg-medical", avatarIcon: "DM",
+                        mainAbbr: "DM", subJp: "Diabetes Mellitus（糖尿病）",
+                        desc: "内科を中心に遭遇する慢性疾患の王様。これがあるだけで管理料や長期処方の加算ロジックが大きく動く。",
+                        trapText: "自宅でインスリン自己注射をしている記述があれば「在宅自己注射指導管理料」が算定可能。さらに、28日以上の長期処方があれば「特定疾患処方管理加算（長期）（66点）」の対象になる。"
+                    },
+                    {
+                        keyword: "高血圧症 hypertension ht 生活習慣病 特定疾患管理料 移行", avatarClass: "bg-medical", avatarIcon: "HT",
+                        mainAbbr: "HT", subJp: "Hypertension（高血圧症）",
+                        desc: "「ハイパーテンション＝高血圧」。日本の医療現場において最もカルテへの記載率が高いモンスター慢性疾患病名。",
+                        trapText: "【法改定の最大地雷】かつては「特定疾患管理料（225点）」の対象主病だったが、現在は【生活習慣病管理料】の対象へ完全移行！昔の知識のまま特定疾患で請求すると一発返戻（エラー却下）になるので超厳禁！"
+                    },
+                    {
+                        keyword: "脂質異常症 高脂血症 hl dlp 生活習慣病 コレステロール", avatarClass: "bg-medical", avatarIcon: "HL",
+                        mainAbbr: "HL / DLP", subJp: "Hyperlipidemia / Dyslipidemia（脂質異常症・高脂血症）",
+                        desc: "血液中の悪玉コレステロールや中性脂肪が基準値から外れている状態。HT（高血圧）、DM（糖尿病）と並ぶ三大生活習慣病の一つ。",
+                        trapText: "2024年の診療報酬改定で、高血圧や糖尿病と同様に「特定疾患」から除外され「生活習慣病管理料」へ移行した重要病名。算定には患者の同意書と療養計画書の作成が必須要件となるため書類不備に注意！"
+                    },
+                    {
+                        keyword: "特定疾患管理料 とくとく とくしつ 慢性疾患 225点 まるめ 重複不可", avatarClass: "bg-medical", avatarIcon: "特疾",
+                        mainAbbr: "特定疾患管理料（225点）", subJp: "慢性疾患に対する計画的管理料（月2回まで）",
+                        desc: "厚生労働大臣が指定する特定の慢性疾患（結核、甲状腺疾患、喘息、慢性胃炎など）を主病とする患者に対し、計画的な治療管理を行った場合に算定。",
+                        trapText: "【重複算定不可】新設された「生活習慣病管理料」とは同一月に同時に算定することは絶対にできない。主病がどちらに該当するか、カルテの病名登録を必ず照合せよ。"
+                    },
+                    {
+                        keyword: "心電図 ecg ekg 130点 検査 循環器", avatarClass: "bg-medical", avatarIcon: "ECG",
+                        mainAbbr: "ECG (または EKG)", subJp: "Electrocardiogram（心電図検査）",
+                        desc: "心臓の電気的活動を波形として記録する検査。四肢と胸部に電極をつける標準的な12誘導心電図は「130点」。",
+                        trapText: "算定は原則「月1回」まで。同一月内に複数回算定する場合は、カルテに「胸痛増悪のため」など、症状の急変や治療上の必要性を【注記】としてレセプトに記載しないと削られる！"
+                    },
+                    {
+                        keyword: "レントゲン エックス線 xp 写真診断 撮影料 所見", avatarClass: "bg-medical", avatarIcon: "XP",
+                        mainAbbr: "XP", subJp: "X-ray Photograph（エックス線撮影・レントゲン）",
+                        desc: "カルテ上に「XP施行」や「🎬マーク」で出現する胸部・四肢のレントゲン指示。撮影料（胸部単純2方向なら60点）と写真診断料（60点）で構成。",
+                        trapText: "撮影だけの請求は片手落ち！医師がカルテに「異常なし」「肺炎像なし」などの【診断所見】を1文字でも書いているのを確認して、初めて「写真診断料（60点〜）」をあわせて二重算定できる。何も書いてなければ医師に突っ返せ！"
+                    },
+                    {
+                        keyword: "コンピュータ断層撮影 ct 撮影料 診断料 1350点", avatarClass: "bg-medical", avatarIcon: "CT",
+                        mainAbbr: "CT", subJp: "Computed Tomography（コンピュータ断層撮影）",
+                        desc: "頭部や腹部の横断スライス精密検査。「撮影料（マルチ16列以上なら900点）」と、「コンピューター断層診断料（450点）」を合わせて計1,350点の巨大点数が動く。",
+                        trapText: "XPと同様に医師の診断所見の記載が必須。さらに、カルテに「造影剤使用」の記述や、注射指示（静脈内注射など）が紛れていれば、そのお薬代（薬価）の請求漏れがないか全点検せよ。"
+                    },
+                    {
+                        keyword: "磁気共鳴画像 mri 撮影料 診断料 頭部", avatarClass: "bg-medical", avatarIcon: "MRI",
+                        mainAbbr: "MRI", subJp: "Magnetic Resonance Imaging（磁気共鳴画像）",
+                        desc: "磁気を利用して脳や脊髄などの軟部組織を高精細に撮影する検査。1.5テスラ以上の機器なら撮影料だけで1,330点となる超高額検査。",
+                        trapText: "CTとMRIを【同一月】に同じ部位（例えば両方とも「頭部」）へ行った場合、主たるもの（点数が高い方）の診断料しか算定できないという背反ルールがある。病名が異なっていても部位が被れば弾かれる。"
+                    },
+                    {
+                        keyword: "尿検査 尿一般 26点 判断料 34点 尿・糞便等検査判断料", avatarClass: "bg-medical", avatarIcon: "尿一般",
+                        mainAbbr: "尿一般検査（26点）", subJp: "定性半定量検査（蛋白・糖・ウロビリノーゲン等）",
+                        desc: "試験紙を用いて尿の状態を調べるド定番の検査。大病院の外来診療料では包括（まるめ）されるが、診療所では単独算定可能。",
+                        trapText: "尿一般検査（26点）をレセプトに乗せたら、月に1回だけ別途上乗せできる【尿・糞便等検査判断料（34点）】の請求漏れがないか必ずチェック！"
+                    },
+                    {
+                        keyword: "採血 末梢血液一般検査 cbc 判断料 血液学的検査判断料 125点", avatarClass: "bg-medical", avatarIcon: "CBC",
+                        mainAbbr: "CBC", subJp: "Complete Blood Count（末梢血液一般検査）",
+                        desc: "赤血球、白血球、血小板、ヘモグロビンなどを測定し、貧血や体内の感染・炎症状態を調べる採血検査セット（技術点数は21点）。",
+                        trapText: "CBCが出た瞬間、レセプトの裏側で月に1回だけ別途上乗せ請求可能な【血液学的検査判断料（125点）】の請求トリガーを絶対にオンにすること！たった21点だけで終わらせると大赤字になる！"
+                    },
+                    {
+                        keyword: "炎症反応 crp C反応性蛋白 免疫学的検査 判断料 144点", avatarClass: "bg-medical", avatarIcon: "CRP",
+                        mainAbbr: "CRP", subJp: "C-Reactive Protein（C反応性蛋白）",
+                        desc: "体内で炎症や組織の破壊が起きているときに血中に現れるタンパク質。風邪や感染症の重症度判定で頻繁にオーダーされる（16点）。",
+                        trapText: "CRPは「免疫学的検査」というグループに属する。そのため、実施当月は【免疫学的検査判断料（144点）】が月1回算定可能。生化学や血液学とは別枠なので、取りこぼしによる機会損失額が大きい！"
+                    },
+                    {
+                        keyword: "生化学検査 5〜7項目 84点 生化学的検査判断料 144点 肝機能 腎機能", avatarClass: "bg-medical", avatarIcon: "生化学",
+                        mainAbbr: "生化学検査（Ⅰ）5〜7項目", subJp: "肝機能・腎機能・コレステロール等の血液検査（84点）",
+                        desc: "GOT、GPT、γ-GTP、尿素窒素など、抽出した血清を用いて内臓の状態を調べる検査。項目数によって段階的に点数が変動する。",
+                        trapText: "生化学検査を行った当月は、月に1回だけ【生化学的検査判断料（Ⅰ）（144点）】が別途算定できる。CBCの血液判断料（125点）とは完全に別物なので、両方立っている場合は二重でしっかりと算定せよ！"
+                    },
+					{
+                        keyword: "超音波検査 エコー us echo 画像診断 フィルム", avatarClass: "bg-medical", avatarIcon: "US",
+                        mainAbbr: "US / Echo", subJp: "Ultrasound（超音波検査）",
+                        desc: "腹部、心臓、頸動脈などに音波を当てて内部を診る検査。腹部エコーは530点。",
+                        trapText: "【包括の罠】検査時に「記録用フィルム（感熱紙等）」を出力した場合、レントゲンのようにフィルム代を請求したくなるが、エコーは「手技料の中に記録用機材代が包括」されているため請求不可！"
+                    },
+                    {
+                        keyword: "胃カメラ 上部消化管内視鏡 gf gastrofiberscopy 生検 t-m", avatarClass: "bg-medical", avatarIcon: "GF",
+                        mainAbbr: "GF", subJp: "Gastrofiberscopy（胃カメラ・上部消化管内視鏡）",
+                        desc: "食道・胃・十二指腸を観察する内視鏡検査（1,140点）。",
+                        trapText: "観察だけで終わったか、「生検（組織採取）」を行ったかで点数が激変する。生検をした場合は、採取料だけでなく「T-M（病理組織標本作製）」の算定漏れに絶対注意！"
+                    },
+                    {
+                        keyword: "大腸カメラ 下部消化管内視鏡 cf colonofiberscopy ポリープ 手術", avatarClass: "bg-medical", avatarIcon: "CF",
+                        mainAbbr: "CF", subJp: "Colonofiberscopy（大腸カメラ・下部消化管内視鏡）",
+                        desc: "大腸の内部を観察する内視鏡検査（1,550点）。",
+                        trapText: "検査中にポリープを発見して切除（ポリペクトミー）した場合、「検査」が「手術（K721等）」に化ける！この場合、内視鏡検査料は算定できず、手術料のみを請求する巨大な切り替えが発生。"
+                    },
+                    {
+                        keyword: "ヘモグロビン 糖尿病 hba1c 血液検査 背反", avatarClass: "bg-medical", avatarIcon: "HbA1c",
+                        mainAbbr: "HbA1c", subJp: "Hemoglobin A1c（ヘモグロビンA1c）",
+                        desc: "過去1〜2ヶ月の血糖コントロール状態を示す糖尿病の必須検査（49点）。",
+                        trapText: "同一月にHbA1cと「グリコアルブミン」や「1,5-AG」を同時に測定しても、原則として【主たるもの1つ】しか算定できない背反（排他）ルールあり。両方請求すると削られる！"
+                    },
+                    {
+                        keyword: "脳性ナトリウム利尿ペプチド 心不全 bnp 血液検査", avatarClass: "bg-medical", avatarIcon: "BNP",
+                        mainAbbr: "BNP", subJp: "Brain Natriuretic Peptide（脳性ナトリウム利尿ペプチド）",
+                        desc: "心不全の診断や状態把握の指標となる血液検査（123点）。",
+                        trapText: "BNPとNT-proBNPを同一月に両方実施しても、どちらか一方しか算定できない。また、レセプトの病名に「心不全」またはその疑い病名がないと一発で査定される。"
+                    },
+                    {
+                        keyword: "腎機能 推算糸球体濾過量 egfr クレアチニン cre 生化学", avatarClass: "bg-medical", avatarIcon: "eGFR",
+                        mainAbbr: "eGFR", subJp: "Estimated GFR（推算糸球体濾過量）",
+                        desc: "腎機能の評価。血液検査のクレアチニン（Cre）値と年齢から自動計算される。",
+                        trapText: "eGFR自体に独立した保険点数はない（Creの生化学検査点数に含まれる）。ただし、この数値悪化を理由に薬を調整した場合、加算算定の強力な根拠となるため所見を見逃すな。"
+                    },
+                    {
+                        keyword: "変形性関節症 整形外科 oa osteoarthritis ヒアルロン酸", avatarClass: "bg-medical", avatarIcon: "OA",
+                        mainAbbr: "OA", subJp: "Osteoarthritis（変形性関節症）",
+                        desc: "加齢等による関節の軟骨すり減り・痛み。整形外科における超頻出病名。",
+                        trapText: "膝OAに対してヒアルロン酸注射（関節腔内注射）を行う場合、「週1回、連続5回まで」などの厳格な回数制限がある。レセプトの摘要欄に「◯回目」の記載がないと問答無用でカットされる！"
+                    },
+                    {
+                        keyword: "関節リウマチ 免疫 ra rheumatoid arthritis 生物学的製剤 特定疾患", avatarClass: "bg-medical", avatarIcon: "RA",
+                        mainAbbr: "RA", subJp: "Rheumatoid Arthritis（関節リウマチ）",
+                        desc: "免疫異常により関節に炎症や変形が起こる疾患。特定疾患の一つ。",
+                        trapText: "非常に高額な生物学的製剤（注射薬）が処方されることが多い。患者が高額療養費制度の対象になるか、限度額適用認定証の確認など、窓口対応の腕の見せ所となる。"
+                    },
+                    {
+                        keyword: "慢性閉塞性肺疾患 肺気腫 copd 在宅酸素 hot", avatarClass: "bg-medical", avatarIcon: "COPD",
+                        mainAbbr: "COPD", subJp: "Chronic Obstructive Pulmonary Disease（慢性閉塞性肺疾患）",
+                        desc: "肺気腫や慢性気管支炎の総称。長年の喫煙者に多い呼吸器疾患。",
+                        trapText: "在宅酸素療法（HOT）を導入している場合、「在宅酸素療法指導管理料（2,400点）」と、それに付随する材料加算（酸素濃縮装置等）の算定漏れ・重複入力に細心の注意を払うこと。"
+                    },
+                    {
+                        keyword: "胃食道逆流症 逆流性食道炎 gerd 胃酸 ppi", avatarClass: "bg-medical", avatarIcon: "GERD",
+                        mainAbbr: "GERD", subJp: "Gastroesophageal Reflux Disease（胃食道逆流症）",
+                        desc: "胃酸が食道に逆流して胸焼けや炎症を起こす疾患。",
+                        trapText: "PPI（プロトンポンプ阻害薬）やP-CABといった強力な胃薬が処方されるが、これらの薬には「最大投与期間（通常8週間まで）」の強烈な制限がある。漫然とDo処方し続けると薬剤費が全額カット！"
+                    },
+                    {
+                        keyword: "尿路感染症 膀胱炎 uti urinary tract infection 培養検査", avatarClass: "bg-medical", avatarIcon: "UTI",
+                        mainAbbr: "UTI", subJp: "Urinary Tract Infection（尿路感染症）",
+                        desc: "膀胱炎や腎盂腎炎などの総称。内科・泌尿器科で頻出。",
+                        trapText: "尿一般検査だけでなく「尿細菌培養検査」が追加されることが多い。培養検査は結果が出るまでに日数がかかるため、翌月に結果報告された場合の【微生物学的検査判断料（150点）】の算定月ズレに注意。"
+                    },
+                    {
+                        keyword: "栄養サポートチーム 栄養管理 nst nutrition support team アルブミン", avatarClass: "bg-medical", avatarIcon: "NST",
+                        mainAbbr: "NST", subJp: "Nutrition Support Team（栄養サポートチーム）",
+                        desc: "医師・看護師・管理栄養士等によるチーム医療での栄養管理（入院時）。",
+                        trapText: "「栄養サポートチーム加算（200点）」は週1回算定可能。ただし、対象となる患者の要件（血清アルブミン値が3.0g/dL以下など）が厳密に定められており、要件を満たすカルテ記録がないと全額返戻。"
+                    },
+                    {
+                        keyword: "身体診察 理学所見 視診 聴診 pe px physical examination カルテ記載", avatarClass: "bg-medical", avatarIcon: "P/E",
+                        mainAbbr: "P/E (または Px)", subJp: "Physical Examination（身体診察・理学所見）",
+                        desc: "視診、聴診、打診、触診などの診察記録の開始を示すシンボル。",
+                        trapText: "【最大のブラックボックス】「初診料」や「再診料」を請求する絶対的な根拠。電子カルテのDo処方（コピー）ばかりでP/Eの所見が全く記載されていないカルテは、個別指導（監査）で「診察していない」とみなされ返還要求の対象になる！"
+                    }
+                ]
+            }
+        ];
+
+        // ==========================================
+        // 2. レンダリングエンジン（データを元にHTMLを自動生成）
+        // ==========================================
+        function renderZukan() {
+            const container = document.getElementById('zukanContainer');
+            let htmlContent = '';
+
+            zukanData.forEach(section => {
+                htmlContent += `
+                    <div class="section-block js-section">
+                        <div class="section-title ${section.colorClass}">${section.category}</div>
+                        <div class="zukan-list">
+                `;
+                
+                section.items.forEach(item => {
+                    htmlContent += `
+                        <div class="zukan-card" data-keyword="${item.keyword}">
+                            <div class="avatar-zone ${item.avatarClass}">${item.avatarIcon}</div>
+                            <div class="info-zone">
+                                <div class="name-row">
+                                    <span class="main-abbr">${item.mainAbbr}</span>
+                                    <span class="sub-jp">${item.subJp}</span>
+                                </div>
+                                <p class="desc-text">${item.desc}</p>
+                                <div class="trap-box">
+                                    <span class="trap-label">⚠️ 医療事務の実務チェック！</span>
+                                    <p class="trap-text">${item.trapText}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                htmlContent += `</div></div>`;
+            });
+
+            container.innerHTML = htmlContent;
+        }
+
+        // ==========================================
+        // 3. 検索機能
+        // ==========================================
         function searchZukan() {
             const input = document.getElementById('zukanSearch').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.zukan-card');
@@ -421,6 +475,9 @@
                 noResults.style.display = 'none';
             }
         }
+
+        // 画面読み込み時にレンダリングを実行
+        document.addEventListener('DOMContentLoaded', renderZukan);
     </script>
 </body>
 </html>
