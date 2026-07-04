@@ -290,10 +290,13 @@
                         <strong>ヒント:</strong> ${step.hint || "指示に従ってください"}
                     </p>
                     <div class="choices">
-                        ${step.choices.map((c, i) => `
-                            <button onclick="handleChoice(${i})" style="width:100%; margin:8px 0; padding:15px; cursor:pointer; background:white; border:1px solid #ddd; border-radius:5px;">${c.l}</button>
-                        `).join('')}
-                    </div>
+    ${[...step.choices]
+        .map((c, i) => ({c, originalIndex: i})) // 元のインデックスを保持
+        .sort(() => Math.random() - 0.5)        // ランダムに並び替え
+        .map(obj => `
+            <button onclick="handleChoice(${obj.originalIndex})" style="width:100%; margin:8px 0; padding:15px; cursor:pointer; background:white; border:1px solid #ddd; border-radius:5px;">${obj.c.l}</button>
+        `).join('')}
+</div>
                     <div style="margin-top: 30px; display: flex; justify-content: space-between;">
                         ${hasPrev ? `<button onclick="changeStep(-1)" style="padding:8px 16px; cursor:pointer;">← 前へ</button>` : '<div></div>'}
                         <button ${!hasNext ? 'disabled' : ''} onclick="changeStep(1)" style="padding:8px 16px; background:#00bcd4; color:white; border:none; cursor:pointer; border-radius:4px;">次へ →</button>
